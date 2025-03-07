@@ -1,0 +1,152 @@
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+
+function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  return (
+    <nav className="bg-gray-800 text-white p-4">
+      <div className=" mx-auto flex justify-between md:justify-around items-center">
+        <Link
+          to="/"
+          className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400"
+        >
+          Blogify
+        </Link>
+        <button
+          className="md:hidden focus:outline-none bg-gradient-to-r text-2xl p-2 rounded-full from-blue-400 to-purple-400"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+            />
+          </svg>
+        </button>
+        <div className="hidden md:flex space-x-6 items-center">
+          <Link
+            to="/"
+            className="hover:text-blue-400 transition-colors duration-300"
+          >
+            Home
+          </Link>
+          <Link
+            to="/blogs"
+            className="hover:text-blue-400 transition-colors duration-300"
+          >
+            Blogs
+          </Link>
+          {user ? (
+            <>
+              {user.isAdmin && (
+                <Link
+                  to="/dashboard"
+                  className="hover:text-blue-400 transition-colors duration-300"
+                >
+                  Dashboard
+                </Link>
+              )}
+
+              <span className="text-gray-300">
+                Welcome, {user.username || "User"}
+              </span>
+
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 px-3 py-1 rounded hover:bg-gray-00 bg-gradient-to-r from-red-400 to-purple-400"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="hover:text-blue-400 transition-colors duration-300"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="hover:text-blue-400 transition-colors duration-300"
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+      {isOpen && (
+        <div className="md:hidden mt-4 space-y-4">
+          <Link
+            to="/blogs"
+            className="block hover:text-gray-300"
+            onClick={() => setIsOpen(false)}
+          >
+            {" "}
+            {/* Update to /blogs */}
+            Blogs
+          </Link>
+          {user ? (
+            <>
+              <span className="block text-gray-300">
+                Welcome, {user.username || "User"}
+              </span>
+              {user.isAdmin && (
+                <Link
+                  to="/dashboard"
+                  className="block hover:text-gray-300"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Admin Dashboard
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left bg-red-600 px-3 py-1 rounded hover:bg-red-700"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="block hover:text-gray-300"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="block hover:text-gray-300"
+                onClick={() => setIsOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
+      )}
+    </nav>
+  );
+}
+
+export default Navbar;
