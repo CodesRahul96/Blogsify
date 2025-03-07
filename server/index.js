@@ -6,13 +6,12 @@ dotenv.config({ path: __dirname + "/.env" });
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 
 app.use(
   cors({
     origin: ["https://blogifyui.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true
   })
 );
 
