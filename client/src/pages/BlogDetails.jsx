@@ -124,7 +124,7 @@ function BlogDetails() {
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
             {blog.title}
           </h1>
-          <div className="flex items-center justify-between text-sm text-gray-600">
+          <div className="flex items-center justify-between text-sm text-black-600">
             <span>By {blog.author}</span>
             <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
           </div>
@@ -166,11 +166,11 @@ function BlogDetails() {
 
         {/* Comments Section */}
         <div>
-          <h2 className="text-2xl font-semibold text-gray-300 mb-4">
+          <h2 className="text-2xl font-semibold text-black-300 mb-4">
             Comments
           </h2>
           {blog.comments.length === 0 ? (
-            <p className="text-gray-300 italic">
+            <p className="text-black-300 italic">
               No comments yet. Be the first!
             </p>
           ) : (

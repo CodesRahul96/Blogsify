@@ -155,10 +155,10 @@ function Blogs() {
                     <h2 className="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors duration-300">
                       {post.title || "Untitled"}
                     </h2>
-                    <p className="text-gray-300 mb-4 line-clamp-3">
+                    <p className="text-black-300 mb-4 line-clamp-3">
                       {post.content || "No content available"}
                     </p>
-                    <div className="flex items-center justify-between text-sm text-gray-300">
+                    <div className="flex items-center justify-between text-sm text-black-300">
                       <span>By {post.author || "Unknown"}</span>
                       <span>
                         {new Date(post.createdAt).toLocaleDateString()}
