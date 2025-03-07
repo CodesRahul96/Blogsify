@@ -16,6 +16,7 @@ client/.env
 client/.env.local
 client/.env.*.local
 server/.env
+server/src/.env
 server/.env.local
 server/.env.*.local
 
