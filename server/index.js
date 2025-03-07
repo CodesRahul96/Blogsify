@@ -2,8 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const authRoutes = require('./routes/auth'); // Your auth routes
 const postRoutes = require('./routes/posts'); // Your posts routes
-const authRoutes = require('./routes/auth'); // Your posts routes
 
 // Load environment variables from .env file (for local dev)
 dotenv.config();
