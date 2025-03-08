@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 text-gray-900">
+     
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 md:py-32">
         <div className="container mx-auto px-4 text-center">
@@ -14,21 +15,18 @@ function Home() {
             voice and connect with a vibrant community.
           </p>
           <Link
-            to="/blogs"
-            className="inline-block bg-white text-blue-600 py-3 px-8 rounded-full font-semibold text-lg shadow-lg hover:bg-blue-100 hover:text-blue-700 transition-all duration-300"
-          >
-            Explore Blogs
-          </Link>
+              to="/blogs"
+              className="bg-transparent border-2 border-white text-white py-3 px-8 rounded-full font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+            >
+              Explorer Blogs
+            </Link>
         </div>
-        {/* Decorative Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-0 w-64 h-64 bg-blue-400 rounded-full opacity-20 transform -translate-x-32 -translate-y-32"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-400 rounded-full opacity-20 transform translate-x-32 translate-y-32"></div>
-        </div>
+      
       </section>
 
       {/* Features Section */}
       <section className="py-16 bg-gradient-to-b from-blue-100 via-purple-100 to-gray-100">
+      
         <div className="mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
             Why Blogsify?
@@ -111,8 +109,8 @@ function Home() {
             Ready to Get Started?
           </h2>
           <p className="text-lg mb-8 max-w-xl mx-auto">
-            Join Blogsify today and start exploring, reading, or writing your own
-            stories!
+            Join Blogsify today and start exploring, reading, or writing your
+            own stories!
           </p>
           <div className="flex justify-center space-x-4">
             <Link
@@ -128,7 +126,9 @@ function Home() {
               View Blogs
             </Link>
           </div>
+          
         </div>
+        
       </section>
     </div>
   );
