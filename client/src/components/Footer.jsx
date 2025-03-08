@@ -9,7 +9,7 @@ function Footer() {
           {/* About Section */}
           <div className="text-center md:text-left">
             <h3 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-              Blogify
+            Blogsify
             </h3>
             <p className="text-gray-400 max-w-xs">
               Your go-to platform for insightful blogs and engaging content.
@@ -66,7 +66,7 @@ function Footer() {
             <p className="text-gray-400">Email: codesrahul96@gmail.com</p>
             <p className="text-gray-400">Phone: +91 8805159425</p>
             <p className="text-gray-400">
-              Address: Pune City, Maharashtra, India
+              Address: Pune, Maharashtra, India
             </p>
           </div>
 
@@ -106,8 +106,8 @@ function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-10 pt-6 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
-          <p>&copy; {new Date().getFullYear()} BlogApp. All rights reserved.</p>
-          <p>Made with ❤️ by the CodesRahul</p>
+          <p>&copy; {new Date().getFullYear()} Blogsify. All rights reserved.</p>
+          <p>Made with ❤️ by CodesRahul</p>
         </div>
       </div>
     </footer>

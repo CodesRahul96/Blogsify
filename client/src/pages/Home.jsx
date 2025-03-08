@@ -7,7 +7,7 @@ function Home() {
       <section className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 md:py-32">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight animate-fade-in">
-            Welcome to Blogify
+            Welcome to Blogsify
           </h1>
           <p className="text-lg md:text-2xl max-w-2xl mx-auto mb-8 animate-fade-in-delay">
             Discover a world of stories, ideas, and inspiration. Share your
@@ -31,7 +31,7 @@ function Home() {
       <section className="py-16 bg-gradient-to-b from-blue-100 via-purple-100 to-gray-100">
         <div className="mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            Why Blogify?
+            Why Blogsify?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
@@ -111,7 +111,7 @@ function Home() {
             Ready to Get Started?
           </h2>
           <p className="text-lg mb-8 max-w-xl mx-auto">
-            Join Blogify today and start exploring, reading, or writing your own
+            Join Blogsify today and start exploring, reading, or writing your own
             stories!
           </p>
           <div className="flex justify-center space-x-4">

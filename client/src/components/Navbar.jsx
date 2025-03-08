@@ -19,7 +19,7 @@ function Navbar() {
           to="/"
           className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400"
         >
-          Blogify
+          Blogsify
         </Link>
         <button
           className="md:hidden focus:outline-none bg-gradient-to-r text-2xl p-2 rounded-full from-blue-400 to-purple-400"

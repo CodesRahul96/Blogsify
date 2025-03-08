@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { Routes, Route } from "react-router";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -8,14 +8,13 @@ import Services from "./pages/Services";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
-import PageError from "./pages/PageError";
 import BlogDetails from "./pages/BlogDetails";
 import Blogs from "./pages/Blogs";
+import NotFound from "./pages/NotFound";
 
 function App() {
-
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
       <Routes>
         <Route exact path="/" element={<Home />} />
@@ -27,10 +26,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/*" element={<PageError />} />
+        <Route path="/*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
-    </BrowserRouter>
+    </>
   );
 }
 

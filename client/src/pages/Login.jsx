@@ -12,10 +12,13 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/auth/login`, {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/auth/login`,
+        {
+          username,
+          password,
+        }
+      );
       localStorage.setItem("token", res.data.token);
       navigate("/blogs");
       window.location.reload("/blogs");
@@ -28,8 +31,10 @@ function Login() {
     if (!token) {
       navigate("/login");
       return;
+    } else {
+      navigate("/blogs");
+      return;
     }
-    fetchPosts();
   }, [token, navigate]);
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +9,7 @@ function SignUp() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -29,6 +30,16 @@ function SignUp() {
       setSuccess("");
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/register");
+      return;
+    } else {
+      navigate("/blogs");
+      return;
+    }
+  }, [token, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-t from-gray-800 via-indigo-900 to-blue-900">
