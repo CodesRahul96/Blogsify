@@ -119,33 +119,39 @@ function BlogDetails() {
   return (
     <div className="min-h-screen bg-gradient-to-t from-gray-800 via-indigo-900 to-blue-900 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-8 min-h-[80vh] flex flex-col">
-      {/* Blog Header */}
-  <div className="mb-8">
-    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight font-inter">
-      {blog.title}
-    </h1>
-    <div className="flex items-center justify-between text-sm text-gray-600 font-merriweather">
-      <span>By {blog.author}</span>
-      <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
-    </div>
-  </div>
+        {/* Blog Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight font-inter">
+            {blog.title}
+          </h1>
+          <div className="flex items-center justify-between text-sm text-gray-600 font-merriweather">
+            <span>By {blog.author}</span>
+            <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
+          </div>
+        </div>
 
-  {/* Blog Image */}
-  {blog.imageUrl && (
-    <div className="mb-8">
-      <img
-        src={blog.imageUrl}
-        alt={blog.title}
-        className="w-full h-64 object-cover rounded-lg shadow-md"
-        onError={(e) => (e.target.src = 'https://github.com/CodesRahul96/Blogify/blob/main/client/src/assets/poster%20.jpg?raw=true')} // Fallback image
-      />
-    </div>
-  )}
+        {/* Blog Image */}
+        {blog.imageUrl && (
+          <div className="mb-8">
+            <img
+              loading="lazy"
+              src={blog.imageUrl}
+              alt={blog.title}
+              className="w-full h-64 object-cover rounded-lg shadow-md"
+              onError={(e) =>
+                (e.target.src =
+                  "https://github.com/CodesRahul96/Blogify/blob/main/client/src/assets/poster%20.jpg?raw=true")
+              } // Fallback image
+            />
+          </div>
+        )}
 
-  {/* Blog Content */}
-  <div className="flex-grow">
-    <p className="text-gray-700 text-lg leading-relaxed mb-6 font-merriweather">{blog.content}</p>
-  </div>
+        {/* Blog Content */}
+        <div className="flex-grow">
+          <p className="text-gray-700 text-lg leading-relaxed mb-6 font-merriweather">
+            {blog.content}
+          </p>
+        </div>
 
         {/* Like Section */}
         <div className="mb-8 mt-4">
