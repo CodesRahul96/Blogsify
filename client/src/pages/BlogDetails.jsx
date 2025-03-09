@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { FcLike, FcShare } from "react-icons/fc";
+import { FaShareAlt } from "react-icons/fa";
 
 function BlogDetails() {
   const { id } = useParams();
@@ -153,30 +155,31 @@ function BlogDetails() {
           </p>
         </div>
 
-        {/* Like Section */}
-        <div className="mb-8">
+        {/* Like and Share Section */}
+        <div className="mb-8 flex space-x-4">
           <button
             onClick={handleLike}
             className="flex items-center space-x-2 bg-blue-600 text-white py-2 px-6 rounded-full hover:bg-blue-700 transition duration-300 shadow-md"
           >
-            <svg
+            <FcLike
               className="w-5 h-5"
               fill={blog.likes.includes(user?.id) ? "currentColor" : "none"}
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-            <span>
-              {blog.likes.length}{" "}
-              {blog.likes.includes(user?.id) ? "Unlike" : "Like"}
-            </span>
+            />
+            <span>Like ({blog.likes.length})</span>
+          </button>
+
+          <button
+            onClick={() =>
+              navigator.share({
+                title: blog.title,
+                text: blog.content.substring(0, 100) + "...",
+                url: window.location.href,
+              })
+            }
+            className="flex items-center space-x-2 bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition duration-300 shadow-md"
+          >
+            <FaShareAlt className="w-5 h-5" />
+            <span>Share</span>
           </button>
         </div>
 
