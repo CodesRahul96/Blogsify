@@ -61,7 +61,7 @@ function Login() {
       {/* Glass Effect Login Card */}
       <div className="relative z-10 w-full max-w-md p-8 bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20">
         <h2 className="text-3xl font-bold text-white mb-6 text-center font-inter">
-          Login to Blogify
+          Login to Blogsify
         </h2>
 
         {error && (
