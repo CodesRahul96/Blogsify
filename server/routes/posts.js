@@ -65,6 +65,7 @@ router.post("/", auth, isAdmin, async (req, res) => {
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
+      imageUrl: req.body.imageUrl, // Include imageUrl from request body
       author: req.body.author || "Admin", // Default to 'Admin' if not provided
       likes: [],
       comments: [],
@@ -77,6 +78,7 @@ router.post("/", auth, isAdmin, async (req, res) => {
   }
 });
 
+
 // Update a post (admin only)
 router.put("/:id", auth, isAdmin, async (req, res) => {
   try {
@@ -85,6 +87,7 @@ router.put("/:id", auth, isAdmin, async (req, res) => {
       {
         title: req.body.title,
         content: req.body.content,
+        imageUrl: req.body.imageUrl,
         author: req.body.author || "Admin",
       },
       { new: true }

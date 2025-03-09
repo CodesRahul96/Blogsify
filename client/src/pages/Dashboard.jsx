@@ -6,6 +6,7 @@ function AdminDashboard() {
   const [posts, setPosts] = useState([]); // Ensure initial state is an array
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,7 +62,7 @@ function AdminDashboard() {
       } else {
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/api/posts`,
-          { title, content, author: "Admin" },
+          { title, content, imageUrl, author: "Admin" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts([res.data, ...posts]);
@@ -93,6 +94,7 @@ function AdminDashboard() {
   // Edit Post
   const handleEdit = (post) => {
     setEditId(post._id);
+    setImageUrl(post.imageUrl);
     setTitle(post.title);
     setContent(post.content);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -101,6 +103,7 @@ function AdminDashboard() {
   // Cancel Edit
   const handleCancelEdit = () => {
     setEditId(null);
+    setImageUrl("");
     setTitle("");
     setContent("");
   };
@@ -127,6 +130,24 @@ function AdminDashboard() {
             {editId ? "Edit Post" : "Create New Post"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label
+                htmlFor="imageUrl"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Blog Image URL
+              </label>
+              <input
+                id="imageUrl"
+                type="text"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-400 transition-all duration-300"
+                placeholder="Enter URL for Blog Img"
+                required
+              />
+            </div>
+
             <div>
               <label
                 htmlFor="title"
