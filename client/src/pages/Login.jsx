@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -20,6 +22,7 @@ function Login() {
         }
       );
       localStorage.setItem("token", res.data.token);
+      setLoading(false);
       navigate("/blogs");
       window.location.reload("/blogs");
     } catch (err) {
@@ -36,6 +39,10 @@ function Login() {
       return;
     }
   }, [token, navigate]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-t from-gray-800 via-indigo-900 to-blue-900">

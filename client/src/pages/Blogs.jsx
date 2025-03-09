@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Loader from "../components/Loader";
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]); // All fetched posts
@@ -93,6 +94,10 @@ function Blogs() {
     };
   }, [loading, hasMore, search]);
 
+  if (loading) {
+    return <Loader />
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-t from-gray-800 via-indigo-900 to-blue-900 py-6">
       <div className="mx-auto px-4">
@@ -177,12 +182,12 @@ function Blogs() {
         )}
 
         {/* Loading Indicator */}
-        {loading && (
+        {/* {loading && (
           <div className="text-center mt-8">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-blue-600"></div>
             <p className="mt-2 text-gray-300">Loading blogs...</p>
           </div>
-        )}
+        )} */}
 
         {/* No More Posts */}
         {!hasMore && !search && blogs.length > 0 && (

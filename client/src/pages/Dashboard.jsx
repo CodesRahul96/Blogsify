@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 function AdminDashboard() {
   const [posts, setPosts] = useState([]); // Ensure initial state is an array
@@ -110,6 +111,10 @@ function AdminDashboard() {
   };
 
   if (!token) return null;
+
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-t from-gray-800 via-indigo-900 to-blue-900 py-12">

@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { FaUserSecret } from "react-icons/fa";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +21,7 @@ function Navbar() {
         >
           Blogsify
         </Link>
+
         <button
           className="md:hidden focus:outline-none bg-gradient-to-r text-2xl p-2 rounded-full from-blue-400 to-purple-400"
           onClick={() => setIsOpen(!isOpen)}
@@ -99,7 +99,7 @@ function Navbar() {
         </div>
       </div>
       {isOpen && (
-        <div className="md:hidden mt-4 space-y-4">
+        <div className="md:hidden mt-4 space-y-8">
           {!user ? (
             <Link
               to="/"

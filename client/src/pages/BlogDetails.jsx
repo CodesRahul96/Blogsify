@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { FcLike, FcShare } from "react-icons/fc";
 import { FaShareAlt } from "react-icons/fa";
+import Loader from "../components/Loader";
 
 function BlogDetails() {
   const { id } = useParams();
@@ -91,11 +92,7 @@ function BlogDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500">
-        <div className="text-white text-xl animate-pulse">Loading...</div>
-      </div>
-    );
+    return <Loader />
   }
 
   if (error) {
