@@ -144,7 +144,7 @@ function AdminDashboard() {
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-400 transition-all duration-300"
-                placeholder="Enter image URL for Post"
+                placeholder="Enter Post Image URL"
                 required
               />
             </div>
