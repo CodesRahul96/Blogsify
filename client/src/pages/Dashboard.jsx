@@ -136,7 +136,7 @@ function AdminDashboard() {
                 htmlFor="imageUrl"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Blog Image URL
+                Post Image URL
               </label>
               <input
                 id="imageUrl"
@@ -144,7 +144,7 @@ function AdminDashboard() {
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-400 transition-all duration-300"
-                placeholder="Enter URL for Blog Img"
+                placeholder="Enter image URL for Post"
                 required
               />
             </div>
