@@ -113,33 +113,46 @@ function AdminDashboard() {
   if (!token) return null;
 
   if (loading) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-t from-gray-800 via-indigo-900 to-blue-900 py-12">
-      <div className=" mx-auto px-4">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-300 mb-10 text-center tracking-tight">
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-12">
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
+
+      {/* Background Image with Opacity */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80)",
+        }}
+      ></div>
+
+      {/* Dashboard Content */}
+      <div className="relative z-10 mx-auto px-4 max-w-6xl">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-10 text-center tracking-tight font-inter">
           Admin Dashboard
         </h1>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-8 text-center shadow-md animate-fade-in">
+          <div className="bg-red-500/20 text-red-200 p-4 rounded-lg mb-8 text-center shadow-md animate-fade-in font-merriweather">
             {error}
           </div>
         )}
 
         {/* Create/Edit Post Form */}
-        <div className="bg-gradient-to-b from-blue-100 via-purple-100 to-gray-100 p-6 md:p-8 rounded-2xl shadow-lg mb-12 max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 mb-6">
+        <div className="bg-white/10 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-lg mb-12 max-w-3xl mx-auto border border-white/20">
+          <h2 className="text-2xl md:text-3xl font-semibold text-white mb-6 font-inter">
             {editId ? "Edit Post" : "Create New Post"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="imageUrl"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-200 font-merriweather"
               >
                 Post Image URL
               </label>
@@ -148,16 +161,14 @@ function AdminDashboard() {
                 type="text"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-400 transition-all duration-300"
+                className="w-full p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather"
                 placeholder="Enter Post Image URL"
-                required
               />
             </div>
-
             <div>
               <label
                 htmlFor="title"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-200 font-merriweather"
               >
                 Title
               </label>
@@ -166,7 +177,7 @@ function AdminDashboard() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-400 transition-all duration-300"
+                className="w-full p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather"
                 placeholder="Enter post title"
                 required
               />
@@ -174,7 +185,7 @@ function AdminDashboard() {
             <div>
               <label
                 htmlFor="content"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-200 font-merriweather"
               >
                 Content
               </label>
@@ -182,7 +193,7 @@ function AdminDashboard() {
                 id="content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-400 transition-all duration-300"
+                className="w-full p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather"
                 rows="6"
                 placeholder="Write your blog content here..."
                 required
@@ -191,7 +202,7 @@ function AdminDashboard() {
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 type="submit"
-                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-md font-semibold"
+                className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-full hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-md font-inter"
               >
                 {editId ? "Update Post" : "Create Post"}
               </button>
@@ -199,7 +210,7 @@ function AdminDashboard() {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="w-full sm:w-auto bg-gray-600 text-white py-3 px-6 rounded-full hover:bg-gray-700 transition-all duration-300 shadow-md font-semibold"
+                  className="w-full sm:w-auto bg-gray-600 text-white py-3 px-6 rounded-full hover:bg-gray-700 transition-all duration-300 shadow-md font-inter"
                 >
                   Cancel
                 </button>
@@ -209,42 +220,48 @@ function AdminDashboard() {
         </div>
 
         {/* Post List */}
-        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-300 mb-6 text-center md:text-left ">
+        <div className="bg-white/10 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-lg border border-white/20">
+          <h2 className="text-2xl md:text-3xl font-semibold text-white mb-6 text-center md:text-left font-inter">
             Manage Posts
           </h2>
-          {loading ? (
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-blue-600"></div>
-              <p className="mt-2 text-gray-600">Loading posts...</p>
-            </div>
-          ) : posts.length === 0 ? (
-            <p className="text-center text-red-300 text-lg">
+          {posts.length === 0 && !loading ? (
+            <p className="text-center text-gray-300 text-lg font-merriweather">
               No posts available. Create one now!
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {posts.map((post) => (
                 <div
                   key={post._id}
-                  className="bg-gradient-to-b from-blue-100 via-purple-100 to-gray-100 p-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex flex-col "
+                  className="bg-gray-800/50 backdrop-blur-md p-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex flex-col border border-gray-700/50"
                 >
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2 line-clamp-1">
+                  {post.imageUrl && (
+                    <img
+                      src={post.imageUrl}
+                      alt={post.title}
+                      className="w-full h-32 object-cover rounded-t-lg mb-3"
+                      onError={(e) =>
+                        (e.target.src =
+                          "https://via.placeholder.com/300x150?text=Image+Not+Found")
+                      }
+                    />
+                  )}
+                  <h3 className="text-xl font-semibold text-white mb-2 line-clamp-1 font-inter">
                     {post.title || "Untitled"}
                   </h3>
-                  <p className="text-gray-600 mb-4 flex-grow line-clamp-3">
+                  <p className="text-gray-300 mb-4 flex-grow line-clamp-3 font-merriweather">
                     {post.content || "No content"}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <button
                       onClick={() => handleEdit(post)}
-                      className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition-all duration-300 shadow-sm"
+                      className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition-all duration-300 shadow-sm font-inter"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(post._id)}
-                      className="bg-red-600 text-white py-2 px-4 rounded-full hover:bg-red-700 transition-all duration-300 shadow-sm"
+                      className="bg-red-600 text-white py-2 px-4 rounded-full hover:bg-red-700 transition-all duration-300 shadow-sm font-inter"
                     >
                       Delete
                     </button>

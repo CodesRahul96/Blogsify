@@ -13,7 +13,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4">
+    <nav className="bg-gray-600/30 text-white p-4 ">
       <div className=" mx-auto flex justify-between md:justify-around items-center">
         <Link
           to="/"

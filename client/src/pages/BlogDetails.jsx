@@ -2,9 +2,9 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { FcLike, FcShare } from "react-icons/fc";
-import { FaShareAlt } from "react-icons/fa";
 import Loader from "../components/Loader";
+import { FcLike } from "react-icons/fc";
+import { FaShareAlt } from "react-icons/fa";
 
 function BlogDetails() {
   const { id } = useParams();
@@ -22,8 +22,6 @@ function BlogDetails() {
           `${import.meta.env.VITE_BASE_URL}/api/posts/${id}`
         );
         setBlog(res.data);
-        console.log(blog);
-        
       } catch (err) {
         setError("Failed to load blog details");
       } finally {
@@ -33,12 +31,8 @@ function BlogDetails() {
     fetchPost();
   }, [id]);
 
-  // Handle Like
   const handleLike = async () => {
-    if (!token) {
-      alert("Please log in to like this post");
-      return;
-    }
+    if (!token) return alert("Please log in to like this post");
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/posts/${id}/like`,
@@ -51,13 +45,9 @@ function BlogDetails() {
     }
   };
 
-  // Handle Comment
   const handleComment = async (e) => {
     e.preventDefault();
-    if (!token) {
-      alert("Please log in to comment");
-      return;
-    }
+    if (!token) return alert("Please log in to comment");
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/posts/${id}/comment`,
@@ -71,12 +61,8 @@ function BlogDetails() {
     }
   };
 
-  // Handle Commment delete
   const handleDeleteComment = async (commentId) => {
-    if (!token) {
-      alert("Please log in to delete comments");
-      return;
-    }
+    if (!token) return alert("Please log in to delete comments");
     if (!window.confirm("Are you sure you want to delete this comment?"))
       return;
     try {
@@ -84,24 +70,20 @@ function BlogDetails() {
         `${import.meta.env.VITE_BASE_URL}/api/posts/${id}/comment/${commentId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
       setBlog(res.data);
     } catch (err) {
-      setError(
-        "Failed to delete comment: " +
-          (err.response?.data?.message || err.message)
-      );
+      setError("Failed to delete comment");
     }
   };
 
   if (loading) {
-    return <Loader />
+    return <Loader />;
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500">
-        <div className="bg-white p-6 rounded-lg shadow-lg text-red-700 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="bg-red-500/20 text-red-200 p-6 rounded-lg shadow-lg text-center font-merriweather">
           {error}
         </div>
       </div>
@@ -110,8 +92,8 @@ function BlogDetails() {
 
   if (!blog) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500">
-        <div className="bg-white p-6 rounded-lg shadow-lg text-gray-600 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="bg-white/10 backdrop-blur-lg p-6 rounded-lg shadow-lg text-gray-300 text-center font-merriweather">
           Blog not found
         </div>
       </div>
@@ -119,14 +101,27 @@ function BlogDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-t from-gray-800 via-indigo-900 to-blue-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-8 min-h-[80vh] flex flex-col">
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden flex items-center justify-center p-4">
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
+
+      {/* Background Image with Opacity */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80)",
+        }}
+      ></div>
+
+      {/* Blog Details Content */}
+      <div className="relative z-10 w-full max-w-4xl bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 min-h-[80vh] flex flex-col border border-gray-700/50">
         {/* Blog Header */}
         <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight font-inter">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight font-inter">
             {blog.title}
           </h1>
-          <div className="flex items-center justify-between text-sm text-gray-600 font-merriweather">
+          <div className="flex items-center justify-between text-sm text-gray-400 font-merriweather">
             <span>By {blog.author}</span>
             <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
           </div>
@@ -143,14 +138,14 @@ function BlogDetails() {
               onError={(e) =>
                 (e.target.src =
                   "https://raw.githubusercontent.com/CodesRahul96/Blogify/refs/heads/main/client/src/assets/poster%20.jpg")
-              } // Fallback image
+              }
             />
           </div>
         )}
 
         {/* Blog Content */}
         <div className="flex-grow">
-          <p className="text-gray-700 text-lg leading-relaxed mb-6 font-merriweather">
+          <p className="text-gray-300 text-lg leading-relaxed mb-6 font-merriweather">
             {blog.content}
           </p>
         </div>
@@ -159,7 +154,7 @@ function BlogDetails() {
         <div className="mb-8 flex space-x-4">
           <button
             onClick={handleLike}
-            className="flex items-center space-x-2 bg-blue-600 text-white py-2 px-6 rounded-full hover:bg-blue-700 transition duration-300 shadow-md"
+            className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white py-2 px-6 rounded-full hover:from-purple-700 hover:to-blue-700 transition duration-300 shadow-md font-inter"
           >
             <FcLike
               className="w-5 h-5"
@@ -176,7 +171,7 @@ function BlogDetails() {
                 url: window.location.href,
               })
             }
-            className="flex items-center space-x-2 bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition duration-300 shadow-md"
+            className="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-teal-600 text-white py-2 px-6 rounded-full hover:from-green-700 hover:to-teal-700 transition duration-300 shadow-md font-inter"
           >
             <FaShareAlt className="w-5 h-5" />
             <span>Share</span>
@@ -185,11 +180,11 @@ function BlogDetails() {
 
         {/* Comments Section */}
         <div>
-          <h2 className="text-2xl font-semibold text-black-300 mb-4">
+          <h2 className="text-2xl font-semibold text-white mb-4 font-inter">
             Comments
           </h2>
           {blog.comments.length === 0 ? (
-            <p className="text-black-300 italic">
+            <p className="text-gray-300 italic font-merriweather">
               No comments yet. Be the first!
             </p>
           ) : (
@@ -197,18 +192,18 @@ function BlogDetails() {
               {blog.comments.map((c) => (
                 <li
                   key={c._id}
-                  className="bg-gray-100 p-4 rounded-lg shadow-sm transition-all duration-300 hover:bg-gray-200"
+                  className="bg-gray-800/50 backdrop-blur-md p-4 rounded-lg shadow-sm transition-all duration-300 hover:bg-gray-700/50 border border-gray-700/50"
                 >
-                  <p className="text-gray-700">{c.text}</p>
-                  <div className="text-sm text-gray-500 mt-2 flex justify-between items-center">
+                  <p className="text-gray-300 font-merriweather">{c.text}</p>
+                  <div className="text-sm text-gray-400 mt-2 flex justify-between items-center font-merriweather">
                     <span>
-                      By User {c.user} |{" "}
+                      By {c.user?.username || "User " + c.user} |{" "}
                       {new Date(c.createdAt).toLocaleDateString()}
                     </span>
-                    {(user?.id === c.user || user?.isAdmin) && (
+                    {(user?.id === c.user?._id || user?.isAdmin) && (
                       <button
                         onClick={() => handleDeleteComment(c._id)}
-                        className="text-red-600 hover:text-red-800 font-medium"
+                        className="text-red-400 hover:text-red-300 font-medium"
                       >
                         Delete
                       </button>
@@ -225,23 +220,23 @@ function BlogDetails() {
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 text-gray-800 placeholder-gray-400"
+                className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather"
                 placeholder="Share your thoughts..."
                 rows="4"
                 required
               />
               <button
                 type="submit"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-6 rounded-full hover:from-blue-700 hover:to-purple-700 transition duration-300 shadow-md"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-2 px-6 rounded-full hover:from-purple-700 hover:to-blue-700 transition duration-300 shadow-md font-inter"
               >
                 Post Comment
               </button>
             </form>
           ) : (
-            <p className="mt-6 text-gray-600">
+            <p className="mt-6 text-gray-300 font-merriweather">
               <Link
                 to="/login"
-                className="text-blue-600 hover:underline font-medium"
+                className="text-purple-400 hover:text-purple-300 font-medium"
               >
                 Log in
               </Link>{" "}
