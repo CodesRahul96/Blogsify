@@ -140,7 +140,7 @@ function BlogDetails() {
               className="w-full h-64 object-cover rounded-lg shadow-md"
               onError={(e) =>
                 (e.target.src =
-                  "https://github.com/CodesRahul96/Blogify/blob/main/client/src/assets/poster%20.jpg?raw=true")
+                  "https://raw.githubusercontent.com/CodesRahul96/Blogify/refs/heads/main/client/src/assets/poster%20.jpg")
               } // Fallback image
             />
           </div>
