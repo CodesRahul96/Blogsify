@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import Poster from "../assets/poster.jpg"
 
 function BlogDetails() {
   const { id } = useParams();
@@ -138,7 +137,7 @@ function BlogDetails() {
         src={blog.imageUrl}
         alt={blog.title}
         className="w-full h-64 object-cover rounded-lg shadow-md"
-        onError={(e) => (e.target.src = 'https://via.placeholder.com/300')} // Fallback image
+        onError={(e) => (e.target.src = 'https://github.com/CodesRahul96/Blogify/blob/main/client/src/assets/poster%20.jpg?raw=true')} // Fallback image
       />
     </div>
   )}
