@@ -143,7 +143,7 @@ function BlogDetails() {
                   "https://raw.githubusercontent.com/CodesRahul96/Blogify/refs/heads/main/client/src/assets/poster%20.jpg")
               } // Fallback image
             />
-          </div>  
+          </div>
         )}
 
         {/* Blog Content */}

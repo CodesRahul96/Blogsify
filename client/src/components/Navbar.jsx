@@ -41,12 +41,16 @@ function Navbar() {
           </svg>
         </button>
         <div className="hidden md:flex space-x-6 items-center">
-          <Link
-            to="/"
-            className="hover:text-blue-400 transition-colors duration-300"
-          >
-            Home
-          </Link>
+          {!user ? (
+            <Link
+              to="/"
+              className="hover:text-blue-400 transition-colors duration-300"
+            >
+              Home
+            </Link>
+          ) : (
+            <></>
+          )}
           <Link
             to="/blogs"
             className="hover:text-blue-400 transition-colors duration-300"
@@ -95,12 +99,22 @@ function Navbar() {
       </div>
       {isOpen && (
         <div className="md:hidden mt-4 space-y-4">
+          {!user ? (
+            <Link
+              to="/"
+              className="hover:text-blue-400 transition-colors duration-300"
+              onClick={() => setIsOpen(false)}
+            >
+              Home
+            </Link>
+          ) : (
+            <></>
+          )}
           <Link
             to="/blogs"
             className="block hover:text-gray-300"
             onClick={() => setIsOpen(false)}
           >
-            {" "}
             {/* Update to /blogs */}
             Blogs
           </Link>
@@ -119,7 +133,9 @@ function Navbar() {
                 </Link>
               )}
               <button
-                onClick={handleLogout}
+                onClick={() => {
+                  handleLogout(), setIsOpen(false);
+                }}
                 className="block w-full text-left px-3 py-1 rounded bg-gradient-to-r from-red-400 to-purple-400"
               >
                 Logout

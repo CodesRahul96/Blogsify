@@ -1,9 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function Home() {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/blogs", { replace: true });
+    }
+  }, [user, navigate]);
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 text-gray-900">
-     
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 md:py-32">
         <div className="container mx-auto px-4 text-center">
@@ -15,18 +24,16 @@ function Home() {
             voice and connect with a vibrant community.
           </p>
           <Link
-              to="/blogs"
-              className="bg-transparent border-2 border-white text-white py-3 px-8 rounded-full font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
-            >
-              Explorer Blogs
-            </Link>
+            to="/blogs"
+            className="bg-transparent border-2 border-white text-white py-3 px-8 rounded-full font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+          >
+            Explorer Blogs
+          </Link>
         </div>
-      
       </section>
 
       {/* Features Section */}
       <section className="py-16 bg-gradient-to-b from-blue-100 via-purple-100 to-gray-100">
-      
         <div className="mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
             Why Blogsify?
@@ -126,9 +133,7 @@ function Home() {
               View Blogs
             </Link>
           </div>
-          
         </div>
-        
       </section>
     </div>
   );
