@@ -54,7 +54,7 @@ function AdminDashboard() {
       if (editId) {
         const res = await axios.put(
           `${import.meta.env.VITE_BASE_URL}/api/posts/${editId}`,
-          { title, content, author: "Admin" },
+          { title, content, imageUrl, author: "Admin" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts(posts.map((post) => (post._id === editId ? res.data : post)));
@@ -68,6 +68,7 @@ function AdminDashboard() {
         setPosts([res.data, ...posts]);
       }
       setTitle("");
+      setImageUrl("");
       setContent("");
     } catch (err) {
       setError(
