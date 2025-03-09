@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 
 function Login() {
@@ -45,69 +45,99 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-t from-gray-800 via-indigo-900 to-blue-900">
-      <div className="bg-white p-12 rounded-lg shadow-lg max-w-md">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
-          Login
-        </h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 relative overflow-hidden">
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
+
+      {/* Background Image with Opacity */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80)",
+        }}
+      ></div>
+
+      {/* Glass Effect Login Card */}
+      <div className="relative z-10 w-full max-w-md p-8 bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20">
+        <h2 className="text-3xl font-bold text-white mb-6 text-center font-inter">
+          Login to Blogify
+        </h2>
 
         {error && (
-          <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-center">
+          <div className="bg-red-500/20 text-red-200 p-3 rounded-lg mb-4 text-center font-merriweather">
             {error}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="space-y-6">
+          {/* Username Input */}
           <div>
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-200 font-merriweather"
             >
               Username
             </label>
             <input
-              id="username"
               type="text"
+              id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="mt-1 w-full p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather"
               placeholder="Enter your username"
               required
             />
           </div>
 
+          {/* Password Input */}
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-200 font-merriweather"
             >
               Password
             </label>
             <input
-              id="password"
               type="password"
+              id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="mt-1 w-full p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather"
               placeholder="Enter your password"
               required
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-md font-inter"
           >
-            Login
+            Log In
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
-          <a href="/register" className="text-blue-600 hover:underline">
-            Register here
-          </a>
-        </p>
+        {/* Links */}
+        <div className="mt-6 text-center">
+          <p className="text-gray-300 font-merriweather">
+            Don’t have an account?{" "}
+            <Link
+              to="/register"
+              className="text-purple-400 hover:text-purple-300 font-medium"
+            >
+              Sign Up
+            </Link>
+          </p>
+          <p className="mt-2">
+            <Link
+              to="/"
+              className="text-gray-400 hover:text-gray-300 font-merriweather"
+            >
+              Back to Home
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

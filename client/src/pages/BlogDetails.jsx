@@ -22,6 +22,8 @@ function BlogDetails() {
           `${import.meta.env.VITE_BASE_URL}/api/posts/${id}`
         );
         setBlog(res.data);
+        console.log(blog);
+        
       } catch (err) {
         setError("Failed to load blog details");
       } finally {
@@ -82,6 +84,7 @@ function BlogDetails() {
         `${import.meta.env.VITE_BASE_URL}/api/posts/${id}/comment/${commentId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      
       setBlog(res.data);
     } catch (err) {
       setError(

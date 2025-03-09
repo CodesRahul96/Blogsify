@@ -95,7 +95,7 @@ function Blogs() {
   }, [loading, hasMore, search]);
 
   if (loading) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -181,18 +181,10 @@ function Blogs() {
           </div>
         )}
 
-        {/* Loading Indicator */}
-        {/* {loading && (
-          <div className="text-center mt-8">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-blue-600"></div>
-            <p className="mt-2 text-gray-300">Loading blogs...</p>
-          </div>
-        )} */}
-
         {/* No More Posts */}
         {!hasMore && !search && blogs.length > 0 && (
           <p className="text-center mt-8 text-gray-300 text-lg">
-            You've reached the end of our blog collection!
+            You&apos;ve reached the end of our blog collection!
           </p>
         )}
       </div>

@@ -1,27 +1,10 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
+
 const Post = require("../models/Post");
 const router = express.Router();
+const {auth, isAdmin} = require("../middleware/auth") // Middleware
 
-// Middleware to authenticate and check admin status
-const auth = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) return res.status(401).json({ message: "No token provided" });
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    res.status(401).json({ message: "Invalid token" });
-  }
-};
 
-const isAdmin = (req, res, next) => {
-  if (!req.user.isAdmin) {
-    return res.status(403).json({ message: "Admin access required" });
-  }
-  next();
-};
 
 // Get all posts with optional pagination (public)
 router.get("/", async (req, res) => {
