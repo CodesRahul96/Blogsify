@@ -120,7 +120,7 @@ function Navbar() {
               )}
               <button
                 onClick={handleLogout}
-                className="block w-full text-left bg-red-600 px-3 py-1 rounded hover:bg-red-700"
+                className="block w-full text-left px-3 py-1 rounded bg-gradient-to-r from-red-400 to-purple-400"
               >
                 Logout
               </button>

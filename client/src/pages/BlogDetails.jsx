@@ -143,7 +143,7 @@ function BlogDetails() {
                   "https://raw.githubusercontent.com/CodesRahul96/Blogify/refs/heads/main/client/src/assets/poster%20.jpg")
               } // Fallback image
             />
-          </div>
+          </div>  
         )}
 
         {/* Blog Content */}
@@ -154,7 +154,7 @@ function BlogDetails() {
         </div>
 
         {/* Like Section */}
-        <div className="mb-8 mt-4">
+        <div className="mb-8">
           <button
             onClick={handleLike}
             className="flex items-center space-x-2 bg-blue-600 text-white py-2 px-6 rounded-full hover:bg-blue-700 transition duration-300 shadow-md"
