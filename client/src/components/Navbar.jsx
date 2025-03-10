@@ -99,7 +99,7 @@ function Navbar() {
         </div>
       </div>
       {isOpen && (
-        <div className="md:hidden mt-4 space-y-8 px-8">
+        <div className="md:hidden mt-4 space-y-8 px-8 flex flex-col items-center gap-3 text-center align-center justify-center">
           {!user ? (
             <Link
               to="/"
@@ -137,7 +137,7 @@ function Navbar() {
                 onClick={() => {
                   handleLogout(), setIsOpen(false);
                 }}
-                className="block w-full text-left px-3 py-1 rounded bg-gradient-to-r from-red-400 to-purple-400"
+                className="block w-full px-3 py-1 rounded bg-gradient-to-r from-red-400 to-purple-400"
               >
                 Logout
               </button>
