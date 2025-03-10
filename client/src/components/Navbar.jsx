@@ -13,7 +13,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-600/30 text-white p-4 ">
+    <nav className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-3 px-2">
       <div className=" mx-auto flex justify-between md:justify-around items-center">
         <Link
           to="/"
@@ -75,7 +75,7 @@ function Navbar() {
 
               <button
                 onClick={handleLogout}
-                className="bg-red-600 px-3 py-1 rounded hover:bg-gray-00 bg-gradient-to-r from-red-400 to-purple-400"
+                className="px-3 py-1 rounded hover:bg-gray-800 bg-gradient-to-r from-red-400 to-purple-400"
               >
                 Logout
               </button>
@@ -99,7 +99,7 @@ function Navbar() {
         </div>
       </div>
       {isOpen && (
-        <div className="md:hidden mt-4 space-y-8">
+        <div className="md:hidden mt-4 space-y-8 px-8">
           {!user ? (
             <Link
               to="/"
