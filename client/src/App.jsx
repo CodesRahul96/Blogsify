@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import BlogDetails from "./pages/BlogDetails";
 import Blogs from "./pages/Blogs";
 import NotFound from "./pages/NotFound";
+import PageNotFound from "./components/PageNotFound";
 
 function App() {
   return (
@@ -20,8 +21,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/*" element={<NotFound />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<PageNotFound />} />
+        {/* <Route path="/*" element={<NotFound />} /> */}
       </Routes>
       <Footer />
     </>

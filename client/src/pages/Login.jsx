@@ -15,6 +15,9 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(""); // Clear previous errors
+    
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/auth/login`,
@@ -24,21 +27,19 @@ function Login() {
         }
       );
       localStorage.setItem("token", res.data.token);
-      setLoading(false);
       navigate("/blogs");
       window.location.reload("/blogs");
     } catch (err) {
-      setError("Invalid username or password");
+      setError(err.response?.data?.message || "Invalid username or password");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    } else {
+    // Only redirect to blogs if token exists, otherwise stay on login
+    if (token) {
       navigate("/blogs");
-      return;
     }
   }, [token, navigate]);
 
@@ -89,6 +90,7 @@ function Login() {
               className="mt-1 w-full p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather"
               placeholder="Enter your username"
               required
+              disabled={loading}
             />
           </div>
 
@@ -108,15 +110,16 @@ function Login() {
               className="mt-1 w-full p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather"
               placeholder="Enter your password"
               required
+              disabled={loading}
             />
           </div>
-
-          {/* Submit Button */}
+{/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-md font-inter"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-md font-inter disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading}
           >
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
 
