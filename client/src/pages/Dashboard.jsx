@@ -19,6 +19,8 @@ function AdminDashboard() {
 
   const user = useContext(AuthContext);
 
+  document.title = "Dashboard";
+
   // console.log("dash user:",user.user.username);
 
   // Fetch posts on mount
