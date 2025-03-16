@@ -1,122 +1,95 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
 
 function Blogs() {
-  const [blogs, setBlogs] = useState([]); // All fetched posts
-  const [filteredBlogs, setFilteredBlogs] = useState([]); // Filtered posts based on search
-  const [page, setPage] = useState(1);
+  const [blogs, setBlogs] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [hasMore, setHasMore] = useState(true);
-  const [showTopBtn, setShowTopBtn] = useState(false);
-  const observer = useRef();
+  const [showTopBtn, setShowTopBtn] = useState(false); // State for button visibility
+  const lastBlogElementRef = useRef();
 
-  // Fetch posts
-  const fetchPosts = async (pageNum) => {
-    setLoading(true);
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/posts?page=${pageNum}&limit=6`
-      );
-      // console.log("Fetched posts response:", res.data); // Debug full response
-      const { posts, totalPages } = res.data;
-      const newPosts = Array.isArray(posts) ? posts : [];
-      // console.log("New posts:", newPosts); // Debug parsed posts
-      setBlogs((prevBlogs) => {
-        const updatedBlogs = [...prevBlogs, ...newPosts];
-        // console.log("Updated blogs:", updatedBlogs); // Debug after update
-        return updatedBlogs;
-      });
-      setFilteredBlogs((prevFiltered) => [...prevFiltered, ...newPosts]);
-      setHasMore(pageNum < totalPages);
-    } catch (err) {
-      // console.error("Fetch error:", err.response?.data || err.message);
-      setError(
-        "Failed to load blogs: " + (err.response?.data?.message || err.message)
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Initial fetch
+  // Fetch blogs
   useEffect(() => {
-    fetchPosts(page);
+    const fetchBlogs = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/posts?page=${page}&limit=6`
+        );
+        const newBlogs = res.data.posts;
+        setBlogs((prev) => [...prev, ...newBlogs]);
+        setFilteredBlogs((prev) => [...prev, ...newBlogs]);
+        setHasMore(newBlogs.length === 6); // Assuming limit=6
+      } catch (err) {
+        setError("Failed to load blogs");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
   }, [page]);
 
-  // Filter posts based on search input
+  // Filter blogs based on search
   useEffect(() => {
-    console.log("Search value:", search); // Debug search input
-    const searchLower = search.trim().toLowerCase();
-    if (!searchLower) {
-      // console.log("No search term, resetting to all blogs");
+    if (search.trim() === "") {
       setFilteredBlogs(blogs);
     } else {
-      const filtered = blogs.filter((post) => {
-        const title = (post.title || "").toLowerCase();
-        const content = (post.content || "").toLowerCase();
-        const matches =
-          title.includes(searchLower) || content.includes(searchLower);
-        // console.log(`Post: ${post.title}, Matches: ${matches}`); // Debug each post
-        return matches;
-      });
-      // console.log("Filtered blogs:", filtered); // Debug filtered result
+      const filtered = blogs.filter(
+        (post) =>
+          post.title.toLowerCase().includes(search.toLowerCase()) ||
+          post.content.toLowerCase().includes(search.toLowerCase())
+      );
       setFilteredBlogs(filtered);
     }
   }, [search, blogs]);
 
   // Infinite scroll observer
-  const lastBlogElementRef = useRef();
   useEffect(() => {
-    if (loading || !hasMore || search) return; // Disable infinite scroll during search
-
-    const currentObserver = observer.current;
-    if (currentObserver) currentObserver.disconnect();
-
-    observer.current = new IntersectionObserver(
+    if (loading || !hasMore || search) return;
+    const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          // console.log("Loading next page:", page + 1);
-          setPage((prevPage) => prevPage + 1);
+          setPage((prev) => prev + 1);
         }
       },
       { threshold: 1.0 }
     );
-
     if (lastBlogElementRef.current) {
-      observer.current.observe(lastBlogElementRef.current);
+      observer.observe(lastBlogElementRef.current);
     }
-
     return () => {
-      if (currentObserver) currentObserver.disconnect();
+      if (lastBlogElementRef.current) {
+        observer.unobserve(lastBlogElementRef.current);
+      }
     };
   }, [loading, hasMore, search]);
 
- 
-  // Scroll to top function
+  // Show/hide Back to Top button based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      setShowTopBtn(window.scrollY > 200);
+      setShowTopBtn(window.scrollY > 200); // Show button after scrolling 200px
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-
-   // Loader
-   if (loading) {
+  if (loading && page === 1) {
     return <Loader />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-20 md:py-20">
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-6">
       {/* Animated Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
 
@@ -130,7 +103,7 @@ function Blogs() {
       ></div>
 
       {/* Blogs Content */}
-      <div className="relative z-10 mx-auto px-4 max-w-7xl">
+      <div className="relative z-10 mx-auto px-4 max-w-7xl py-20 md:py-20">
         <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 text-center tracking-tight font-inter">
           Explore Our Blogs
         </h1>
@@ -222,12 +195,11 @@ function Blogs() {
           </div>
         )}
 
-        {/* Loading More Indicator */}
+        {/* Loading Text for Infinite Scroll */}
         {loading && page > 1 && (
           <div className="text-center mt-8">
-            <div className="inline-block w-12 h-12 border-4 border-t-4 border-purple-500 border-solid rounded-full animate-spin border-t-transparent"></div>
-            <p className="mt-2 text-gray-300 font-merriweather">
-              Loading more...
+            <p className="text-gray-300 text-lg font-merriweather animate-pulse">
+              Loading more blogs...
             </p>
           </div>
         )}
@@ -239,30 +211,28 @@ function Blogs() {
           </p>
         )}
 
-        {/* Back to Top Button */}
-
-        {
-          showTopBtn && (<button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 bg-white/10 backdrop-blur-lg text-white p-3 rounded-full shadow-md hover:bg-purple-600/50 transition-all duration-300 border border-gray-700/50 z-50"
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+        {/* Back to Top Button (Visible on Scroll) */}
+        {showTopBtn && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-6 right-6 bg-white/10 backdrop-blur-lg text-white p-3 rounded-full shadow-md hover:bg-purple-600/50 transition-all duration-300 border border-gray-700/50 z-50"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5 15l7-7 7 7"
-            />
-          </svg>
-        </button>)
-        }
-        
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 15l7-7 7 7"
+              />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );

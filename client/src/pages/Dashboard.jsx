@@ -13,6 +13,7 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const [showTopBtn, setShowTopBtn] = useState(false); // State for button visibility
 
   // Fetch posts on mount
   useEffect(() => {
@@ -108,6 +109,20 @@ function AdminDashboard() {
     setImageUrl("");
     setTitle("");
     setContent("");
+  };
+
+  // Show/hide Back to Top button based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 200); // Show button after scrolling 200px
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (!token) return null;
@@ -271,6 +286,29 @@ function AdminDashboard() {
             </div>
           )}
         </div>
+
+        {/* Back to Top Button (Visible on Scroll) */}
+        {showTopBtn && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-6 right-6 bg-white/10 backdrop-blur-lg text-white p-3 rounded-full shadow-md hover:bg-purple-600/50 transition-all duration-300 border border-gray-700/50 z-50"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 15l7-7 7 7"
+              />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );
