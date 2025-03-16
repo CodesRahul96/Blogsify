@@ -51,12 +51,6 @@ app.get('/', (req, res) => {
 // Export the app for Vercel serverless
 module.exports = app;
 
-
-// Disable React dev tools in production
-if (process.env.NODE_ENV === 'production') {
-  window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = { inject: function() {} };
-}
-
 // Start server locally with nodemon or node (not needed on Vercel)
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
