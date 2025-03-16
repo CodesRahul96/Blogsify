@@ -16,12 +16,12 @@ function AdminDashboard() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [showTopBtn, setShowTopBtn] = useState(false); // State for button visibility
+  document.title = "Dashboard";
 
   const user = useContext(AuthContext);
 
-  document.title = "Dashboard";
-
   // console.log("dash user:",user.user.username);
+
 
   // Fetch posts on mount
   useEffect(() => {
