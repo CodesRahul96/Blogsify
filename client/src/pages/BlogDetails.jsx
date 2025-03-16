@@ -115,7 +115,7 @@ function BlogDetails() {
       ></div>
 
       {/* Blog Details Content */}
-      <div className="relative z-10 w-full max-w-4xl bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 min-h-[80vh] flex flex-col border border-gray-700/50">
+      <div className="relative z-10 w-full max-w-4xl bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 min-h-[80vh] flex flex-col border border-gray-700/50 py-20 md:py-22">
         {/* Blog Header */}
         <div className="mb-8">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight font-inter">

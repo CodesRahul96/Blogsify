@@ -11,6 +11,7 @@ function Blogs() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [hasMore, setHasMore] = useState(true);
+  const [showTopBtn, setShowTopBtn] = useState(false);
   const observer = useRef();
 
   // Fetch posts
@@ -94,12 +95,28 @@ function Blogs() {
     };
   }, [loading, hasMore, search]);
 
-  if (loading) {
+ 
+  // Scroll to top function
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+
+   // Loader
+   if (loading) {
     return <Loader />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-6">
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-20 md:py-20">
       {/* Animated Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
 
@@ -221,6 +238,31 @@ function Blogs() {
             You&apos;ve reached the end of our blog collection!
           </p>
         )}
+
+        {/* Back to Top Button */}
+
+        {
+          showTopBtn && (<button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 bg-white/10 backdrop-blur-lg text-white p-3 rounded-full shadow-md hover:bg-purple-600/50 transition-all duration-300 border border-gray-700/50 z-50"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 15l7-7 7 7"
+            />
+          </svg>
+        </button>)
+        }
+        
       </div>
     </div>
   );

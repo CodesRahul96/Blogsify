@@ -131,7 +131,7 @@ function AdminDashboard() {
       ></div>
 
       {/* Dashboard Content */}
-      <div className="relative z-10 mx-auto px-4 max-w-6xl">
+      <div className="relative z-10 mx-auto px-4 max-w-6xl py-20 md:py-20">
         <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-10 text-center tracking-tight font-inter">
           Admin Dashboard
         </h1>
