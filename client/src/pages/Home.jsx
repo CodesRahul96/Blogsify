@@ -115,7 +115,7 @@ function Home() {
                   />
                 </svg>
                 <h3 className="text-xl font-semibold mb-2 text-white font-inter">
-                  Create Your Own
+                  Share Your Thoughts
                 </h3>
                 <p className="text-gray-300 font-merriweather">
                   Sign up to write and publish your own thoughts with our

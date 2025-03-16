@@ -22,7 +22,6 @@ function AdminDashboard() {
 
   // console.log("dash user:",user.user.username);
 
-
   // Fetch posts on mount
   useEffect(() => {
     if (!token) {
