@@ -144,7 +144,7 @@ function BlogDetails() {
               loading="lazy"
               src={blog.imageUrl}
               alt={blog.title}
-              className="w-full h-64 object-cover rounded-lg shadow-md"
+              className="w-full h-64 object-cover md:object-fill rounded-lg shadow-md"
               onError={(e) =>
                 (e.target.src =
                   "https://raw.githubusercontent.com/CodesRahul96/Blogify/refs/heads/main/client/src/assets/poster%20.jpg")

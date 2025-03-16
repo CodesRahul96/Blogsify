@@ -85,6 +85,16 @@ function Blogs() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Date formatting function
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      day: 'numeric',     // e.g., "14"
+      month: 'long',      // e.g., "May"
+      year: 'numeric',    // e.g., "2024"
+    });
+  };
+
+  // Loader
   if (loading && page === 1) {
     return <Loader />;
   }
@@ -179,10 +189,8 @@ function Blogs() {
                       {post.content || "No content available"}
                     </p>
                     <div className="flex items-center justify-between text-sm text-gray-400 font-merriweather">
-                      <span>By {post.author || "Unknown"}</span>
-                      <span>
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </span>
+                      <span>By {post.author || "Admin"}</span>
+                      <span>{formatDate(post.createdAt)}</span>
                     </div>
                   </div>
                   <div className="px-6 py-3 bg-gray-800/50 rounded-b-xl border-t border-gray-700">
