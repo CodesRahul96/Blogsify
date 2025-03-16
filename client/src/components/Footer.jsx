@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { FaTwitter, FaGithub, FaInstagram, FaFacebook } from "react-icons/fa";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function Footer() {
+  const user = useContext(AuthContext);
   return (
     <footer className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-12">
       <div className="container mx-auto px-4">
@@ -22,7 +25,23 @@ function Footer() {
             <h4 className="text-lg font-semibold mb-4 text-gray-200">
               Quick Links
             </h4>
-            <ul className="space-y-2 text-gray-400">
+{
+  !user ? (<>
+    <Link
+                  to="/blogs"
+                  className="hover:text-blue-400 transition-colors duration-300"
+                >
+                  Blogs
+                </Link>
+                {
+                  user.isAdmin && (<><Link
+                  to="/dashboard"
+                  className="hover:text-blue-400 transition-colors duration-300"
+                >
+                  Dashboard
+                </Link></>)
+                }
+  </>) : (<ul className="space-y-2 text-gray-400">
               <li>
                 <Link
                   to="/"
@@ -55,7 +74,10 @@ function Footer() {
                   Register
                 </Link>
               </li>
-            </ul>
+            </ul>)
+}
+
+            
           </div>
 
           {/* Contact Section */}

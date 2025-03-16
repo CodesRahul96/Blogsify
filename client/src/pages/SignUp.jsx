@@ -1,12 +1,16 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import PasswordChecker from '../components/PasswordChecker';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import PasswordChecker from "../components/PasswordChecker";
 
 function SignUp() {
-  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
-  const [passwordStrength, setPasswordStrength] = useState('');
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [passwordStrength, setPasswordStrength] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,15 +19,18 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (passwordStrength !== 'Strong') {
-      setError('Password must be strong to register.');
+    if (passwordStrength !== "Strong") {
+      setError("Password must be strong to register.");
       return;
     }
     try {
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/api/auth/register`, formData);
-      navigate('/login');
+      await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/auth/register`,
+        formData
+      );
+      navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(err.response?.data?.message || "Registration failed");
     }
   };
 
@@ -32,11 +39,16 @@ function SignUp() {
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
       <div
         className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{ backgroundImage: 'url(https://raw.githubusercontent.com/CodesRahul96/Blogsify/refs/heads/main/client/src/assets/blogsify-bg.avif)' }}
+        style={{
+          backgroundImage:
+            "url(https://raw.githubusercontent.com/CodesRahul96/Blogsify/refs/heads/main/client/src/assets/blogsify-bg.avif)",
+        }}
       ></div>
 
       <div className="relative z-10 w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-gray-700/50">
-        <h2 className="text-3xl font-bold text-white mb-6 text-center font-inter">Register</h2>
+        <h2 className="text-3xl font-bold text-white mb-6 text-center font-inter">
+          Register
+        </h2>
         {error && (
           <div className="bg-red-500/20 text-red-200 p-4 rounded-lg mb-6 text-center font-merriweather">
             {error}
@@ -75,7 +87,10 @@ function SignUp() {
               className="w-full p-4 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent font-merriweather"
               required
             />
-            <PasswordChecker password={formData.password} setPasswordStrength={setPasswordStrength} />
+            <PasswordChecker
+              password={formData.password}
+              setPasswordStrength={setPasswordStrength}
+            />
           </div>
           <button
             type="submit"
@@ -85,7 +100,7 @@ function SignUp() {
           </button>
         </form>
         <p className="mt-4 text-center text-gray-300 font-merriweather">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link to="/login" className="text-purple-400 hover:text-purple-300">
             Login
           </Link>

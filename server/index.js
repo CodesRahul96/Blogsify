@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
-const csurf = require('csurf');
 const authRoutes = require('./routes/auth'); // auth routes
 const postRoutes = require('./routes/posts'); // posts routes
 
@@ -15,7 +14,6 @@ const app = express();
 // Middleware
 app.use(express.json()); // Parse JSON bodies
 app.use(helmet());
-app.use(csurf({ cookie: true }));
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Vercel frontend URL or local dev
   credentials: true, // If using cookies/sessions
