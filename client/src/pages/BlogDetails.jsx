@@ -146,7 +146,7 @@ function BlogDetails() {
 
         {/* Blog Content */}
         <div className="flex-grow">
-          <p className="text-gray-300 text-lg leading-relaxed mb-6 font-merriweather">
+          <p className="text-gray-300 text-lg leading-relaxed mb-6 font-merriweather whitespace-pre-wrap">
             {blog.content}
           </p>
         </div>
