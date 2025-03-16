@@ -26,6 +26,7 @@ function Blogs() {
         setBlogs((prev) => [...prev, ...newBlogs]);
         setFilteredBlogs((prev) => [...prev, ...newBlogs]);
         setHasMore(newBlogs.length === 6); // Assuming limit=6
+        document.title = 'Blogs';
       } catch (err) {
         setError("Failed to load blogs");
       } finally {

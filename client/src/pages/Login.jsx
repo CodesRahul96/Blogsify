@@ -11,6 +11,8 @@ function Login() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  document.title = 'Login';
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {

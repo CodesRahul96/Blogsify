@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { AuthContext } from "../context/AuthContext";
+import Poster from "../assets/poster.jpg";
 
 function AdminDashboard() {
   const [posts, setPosts] = useState([]); // Ensure initial state is an array
@@ -14,6 +16,10 @@ function AdminDashboard() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [showTopBtn, setShowTopBtn] = useState(false); // State for button visibility
+
+  const user = useContext(AuthContext);
+
+  // console.log("dash user:",user.user.username);
 
   // Fetch posts on mount
   useEffect(() => {
@@ -56,7 +62,12 @@ function AdminDashboard() {
       if (editId) {
         const res = await axios.put(
           `${import.meta.env.VITE_BASE_URL}/api/posts/${editId}`,
-          { title, content, imageUrl, author: "Admin" },
+          {
+            title,
+            content,
+            imageUrl: imageUrl || Poster,
+            author: `${user.user.username}` || "admin",
+          },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts(posts.map((post) => (post._id === editId ? res.data : post)));
@@ -64,7 +75,12 @@ function AdminDashboard() {
       } else {
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/api/posts`,
-          { title, content, imageUrl, author: "Admin" },
+          {
+            title,
+            content,
+            imageUrl: imageUrl || Poster,
+            author: `${user.user.username}` || "admin",
+          },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts([res.data, ...posts]);

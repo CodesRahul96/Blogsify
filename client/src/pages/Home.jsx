@@ -1,14 +1,16 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function Home() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  document.title = "Blogsify";
+
   useEffect(() => {
     if (user) {
-      navigate('/blogs', { replace: true });
+      navigate("/blogs", { replace: true });
     }
   }, [user, navigate]);
 
@@ -21,7 +23,8 @@ function Home() {
       <div
         className="absolute inset-0 bg-cover bg-center opacity-20"
         style={{
-          backgroundImage: 'url(https://raw.githubusercontent.com/CodesRahul96/Blogsify/refs/heads/main/client/src/assets/blogsify-bg.avif)',
+          backgroundImage:
+            "url(https://raw.githubusercontent.com/CodesRahul96/Blogsify/refs/heads/main/client/src/assets/blogsify-bg.avif)",
         }}
       ></div>
 
@@ -34,7 +37,8 @@ function Home() {
               Welcome to Blogsify
             </h1>
             <p className="text-lg md:text-2xl max-w-2xl mx-auto mb-8 animate-fade-in-delay font-merriweather text-gray-300">
-              Discover a world of stories, ideas, and inspiration. Share your voice and connect with a vibrant community.
+              Discover a world of stories, ideas, and inspiration. Share your
+              thoughts and connect with a vibrant community.
             </p>
             <Link
               to="/blogs"
@@ -49,7 +53,7 @@ function Home() {
         <section className="py-16">
           <div className="mx-auto px-4 max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 font-inter">
-              Why Blogify?
+              Why Blogsify?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-white/10 backdrop-blur-lg p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 border border-gray-700/50">
@@ -70,7 +74,8 @@ function Home() {
                   Rich Content
                 </h3>
                 <p className="text-gray-300 font-merriweather">
-                  Dive into a variety of blogs crafted by passionate writers from around the globe.
+                  Dive into a variety of blogs crafted by passionate writers
+                  from around the globe.
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-lg p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 border border-gray-700/50">
@@ -78,7 +83,7 @@ function Home() {
                   className="w-12 h-12 mx-auto mb-4 text-blue-400"
                   fill="none"
                   stroke="currentColor"
-viewBox="0 0 24 24"
+                  viewBox="0 0 24 24"
                 >
                   <path
                     strokeLinecap="round"
@@ -91,7 +96,8 @@ viewBox="0 0 24 24"
                   Community Driven
                 </h3>
                 <p className="text-gray-300 font-merriweather">
-                  Engage with readers and writers through likes, comments, and discussions.
+                  Engage with readers and writers through likes, comments, and
+                  discussions.
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-lg p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 border border-gray-700/50">
@@ -112,7 +118,8 @@ viewBox="0 0 24 24"
                   Create Your Own
                 </h3>
                 <p className="text-gray-300 font-merriweather">
-                  Sign up to write and publish your own blogs with our easy-to-use dashboard.
+                  Sign up to write and publish your own thoughts with our
+                  easy-to-use dashboard.
                 </p>
               </div>
             </div>
@@ -126,7 +133,8 @@ viewBox="0 0 24 24"
               Ready to Get Started?
             </h2>
             <p className="text-lg mb-8 max-w-xl mx-auto font-merriweather text-gray-300">
-              Join Blogify today and start exploring, learning, or reading our stories!
+              Join Blogify today and start exploring, learning, or reading our
+              stories!
             </p>
             <div className="flex justify-center space-x-4">
               <Link

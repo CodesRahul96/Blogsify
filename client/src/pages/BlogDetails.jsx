@@ -22,6 +22,7 @@ function BlogDetails() {
           `${import.meta.env.VITE_BASE_URL}/api/posts/${id}`
         );
         setBlog(res.data);
+        document.title = 'Blog Detail';
       } catch (err) {
         setError("Failed to load blog details");
       } finally {

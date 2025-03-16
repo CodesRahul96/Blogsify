@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import Logo from "../assets/lettering.png"
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +50,8 @@ function Navbar() {
           to="/"
           className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400 font-inter"
         >
-          Blogsify
+          {/* Blogsify */}
+          <img src={Logo} alt="logo" className='h-10' />
         </Link>
 
         {/* Hamburger Menu Button */}
@@ -121,7 +123,7 @@ function Navbar() {
                 to="/register"
                 className="text-gray-300 hover:text-purple-400 transition-colors duration-300"
               >
-                Register
+                SignUp
               </Link>
             </>
           )}

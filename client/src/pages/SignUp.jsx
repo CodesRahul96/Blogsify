@@ -11,6 +11,8 @@ function SignUp() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  document.title = 'SignUp';
+
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
