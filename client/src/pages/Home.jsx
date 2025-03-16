@@ -126,7 +126,7 @@ viewBox="0 0 24 24"
               Ready to Get Started?
             </h2>
             <p className="text-lg mb-8 max-w-xl mx-auto font-merriweather text-gray-300">
-              Join Blogify today and start exploring, reading, or writing your own stories!
+              Join Blogify today and start exploring, learning, or reading our stories!
             </p>
             <div className="flex justify-center space-x-4">
               <Link
