@@ -18,14 +18,14 @@ router.get("/", async (req, res) => {
       .skip(skip)
       .limit(limit);
     const totalPosts = await Post.countDocuments();
-    console.log("Sending posts:", posts); // Debug backend
+    // console.log("Sending posts:", posts); // Debug backend
     res.json({
       posts, // Always an array
       totalPages: Math.ceil(totalPosts / limit),
       currentPage: page,
     });
   } catch (err) {
-    console.error("Error fetching posts:", err);
+    // console.error("Error fetching posts:", err);
     res.status(500).json({ message: "Server error fetching posts" });
   }
 });
@@ -37,7 +37,7 @@ router.get("/:id", async (req, res) => {
     if (!post) return res.status(404).json({ message: "Post not found" });
     res.json(post);
   } catch (err) {
-    console.error("Error fetching post:", err);
+    // console.error("Error fetching post:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -56,7 +56,7 @@ router.post("/", auth, isAdmin, async (req, res) => {
     await post.save();
     res.status(201).json(post);
   } catch (err) {
-    console.error("Error creating post:", err);
+    // console.error("Error creating post:", err);
     res.status(500).json({ message: "Server error creating post" });
   }
 });
@@ -78,7 +78,7 @@ router.put("/:id", auth, isAdmin, async (req, res) => {
     if (!post) return res.status(404).json({ message: "Post not found" });
     res.json(post);
   } catch (err) {
-    console.error("Error updating post:", err);
+    // console.error("Error updating post:", err);
     res.status(500).json({ message: "Server error updating post" });
   }
 });
@@ -90,7 +90,7 @@ router.delete("/:id", auth, isAdmin, async (req, res) => {
     if (!post) return res.status(404).json({ message: "Post not found" });
     res.json({ message: "Post deleted successfully" });
   } catch (err) {
-    console.error("Error deleting post:", err);
+    // console.error("Error deleting post:", err);
     res.status(500).json({ message: "Server error deleting post" });
   }
 });
@@ -108,7 +108,7 @@ router.post("/:id/like", auth, async (req, res) => {
     await post.save();
     res.json(post);
   } catch (err) {
-    console.error("Error liking post:", err);
+    // console.error("Error liking post:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -122,7 +122,7 @@ router.post("/:id/comment", auth, async (req, res) => {
     await post.save();
     res.json(post);
   } catch (err) {
-    console.error("Error commenting on post:", err);
+    // console.error("Error commenting on post:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -145,7 +145,7 @@ router.delete('/:id/comment/:commentId', auth, async (req, res) => {
     await post.save();
     res.json(post); // Return updated post
   } catch (err) {
-    console.error('Error deleting comment:', err);
+    // console.error('Error deleting comment:', err);
     res.status(500).json({ message: 'Server error deleting comment' });
   }
 });

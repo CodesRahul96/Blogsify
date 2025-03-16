@@ -12,7 +12,7 @@ function Footer() {
           {/* About Section */}
           <div className="text-center md:text-left">
             <h3 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-            Blogsify
+              Blogsify
             </h3>
             <p className="text-gray-400 max-w-xs">
               Your go-to platform for insightful blogs and engaging content.
@@ -25,59 +25,53 @@ function Footer() {
             <h4 className="text-lg font-semibold mb-4 text-gray-200">
               Quick Links
             </h4>
-{
-  !user ? (<>
-    <Link
-                  to="/blogs"
-                  className="hover:text-blue-400 transition-colors duration-300"
-                >
-                  Blogs
-                </Link>
-                {
-                  user.isAdmin && (<><Link
-                  to="/dashboard"
-                  className="hover:text-blue-400 transition-colors duration-300"
-                >
-                  Dashboard
-                </Link></>)
-                }
-  </>) : (<ul className="space-y-2 text-gray-400">
-              <li>
-                <Link
-                  to="/"
-                  className="hover:text-blue-400 transition-colors duration-300"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/blogs"
-                  className="hover:text-blue-400 transition-colors duration-300"
-                >
-                  Blogs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/login"
-                  className="hover:text-blue-400 transition-colors duration-300"
-                >
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/register"
-                  className="hover:text-blue-400 transition-colors duration-300"
-                >
-                  Register
-                </Link>
-              </li>
-            </ul>)
-}
-
-            
+            <ul className="space-y-2 text-gray-400">
+              {user ? (
+                <>
+                  <Link
+                    to="/blogs"
+                    className="hover:text-blue-400 transition-colors duration-300"
+                  >
+                    Blogs
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      to="/"
+                      className="hover:text-blue-400 transition-colors duration-300"
+                    >
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/blogs"
+                      className="hover:text-blue-400 transition-colors duration-300"
+                    >
+                      Blogs
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/login"
+                      className="hover:text-blue-400 transition-colors duration-300"
+                    >
+                      Login
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/register"
+                      className="hover:text-blue-400 transition-colors duration-300"
+                    >
+                      Register
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
           </div>
 
           {/* Contact Section */}
@@ -87,9 +81,7 @@ function Footer() {
             </h4>
             <p className="text-gray-400">Email: codesrahul96@gmail.com</p>
             <p className="text-gray-400">Phone: +91 8805159425</p>
-            <p className="text-gray-400">
-              Address: Pune, Maharashtra, India
-            </p>
+            <p className="text-gray-400">Address: Pune, Maharashtra, India</p>
           </div>
 
           {/* Social Media Section */}
@@ -128,8 +120,10 @@ function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-10 pt-6 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
-          <p>&copy; {new Date().getFullYear()} Blogsify. All rights reserved.</p>
-          <p>Made with ❤️ by CodesRahul</p>
+          <p>
+            &copy; {new Date().getFullYear()} Blogsify. All rights reserved.
+          </p>
+          <p>Made with ❤️ by <a href="https://codesrahul.vercel.app">CodesRahul</a></p>
         </div>
       </div>
     </footer>
