@@ -2,8 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth'); // Your auth routes
-const postRoutes = require('./routes/posts'); // Your posts routes
+const helmet = require('helmet');
+const csurf = require('csurf');
+const authRoutes = require('./routes/auth'); // auth routes
+const postRoutes = require('./routes/posts'); // posts routes
 
 // Load environment variables from .env file (for local dev)
 dotenv.config();
@@ -12,10 +14,12 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // Parse JSON bodies
+app.use(helmet());
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Vercel frontend URL or local dev
   credentials: true, // If using cookies/sessions
 }));
+app.use(csurf({ cookie: true }));
 
 // MongoDB Atlas Connection
 const connectDB = async () => {
@@ -46,6 +50,12 @@ app.get('/', (req, res) => {
 
 // Export the app for Vercel serverless
 module.exports = app;
+
+
+// Disable React dev tools in production
+if (process.env.NODE_ENV === 'production') {
+  window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = { inject: function() {} };
+}
 
 // Start server locally with nodemon or node (not needed on Vercel)
 if (process.env.NODE_ENV !== 'production') {

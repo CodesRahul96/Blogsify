@@ -27,7 +27,8 @@ router.post("/login", async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
     },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' }
   );
   res.json({ token });
 });
