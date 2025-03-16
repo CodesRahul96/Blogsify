@@ -77,6 +77,15 @@ function BlogDetails() {
     }
   };
 
+  // Date formatting function
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      day: 'numeric',     // e.g., "14"
+      month: 'long',      // e.g., "May"
+      year: 'numeric',    // e.g., "2024"
+    });
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -124,7 +133,7 @@ function BlogDetails() {
           </h1>
           <div className="flex items-center justify-between text-sm text-gray-400 font-merriweather">
             <span>By {blog.author}</span>
-            <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
+            <span>{formatDate(blog.createdAt)}</span>
           </div>
         </div>
 
