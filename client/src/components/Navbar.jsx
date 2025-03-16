@@ -187,7 +187,7 @@ function Navbar() {
                 className="block text-gray-300 hover:text-purple-400 transition-colors duration-300"
                 onClick={() => setIsOpen(false)}
               >
-                Register
+                SignUp
               </Link>
             </>
           )}
