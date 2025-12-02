@@ -101,7 +101,7 @@ function Blogs() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-6">
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-6 pt-24">
       {/* Animated Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
 
@@ -115,23 +115,17 @@ function Blogs() {
       ></div>
 
       {/* Blogs Content */}
-      <div className="relative z-10 mx-auto px-4 max-w-7xl py-20 md:py-20">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 text-center tracking-tight font-inter">
+      <div className="relative z-10 mx-auto px-4 max-w-7xl py-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3 text-center tracking-tight">
           Explore Our Blogs
         </h1>
+        <p className="text-center text-gray-300 mb-10 max-w-2xl mx-auto">Discover insightful stories and ideas shared by our community of passionate writers.</p>
 
         {/* Search Bar */}
-        <div className="max-w-xl mx-auto mb-10">
+        <div className="max-w-2xl mx-auto mb-12">
           <div className="relative">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full p-4 pr-12 rounded-full bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 font-merriweather shadow-md"
-              placeholder="Search blogs by title or content..."
-            />
             <svg
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -144,27 +138,37 @@ function Blogs() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full p-4 pl-12 pr-4 rounded-lg bg-gray-800/70 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 shadow-lg hover:bg-gray-800/80"
+              placeholder="Search blogs by title or content..."
+              aria-label="Search blogs"
+            />
           </div>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-500/20 text-red-200 p-4 rounded-lg mb-8 text-center shadow-md font-merriweather">
+          <div className="bg-red-500/20 text-red-200 p-4 rounded-lg mb-8 text-center shadow-md border border-red-500/30">
             {error}
           </div>
         )}
 
         {/* Blog Posts */}
         {!loading && filteredBlogs.length === 0 ? (
-          <p className="text-center text-gray-300 text-lg font-merriweather">
-            {search ? "No blogs match your search." : "No blogs available yet."}
-          </p>
+          <div className="text-center py-12">
+            <p className="text-gray-300 text-lg">
+              {search ? "No blogs match your search. Try different keywords." : "No blogs available yet. Check back soon!"}
+            </p>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {filteredBlogs.map((post, index) => {
               const isLastElement = index === filteredBlogs.length - 1 && !search;
               return (
-                <div key={post._id} ref={isLastElement ? lastBlogElementRef : null}>
+                <div key={post._id} ref={isLastElement ? lastBlogElementRef : null} className="h-full">
                   <BlogCard blog={post} />
                 </div>
               );
@@ -174,8 +178,8 @@ function Blogs() {
 
         {/* Loading Text for Infinite Scroll */}
         {loading && page > 1 && (
-          <div className="text-center mt-8">
-            <p className="text-gray-300 text-lg font-merriweather animate-pulse">
+          <div className="text-center mt-12">
+            <p className="text-gray-300 text-lg animate-pulse">
               Loading more blogs...
             </p>
           </div>
@@ -183,7 +187,7 @@ function Blogs() {
 
         {/* No More Posts */}
         {!hasMore && !search && blogs.length > 0 && (
-          <p className="text-center mt-8 text-gray-300 text-lg font-merriweather">
+          <p className="text-center mt-12 text-gray-300 text-lg">
             You&apos;ve reached the end of our blog collection!
           </p>
         )}
@@ -192,7 +196,8 @@ function Blogs() {
         {showTopBtn && (
           <button
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 bg-white/10 backdrop-blur-lg text-white p-3 rounded-full shadow-md hover:bg-purple-600/50 transition-all duration-300 border border-gray-700/50 z-50"
+            className="fixed bottom-8 right-8 bg-gradient-to-r from-purple-600 to-blue-600 text-white p-3 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 z-40 hover:from-purple-700 hover:to-blue-700"
+            aria-label="Back to top"
           >
             <svg
               className="w-6 h-6"

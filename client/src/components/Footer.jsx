@@ -1,3 +1,4 @@
+import 'react';
 import { Link } from "react-router-dom";
 import { FaTwitter, FaGithub, FaInstagram, FaFacebook } from "react-icons/fa";
 import { useContext, useState } from "react";

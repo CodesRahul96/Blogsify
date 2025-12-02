@@ -16,11 +16,19 @@ router.get("/", async (req, res) => {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .populate({ path: 'comments.user', select: 'username' });
     const totalPosts = await Post.countDocuments();
     // console.log("Sending posts:", posts); // Debug backend
+    // Normalize author to an object for frontend compatibility when needed
+    const normalized = posts.map((p) => {
+      const po = p.toObject();
+      po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+      return po;
+    });
+
     res.json({
-      posts, // Always an array
+      posts: normalized,
       totalPages: Math.ceil(totalPosts / limit),
       currentPage: page,
     });
@@ -33,64 +41,79 @@ router.get("/", async (req, res) => {
 // Get a single post by ID (public)
 router.get("/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate({ path: 'comments.user', select: 'username' });
     if (!post) return res.status(404).json({ message: "Post not found" });
-    res.json(post);
+    const po = post.toObject();
+    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    res.json(po);
   } catch (err) {
     // console.error("Error fetching post:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// Create a post (admin only)
-router.post("/", auth, isAdmin, async (req, res) => {
+// Create a post (authenticated users)
+router.post("/", auth, async (req, res) => {
   try {
+    // Use username from the token to prevent forged authorship
+    const author = req.user && req.user.username ? req.user.username : "Anonymous";
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      imageUrl: req.body.imageUrl, // Include imageUrl from request body
-      author: req.body.author || "Admin", // Default to 'Admin' if not provided
+      imageUrl: req.body.imageUrl,
+      author,
       likes: [],
       comments: [],
     });
     await post.save();
-    res.status(201).json(post);
+    // return populated normalized post
+    const created = await Post.findById(post._id).populate({ path: 'comments.user', select: 'username' });
+    const po = created.toObject();
+    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    res.status(201).json(po);
   } catch (err) {
-    // console.error("Error creating post:", err);
     res.status(500).json({ message: "Server error creating post" });
   }
 });
 
 
-// Update a post (admin only)
-router.put("/:id", auth, isAdmin, async (req, res) => {
+// Update a post (owner or admin)
+router.put("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findByIdAndUpdate(
-      req.params.id,
-      {
-        title: req.body.title,
-        content: req.body.content,
-        imageUrl: req.body.imageUrl,
-        author: req.body.author || "Admin",
-      },
-      { new: true }
-    );
+    const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Allow only the post owner (by username) or admin to update
+    if (post.author !== req.user.username && !req.user.isAdmin) {
+      return res.status(403).json({ message: "Not authorized to update this post" });
+    }
+
+    post.title = req.body.title ?? post.title;
+    post.content = req.body.content ?? post.content;
+    post.imageUrl = req.body.imageUrl ?? post.imageUrl;
+    // do not allow changing author via request
+
+    await post.save();
     res.json(post);
   } catch (err) {
-    // console.error("Error updating post:", err);
     res.status(500).json({ message: "Server error updating post" });
   }
 });
 
-// Delete a post (admin only)
-router.delete("/:id", auth, isAdmin, async (req, res) => {
+// Delete a post (owner or admin)
+router.delete("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findByIdAndDelete(req.params.id);
+    const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Allow only the post owner (by username) or admin to delete
+    if (post.author !== req.user.username && !req.user.isAdmin) {
+      return res.status(403).json({ message: "Not authorized to delete this post" });
+    }
+
+    await Post.findByIdAndDelete(req.params.id);
     res.json({ message: "Post deleted successfully" });
   } catch (err) {
-    // console.error("Error deleting post:", err);
     res.status(500).json({ message: "Server error deleting post" });
   }
 });
@@ -106,7 +129,10 @@ router.post("/:id/like", auth, async (req, res) => {
       post.likes.push(req.user.id);
     }
     await post.save();
-    res.json(post);
+    const updated = await Post.findById(post._id).populate({ path: 'comments.user', select: 'username' });
+    const po = updated.toObject();
+    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    res.json(po);
   } catch (err) {
     // console.error("Error liking post:", err);
     res.status(500).json({ message: "Server error" });
@@ -120,7 +146,10 @@ router.post("/:id/comment", auth, async (req, res) => {
     if (!post) return res.status(404).json({ message: "Post not found" });
     post.comments.push({ user: req.user.id, text: req.body.text });
     await post.save();
-    res.json(post);
+    const updated = await Post.findById(post._id).populate({ path: 'comments.user', select: 'username' });
+    const po = updated.toObject();
+    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    res.json(po);
   } catch (err) {
     // console.error("Error commenting on post:", err);
     res.status(500).json({ message: "Server error" });
@@ -143,7 +172,10 @@ router.delete('/:id/comment/:commentId', auth, async (req, res) => {
 
     post.comments = post.comments.filter((c) => c._id.toString() !== req.params.commentId);
     await post.save();
-    res.json(post); // Return updated post
+    const updated = await Post.findById(post._id).populate({ path: 'comments.user', select: 'username' });
+    const po = updated.toObject();
+    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    res.json(po); // Return updated post
   } catch (err) {
     // console.error('Error deleting comment:', err);
     res.status(500).json({ message: 'Server error deleting comment' });
