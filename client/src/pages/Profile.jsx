@@ -145,18 +145,18 @@ function Profile() {
   // (profile picture feature removed)
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-16">
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden pt-24 pb-16">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
       <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{backgroundImage: "url(/src/assets/blogsify-bg.avif)"}} />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 text-gray-100">
         <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-gray-700/40">
-          <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
+          <div className="flex flex-col md:flex-row items-center gap-8 mb-8 mt-4 md:mt-0">
             <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center text-white text-3xl font-bold">{(user?.username || 'U').charAt(0).toUpperCase()}</div>
-            <div>
-              <h1 className="text-4xl font-extrabold text-white mb-2">{user?.username || 'User'}</h1>
-              <p className="text-gray-300 mb-2">{user?.email || 'No email'}</p>
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col items-center md:items-start">
+              <h1 className="text-4xl font-extrabold text-white mb-2 text-center md:text-left">{user?.username || 'User'}</h1>
+              <p className="text-gray-300 mb-2 text-center md:text-left">{user?.email || 'No email'}</p>
+              <div className="flex items-center gap-2 justify-center md:justify-start">
                 <span className={`px-3 py-1 rounded-full text-sm font-semibold ${user?.isAdmin ? 'bg-yellow-500/20 text-yellow-300' : 'bg-blue-500/20 text-blue-300'}`}>
                   {user?.isAdmin ? 'Admin' : 'Writer'}
                 </span>
