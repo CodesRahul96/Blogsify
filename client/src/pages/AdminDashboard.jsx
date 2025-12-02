@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import { AuthContext } from "../context/AuthContext";
 import Poster from "../assets/poster.jpg";
+import AdminDashboardStats from "../components/AdminDashboardStats";
 
 function AdminDashboard() {
   const [posts, setPosts] = useState([]);
@@ -228,13 +229,7 @@ function AdminDashboard() {
         <p className="text-gray-400 text-center mb-8">Manage users, posts, and content</p>
 
         {/* Global Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-          <StatCard label="Total Users" value={stats.totalUsers} color="green" />
-          <StatCard label="Total Posts" value={stats.totalPosts} color="purple" />
-          <StatCard label="Total Comments" value={stats.totalComments} color="orange" />
-          <StatCard label="Total Likes" value={stats.totalLikes} color="pink" />
-          <StatCard label="Admin Users" value={stats.totalAdmins} color="green" />
-        </div>
+        <AdminDashboardStats stats={stats} />
 
         {error && <div className="bg-red-500/20 text-red-200 p-3 rounded mb-6 text-center">{error}</div>}
 
@@ -347,44 +342,45 @@ function AdminDashboard() {
         {/* Posts Tab */}
         {activeTab === "posts" && (
           <>
-            {/* Create/Edit Post Form */}
-            <div className="bg-white/10 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-lg mb-8 border border-white/20">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-semibold text-white">{editId ? '✏️ Edit Post' : '➕ Create New Post'}</h2>
-                <div className="flex items-center gap-3">
-                  <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search posts..." className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white" />
-                  <button onClick={fetchPosts} className="px-3 py-2 rounded bg-gray-700 hover:bg-gray-600">Refresh</button>
-                </div>
+            {/* Search Bar */}
+            <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 rounded-2xl shadow-lg mb-6 border border-white/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <h2 className="text-2xl font-semibold text-white">{editId ? '✏️ Edit Post' : '➕ Create New Post'}</h2>
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search posts..." className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white w-full sm:w-auto" />
+                <button onClick={fetchPosts} className="px-3 py-2 rounded bg-gray-700 hover:bg-gray-600 w-full sm:w-auto">Refresh</button>
               </div>
+            </div>
 
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input id="imageUrl" type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Image URL" className="col-span-3 p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white" />
-                <input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required className="col-span-3 p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white" />
-                <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} rows={6} placeholder="Content" required className="col-span-3 p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white" />
-                <div className="col-span-3 flex gap-3 justify-end">
-                  {editId && <button type="button" onClick={handleCancelEdit} className="px-4 py-2 rounded-full bg-gray-600">Cancel</button>}
-                  <button type="submit" className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600">{editId ? 'Update Post' : 'Create Post'}</button>
+            {/* Create/Edit Post Form */}
+            <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg mb-8 border border-white/20">
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+                <input id="imageUrl" type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Image URL" className="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white w-full" />
+                <input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required className="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white w-full" />
+                <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} rows={6} placeholder="Content" required className="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white w-full" />
+                <div className="flex gap-3 flex-col sm:flex-row justify-end">
+                  {editId && <button type="button" onClick={handleCancelEdit} className="px-4 py-2 rounded-full bg-gray-600 w-full sm:w-auto">Cancel</button>}
+                  <button type="submit" className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 w-full sm:w-auto">{editId ? 'Update Post' : 'Create Post'}</button>
                 </div>
               </form>
             </div>
 
             {/* Post List */}
-            <div className="bg-white/10 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-lg border border-white/20">
+            <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg border border-white/20">
               <h2 className="text-2xl font-semibold text-white mb-6">📋 All Posts ({filteredPosts.length})</h2>
               {filteredPosts.length === 0 ? (
                 <p className="text-gray-300">No posts found.</p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredPosts.map((post) => (
-                    <div key={post._id} className="bg-gray-800/60 rounded-lg overflow-hidden border border-gray-700/40 shadow-sm hover:border-purple-500/50 transition">
+                    <div key={post._id} className="bg-gray-800/60 rounded-lg overflow-hidden border border-gray-700/40 shadow-sm hover:border-purple-500/50 transition flex flex-col">
                       <div className="h-40 bg-cover bg-center" style={{ backgroundImage: `url(${post.imageUrl || Poster})` }} />
-                      <div className="p-4">
+                      <div className="p-4 flex flex-col h-full">
                         <h3 className="text-lg font-semibold text-white line-clamp-1">{post.title}</h3>
                         <p className="text-gray-300 text-sm line-clamp-3 my-3">{post.content}</p>
                         <div className="text-xs text-gray-400 mb-3">👤 {post.author?.username || post.author} • 💬 {post.comments?.length || 0} • ❤️ {post.likes?.length || 0}</div>
-                        <div className="flex gap-2 justify-end">
-                          <button onClick={() => handleEdit(post)} className="px-3 py-1 rounded-full bg-yellow-500 text-white hover:bg-yellow-600">Edit</button>
-                          <button onClick={() => handleDelete(post._id)} className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700">Delete</button>
+                        <div className="flex gap-2 justify-end mt-auto flex-wrap">
+                          <button onClick={() => handleEdit(post)} className="px-3 py-1 rounded-full bg-yellow-500 text-white hover:bg-yellow-600 w-full sm:w-auto">Edit</button>
+                          <button onClick={() => handleDelete(post._id)} className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700 w-full sm:w-auto">Delete</button>
                         </div>
                       </div>
                     </div>
@@ -397,12 +393,12 @@ function AdminDashboard() {
 
         {/* Users Tab */}
         {activeTab === "users" && (
-          <div className="bg-white/10 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-lg border border-white/20">
-            <div className="flex items-center justify-between mb-6">
+          <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg border border-white/20">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
               <h2 className="text-2xl font-semibold text-white">👥 User Management</h2>
-              <div className="flex items-center gap-3">
-                <input value={userQuery} onChange={(e) => setUserQuery(e.target.value)} placeholder="Search users..." className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white" />
-                <button onClick={fetchUsers} className="px-3 py-2 rounded bg-gray-700 hover:bg-gray-600">Refresh</button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input value={userQuery} onChange={(e) => setUserQuery(e.target.value)} placeholder="Search users..." className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white w-full sm:w-auto" />
+                <button onClick={fetchUsers} className="px-3 py-2 rounded bg-gray-700 hover:bg-gray-600 w-full sm:w-auto">Refresh</button>
               </div>
             </div>
 
@@ -410,29 +406,29 @@ function AdminDashboard() {
               <p className="text-gray-300">No users found.</p>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm min-w-[400px]">
                   <thead>
                     <tr className="border-b border-gray-700">
-                      <th className="text-left py-2 px-4 text-gray-300">Username</th>
-                      <th className="text-left py-2 px-4 text-gray-300">Email</th>
-                      <th className="text-left py-2 px-4 text-gray-300">Role</th>
-                      <th className="text-left py-2 px-4 text-gray-300">Actions</th>
+                      <th className="text-left py-2 px-2 sm:px-4 text-gray-300">Username</th>
+                      <th className="text-left py-2 px-2 sm:px-4 text-gray-300">Email</th>
+                      <th className="text-left py-2 px-2 sm:px-4 text-gray-300">Role</th>
+                      <th className="text-left py-2 px-2 sm:px-4 text-gray-300">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredUsers.map((u) => (
                       <tr key={u._id} className="border-b border-gray-700 hover:bg-white/5">
-                        <td className="py-3 px-4 text-white">{u.username}</td>
-                        <td className="py-3 px-4 text-gray-300 truncate">{u.email}</td>
-                        <td className="py-3 px-4">
+                        <td className="py-3 px-2 sm:px-4 text-white break-all">{u.username}</td>
+                        <td className="py-3 px-2 sm:px-4 text-gray-300 truncate break-all">{u.email}</td>
+                        <td className="py-3 px-2 sm:px-4">
                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${u.isAdmin ? 'bg-yellow-500/20 text-yellow-300' : 'bg-blue-500/20 text-blue-300'}`}>
                             {u.isAdmin ? 'Admin' : 'User'}
                           </span>
                         </td>
-                        <td className="py-3 px-4">
-                          <div className="flex gap-2">
-                            <button onClick={() => handleResetPassword(u._id)} className="px-2 py-1 text-xs rounded bg-orange-600 hover:bg-orange-700 text-white">Reset Password</button>
-                            {user.id !== u._id && <button onClick={() => handleDeleteUser(u._id)} className="px-2 py-1 text-xs rounded bg-red-600 hover:bg-red-700 text-white">Delete</button>}
+                        <td className="py-3 px-2 sm:px-4">
+                          <div className="flex gap-2 flex-col sm:flex-row">
+                            <button onClick={() => handleResetPassword(u._id)} className="px-2 py-1 text-xs rounded bg-orange-600 hover:bg-orange-700 text-white w-full sm:w-auto">Reset Password</button>
+                            {user.id !== u._id && <button onClick={() => handleDeleteUser(u._id)} className="px-2 py-1 text-xs rounded bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto">Delete</button>}
                           </div>
                         </td>
                       </tr>

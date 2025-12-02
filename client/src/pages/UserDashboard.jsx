@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import { AuthContext } from "../context/AuthContext";
 import Poster from "../assets/poster.jpg";
+import UserDashboardStats from "../components/UserDashboardStats";
 
 function UserDashboard() {
   const { user } = useContext(AuthContext) || {};
@@ -151,11 +152,12 @@ function UserDashboard() {
       <div className="mx-auto max-w-6xl px-6">
         <h1 className="text-4xl font-extrabold text-white mb-6">My Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <StatBar label="Posts Created" value={totalPosts} />
-          <StatBar label="Likes Received" value={totalLikesReceived} />
-          <StatBar label="Comments Received" value={totalCommentsReceived} />
-        </div>
+      <UserDashboardStats
+        totalPosts={totalPosts}
+        totalLikesReceived={totalLikesReceived}
+        totalCommentsReceived={totalCommentsReceived}
+        maxVal={maxVal}
+      />
 
         {/* Engagement Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
