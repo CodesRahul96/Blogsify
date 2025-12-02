@@ -1,5 +1,6 @@
-import { useState, useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Logo from "../assets/lettering.png"
 
@@ -7,6 +8,8 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true); // State for navbar visibility
   const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
+  const [menuOpen, setMenuOpen] = useState(false); // user dropdown
+  const menuRef = useRef(null);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -35,164 +38,93 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [menuOpen]);
+
   return (
     <nav
-      className={`fixed top-0 left-0 w-full bg-gray-900/80 backdrop-blur-lg border-b border-gray-700/50 z-50 transition-transform duration-300 ${
+      className={`fixed top-0 left-0 w-full bg-gradient-to-r from-black/40 via-gray-900/40 to-black/40 backdrop-blur-md border-b border-gray-800/40 z-50 transition-transform duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg opacity-70"></div>
-
-      {/* Navbar Content */}
-      <div className="relative z-10 mx-auto px-4 flex justify-between md:justify-around items-center py-4">
-        <Link
-          to="/"
-          className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400 font-inter"
-        >
-          {/* Blogsify */}
-          <img src={Logo} alt="logo" className='h-10' />
+      <div className="relative z-10 mx-auto px-4 flex justify-between md:justify-between items-center py-3 max-w-6xl">
+        <Link to="/" className="flex items-center gap-3">
+          <img src={Logo} alt="Blogsify" className="h-10" />
+          {/* <span className="hidden sm:inline bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400 font-semibold text-lg">Blogsify</span> */}
         </Link>
 
-        {/* Hamburger Menu Button */}
-        <button
-          className="md:hidden focus:outline-none text-white p-2 rounded-full hover:bg-gray-700/50 transition-all duration-300"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
-            />
-          </svg>
-        </button>
-
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-6 items-center font-merriweather">
-          {!user ? (
-            <Link
-              to="/"
-              className="text-gray-300 hover:text-purple-400 transition-colors duration-300"
-            >
-              Home
-            </Link>
-          ) : null}
-          <Link
-            to="/blogs"
-            className="text-gray-300 hover:text-purple-400 transition-colors duration-300"
-          >
-            Blogs
-          </Link>
-          {user ? (
-            <>
-              {user.isAdmin && (
-                <Link
-                  to="/dashboard"
-                  className="text-gray-300 hover:text-purple-400 transition-colors duration-300"
-                >
-                  Dashboard
-                </Link>
-              )}
-              <span className="text-gray-400">
-                Welcome, {user.username || 'User'}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="bg-gradient-to-r from-red-500 to-purple-500 text-white px-3 py-1 rounded-full hover:from-red-600 hover:to-purple-600 transition-all duration-300 shadow-md"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="text-gray-300 hover:text-purple-400 transition-colors duration-300"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="text-gray-300 hover:text-purple-400 transition-colors duration-300"
-              >
-                SignUp
-              </Link>
-            </>
+        <div className="hidden md:flex items-center space-x-6 font-merriweather">
+          {!user && (
+            <NavLink to="/" className={({isActive}) => isActive ? 'text-white font-semibold' : 'text-gray-300 hover:text-purple-400 transition-colors duration-200'}>Home</NavLink>
           )}
+          <NavLink to="/blogs" className={({isActive}) => isActive ? 'text-white font-semibold' : 'text-gray-300 hover:text-purple-400 transition-colors duration-200'}>Blogs</NavLink>
+        </div>
+
+        {/* Right actions */}
+        <div className="flex items-center gap-3">
+          {/* Auth buttons / user menu - Desktop only */}
+          {user ? (
+            <div className="relative hidden md:block" ref={menuRef}>
+              <button onClick={() => setMenuOpen(s => !s)} aria-haspopup="true" aria-expanded={menuOpen} className="flex items-center gap-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-1 rounded-full shadow-md hover:scale-105 transform transition">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-semibold text-white">{(user.username || 'U').charAt(0).toUpperCase()}</div>
+                <span className="hidden sm:inline">{user.username}</span>
+              </button>
+
+              {menuOpen && (
+                <div className="absolute right-0 mt-2 w-44 bg-gray-800/90 backdrop-blur-md rounded-md shadow-lg border border-gray-700/40 py-2 text-sm">
+                  <Link to="/profile" className="block px-4 py-2 text-gray-200 hover:bg-gray-700/50">Profile</Link>
+                  {user.isAdmin && <Link to="/dashboard" className="block px-4 py-2 text-gray-200 hover:bg-gray-700/50">Dashboard</Link>}
+                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-red-400 hover:bg-gray-700/50">Logout</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-3">
+              <Link to="/login" className="text-gray-300 hover:text-purple-400 transition-colors duration-200">Login</Link>
+              <Link to="/register" className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-1 rounded-full shadow-md hover:from-purple-700 hover:to-blue-700 transition">Sign Up</Link>
+            </div>
+          )}
+
+          {/* Mobile hamburger */}
+          <button className="md:hidden focus:outline-none text-white p-2 rounded-full hover:bg-gray-700/50 transition-all duration-300" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
+            </svg>
+          </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden mt-4 space-y-6 py-6 px-4 pb-6 bg-gray-800/90 backdrop-blur-lg text-center border-t border-gray-700/50 font-merriweather">
-          {!user ? (
-            <Link
-              to="/"
-              className="block text-gray-300 hover:text-purple-400 transition-colors duration-300"
-              onClick={() => setIsOpen(false)}
-            >
-              Home
-            </Link>
-          ) : null}
-          <Link
-            to="/blogs"
-            className="block text-gray-300 hover:text-purple-400 transition-colors duration-300"
-            onClick={() => setIsOpen(false)}
-          >
-            Blogs
-          </Link>
+      <div className={`md:hidden transition-all duration-300 ${isOpen ? 'max-h-screen' : 'max-h-0 overflow-hidden'}`}>
+        <div className="mt-2 space-y-4 py-4 px-4 bg-gray-800/90 backdrop-blur-lg text-center border-t border-gray-700/50 font-merriweather">
+          {!user && (
+            <Link to="/" className="block text-gray-300 hover:text-purple-400 transition-colors duration-200" onClick={() => setIsOpen(false)}>Home</Link>
+          )}
+          <Link to="/blogs" className="block text-gray-300 hover:text-purple-400 transition-colors duration-200" onClick={() => setIsOpen(false)}>Blogs</Link>
           {user ? (
             <>
-              {user.isAdmin && (
-                <Link
-                  to="/dashboard"
-                  className="block text-gray-300 hover:text-purple-400 transition-colors duration-300"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Dashboard
-                </Link>
-              )}
-              <span className="block text-gray-400">
-                Welcome, {user.username || 'User'}
-              </span>
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsOpen(false);
-                }}
-                className="block w-full text-center bg-gradient-to-r from-red-500 to-purple-500 text-white px-3 py-1 rounded-full hover:from-red-600 hover:to-purple-600 transition-all duration-300 shadow-md"
-              >
-                Logout
-              </button>
+              <Link to="/profile" className="block text-gray-300 hover:text-purple-400 transition-colors duration-200" onClick={() => setIsOpen(false)}>Profile</Link>
+              {user.isAdmin && <Link to="/dashboard" className="block text-gray-300 hover:text-purple-400 transition-colors duration-200" onClick={() => setIsOpen(false)}>Dashboard</Link>}
+              <div className="block text-gray-400">Welcome, {user.username || 'User'}</div>
+              <button onClick={() => { handleLogout(); setIsOpen(false); }} className="block w-full text-center bg-gradient-to-r from-red-500 to-purple-500 text-white px-3 py-1 rounded-full hover:from-red-600 hover:to-purple-600 transition-all duration-300 shadow-md">Logout</button>
             </>
           ) : (
             <>
-              <Link
-                to="/login"
-                className="block text-gray-300 hover:text-purple-400 transition-colors duration-300"
-                onClick={() => setIsOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="block text-gray-300 hover:text-purple-400 transition-colors duration-300"
-                onClick={() => setIsOpen(false)}
-              >
-                SignUp
-              </Link>
+              <Link to="/login" className="block text-gray-300 hover:text-purple-400 transition-colors duration-200" onClick={() => setIsOpen(false)}>Login</Link>
+              <Link to="/register" className="block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-2 rounded-full shadow-md hover:from-purple-700 hover:to-blue-700 transition mx-auto w-32" onClick={() => setIsOpen(false)}>Sign Up</Link>
             </>
           )}
         </div>
-      )}
+      </div>
     </nav>
   );
 }

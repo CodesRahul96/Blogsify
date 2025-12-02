@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
+import BlogCard from "../components/home/BlogCard";
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
@@ -161,44 +162,11 @@ function Blogs() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredBlogs.map((post, index) => {
-              const isLastElement =
-                index === filteredBlogs.length - 1 && !search;
+              const isLastElement = index === filteredBlogs.length - 1 && !search;
               return (
-                <Link
-                  to={`/blog/${post._id}`}
-                  key={post._id}
-                  ref={isLastElement ? lastBlogElementRef : null}
-                  className="group bg-white/10 backdrop-blur-lg rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-700/50"
-                >
-                  <div className="p-6">
-                    {post.imageUrl && (
-                      <img
-                        src={post.imageUrl}
-                        alt={post.title}
-                        className="w-full h-40 object-cover rounded-t-xl mb-4"
-                        onError={(e) =>
-                          (e.target.src =
-                            "https://via.placeholder.com/300x150?text=Image+Not+Found")
-                        }
-                      />
-                    )}
-                    <h2 className="text-2xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors duration-300 font-inter">
-                      {post.title || "Untitled"}
-                    </h2>
-                    <p className="text-gray-300 mb-4 line-clamp-3 font-merriweather">
-                      {post.content || "No content available"}
-                    </p>
-                    <div className="flex items-center justify-between text-sm text-gray-400 font-merriweather">
-                      <span>By {post.author || "Admin"}</span>
-                      <span>{formatDate(post.createdAt)}</span>
-                    </div>
-                  </div>
-                  <div className="px-6 py-3 bg-gray-800/50 rounded-b-xl border-t border-gray-700">
-                    <span className="text-purple-400 font-medium group-hover:underline font-inter">
-                      Read More →
-                    </span>
-                  </div>
-                </Link>
+                <div key={post._id} ref={isLastElement ? lastBlogElementRef : null}>
+                  <BlogCard blog={post} />
+                </div>
               );
             })}
           </div>

@@ -6,6 +6,8 @@ export default {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
         merriweather: ["Merriweather", "serif"],
+        poppins: ["Poppins", "sans-serif"],
+        "roboto-slab": ["Roboto Slab", "serif"],
       },
     },
   },
