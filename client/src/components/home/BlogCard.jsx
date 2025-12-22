@@ -12,6 +12,7 @@ const BlogCard = ({ blog }) => {
   };
 
   const estimateReadTime = (text = "") => {
+    if (blog.readTime) return blog.readTime;
     const words = text.trim().split(/\s+/).length;
     const minutes = Math.max(1, Math.round(words / 200));
     return `${minutes} min read`;

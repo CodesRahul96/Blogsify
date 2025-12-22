@@ -48,11 +48,8 @@ function Profile() {
       return;
     }
     // Simulate loading
-    const timer = setTimeout(() => {
-      setLoading(false);
-      setNewUsername(user?.username || "");
-    }, 500);
-    return () => clearTimeout(timer);
+    setLoading(false);
+    setNewUsername(user?.username || "");
   }, [token, navigate, user]);
 
   if (!token) return null;

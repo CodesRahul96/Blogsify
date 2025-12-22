@@ -15,7 +15,9 @@ const RecentBlogsSection = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/posts?page=1&limit=3`
+          `${
+            import.meta.env.VITE_BASE_URL
+          }/api/posts?page=1&limit=3&mode=snippet`
         );
         setBlogs(res.data.posts);
       } catch (err) {

@@ -21,7 +21,9 @@ function Blogs() {
       setLoading(true);
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/posts?page=${page}&limit=6`
+          `${
+            import.meta.env.VITE_BASE_URL
+          }/api/posts?page=${page}&limit=6&mode=snippet`
         );
         const newBlogs = res.data.posts;
         setBlogs((prev) => [...prev, ...newBlogs]);
