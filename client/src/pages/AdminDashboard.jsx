@@ -66,7 +66,7 @@ function AdminDashboard() {
 
     const interval = setInterval(() => {
       Promise.all([fetchPosts(), fetchUsers()]);
-    }, 5000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [token, navigate]);
@@ -74,7 +74,9 @@ function AdminDashboard() {
   const fetchPosts = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/posts?page=1&limit=100`,
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/api/posts?page=1&limit=100&mode=snippet`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPosts(Array.isArray(res.data.posts) ? res.data.posts : []);

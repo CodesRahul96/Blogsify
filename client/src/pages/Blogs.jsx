@@ -30,6 +30,7 @@ function Blogs() {
         setFilteredBlogs((prev) => [...prev, ...newBlogs]);
         setHasMore(newBlogs.length === 6);
         document.title = "Blogs - Blogsify";
+        // eslint-disable-next-line no-unused-vars
       } catch (error) {
         setError("Failed to load blogs");
       } finally {
@@ -168,7 +169,7 @@ function Blogs() {
         {showTopBtn && (
           <button
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-white text-black p-4 rounded-full shadow-xl hover:bg-gray-200 transition-all duration-300 z-50 hover:scale-110 active:scale-95"
+            className="fixed bottom-24 right-8 bg-white text-black p-4 rounded-full shadow-xl hover:bg-gray-200 transition-all duration-300 z-50 hover:scale-110 active:scale-95"
           >
             <FiArrowUp className="w-6 h-6" />
           </button>

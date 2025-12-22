@@ -28,7 +28,7 @@ function Footer() {
       <div className="absolute inset-x-0 bottom-0 top-12 bg-black/20 backdrop-blur-xl border-t border-white/5" />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-3">
               <img src={Logo} alt="Blogsify" className="h-8 opacity-90" />
@@ -66,7 +66,7 @@ function Footer() {
                   href={social.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2 rounded-full bg-white/5 hover:bg-white/10 hover:text-white text-white/60 transition-all hover:-translate-y-1"
+                  className="p-2 rounded-full bg-white/5 hover:bg-white/10 hover:text-white text-white/60 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-white/10"
                   aria-label={social.label}
                 >
                   <social.icon size={16} />
@@ -76,13 +76,15 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-6">Explore</h4>
+            <h4 className="text-white font-semibold mb-6 flex items-center gap-2">
+              <span className="w-1 h-4 bg-blue-500 rounded-full"></span> Explore
+            </h4>
             <ul className="space-y-3 text-sm text-white/50">
               {["Blogs", "Home", "About", "Contact"].map((item) => (
                 <li key={item}>
                   <Link
                     to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors hover:translate-x-1 inline-block"
                   >
                     {item}
                   </Link>
@@ -92,12 +94,15 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-6">Resources</h4>
+            <h4 className="text-white font-semibold mb-6 flex items-center gap-2">
+              <span className="w-1 h-4 bg-purple-500 rounded-full"></span>{" "}
+              Resources
+            </h4>
             <ul className="space-y-3 text-sm text-white/50">
               <li>
                 <Link
                   to="/guidelines"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-white transition-colors hover:translate-x-1 inline-block"
                 >
                   Writing Guidelines
                 </Link>
@@ -105,7 +110,7 @@ function Footer() {
               <li>
                 <Link
                   to="/privacy"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-white transition-colors hover:translate-x-1 inline-block"
                 >
                   Privacy Policy
                 </Link>
@@ -113,7 +118,7 @@ function Footer() {
               <li>
                 <Link
                   to="/terms"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-white transition-colors hover:translate-x-1 inline-block"
                 >
                   Terms of Service
                 </Link>
@@ -122,14 +127,14 @@ function Footer() {
                 {user ? (
                   <Link
                     to="/dashboard"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors hover:translate-x-1 inline-block"
                   >
                     Dashboard
                   </Link>
                 ) : (
                   <Link
                     to="/login"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors hover:translate-x-1 inline-block"
                   >
                     Login
                   </Link>
@@ -138,10 +143,11 @@ function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-white font-semibold mb-6">Stay Updated</h4>
-            <p className="text-white/50 text-sm mb-4">
-              Get the latest stories and updates delivered to your inbox.
+          <div className="bg-white/5 p-6 rounded-2xl border border-white/5 backdrop-blur-sm">
+            <h4 className="text-white font-semibold mb-2">Stay Updated</h4>
+            <p className="text-white/50 text-xs mb-4 leading-relaxed">
+              Get the latest stories and updates delivered to your inbox with
+              our weekly newsletter.
             </p>
             <form onSubmit={handleSubscribe} className="space-y-3">
               <div className="relative">
@@ -150,11 +156,11 @@ function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full pl-4 pr-12 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all"
+                  className="w-full pl-4 pr-12 py-3 rounded-xl bg-black/20 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-white/30 focus:bg-black/30 transition-all text-sm"
                 />
                 <button
                   type="submit"
-                  className="absolute right-1 top-1 bottom-1 px-4 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold uppercase tracking-wider transition-colors"
+                  className="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold uppercase tracking-wider transition-colors"
                 >
                   Join
                 </button>

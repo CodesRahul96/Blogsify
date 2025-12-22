@@ -165,10 +165,11 @@ function BlogDetails() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Content */}
+          {/* Main Content */}
           <div className="lg:col-span-8 space-y-8">
-            <GlassCard className="p-8 md:p-12 overflow-visible">
-              <header className="mb-8 border-b border-white/5 pb-8">
-                <div className="flex flex-wrap items-center gap-3 text-sm text-white/50 mb-6 font-medium">
+            <GlassCard className="p-5 md:p-12 overflow-visible">
+              <header className="mb-6 md:mb-8 border-b border-white/5 pb-6 md:pb-8">
+                <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm text-white/50 mb-6 font-medium">
                   <span className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-lg border border-blue-500/20">
                     {blog.category || "Technology"}
                   </span>
@@ -183,11 +184,11 @@ function BlogDetails() {
                   </span>
                 </div>
 
-                <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight">
+                <h1 className="text-2xl md:text-5xl font-extrabold text-white mb-6 leading-tight tracking-tight">
                   {blog.title}
                 </h1>
 
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-lg font-bold shadow-lg ring-2 ring-white/10">
                       {(blog.author?.username || "A").charAt(0).toUpperCase()}
@@ -202,7 +203,7 @@ function BlogDetails() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 self-start md:self-auto">
                     <button
                       onClick={handleLike}
                       className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all border border-white/10 hover:border-white/20 ${
@@ -240,17 +241,18 @@ function BlogDetails() {
               </header>
 
               {blog.imageUrl && (
-                <div className="mb-10 rounded-2xl overflow-hidden shadow-2xl border border-white/5 relative group">
+                <div className="mb-8 md:mb-10 rounded-2xl overflow-hidden shadow-2xl border border-white/5 relative group">
                   <img
                     src={blog.imageUrl}
                     alt={blog.title || "Blog cover"}
-                    className="w-full h-auto object-cover max-h-[500px] transform group-hover:scale-105 transition-transform duration-700"
+                    loading="lazy"
+                    className="w-full h-auto object-cover max-h-[300px] md:max-h-[500px] transform group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60"></div>
                 </div>
               )}
 
-              <div className="prose prose-invert prose-lg max-w-none text-white/80 leading-relaxed font-light prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-blockquote:border-l-4 prose-blockquote:border-white/30 prose-blockquote:pl-4 prose-blockquote:italic prose-code:text-pink-400 prose-code:bg-white/10 prose-code:rounded prose-code:px-1 prose-pre:bg-black/30 prose-pre:rounded-xl">
+              <div className="prose prose-invert prose-base md:prose-lg max-w-none text-white/80 leading-relaxed font-light prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-blockquote:border-l-4 prose-blockquote:border-white/30 prose-blockquote:pl-4 prose-blockquote:italic prose-code:text-pink-400 prose-code:bg-white/10 prose-code:rounded prose-code:px-1 prose-pre:bg-black/30 prose-pre:rounded-xl">
                 <ReactMarkdown
                   components={{
                     a: ({ node, ...props }) => (

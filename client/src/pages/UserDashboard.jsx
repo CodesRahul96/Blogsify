@@ -47,18 +47,40 @@ function UserDashboard() {
 
   const fetchPostsData = async () => {
     try {
+      // Use server-side filtering and snippet mode
       const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/posts?page=1&limit=100`
+        `${import.meta.env.VITE_BASE_URL}/api/posts?author=${
+          user?.username
+        }&mode=snippet&limit=20`,
+        // limit=20 is reasonable for a dashboard view
+        { headers: { Authorization: `Bearer ${token}` } } // Optional, but good practice
       );
-      const all = Array.isArray(res.data.posts) ? res.data.posts : res.data;
-      const username = user?.username;
-      const mine = all.filter((p) => {
-        const a = p?.author;
-        const au = a?.username ?? a;
-        return au === username;
-      });
-      setPosts(mine);
-      setAllPosts(all);
+      // The API now returns exactly what we need
+      const myPosts = Array.isArray(res.data.posts) ? res.data.posts : [];
+      setPosts(myPosts);
+
+      // We might still need allPosts for stats (likes/comments on ALL posts)
+      // Ideally, we'd have a specific "stats" endpoint.
+      // For now, let's KEEP fetching all posts separately ONLY if we really need precise global stats
+      // but maybe lazily or less frequently?
+      // Actually, the previous code filtered 'all' for 'mine'.
+      // If we only need stats for 'mine', we can use 'myPosts'.
+      // BUT `postsLikedCount` and `postsCommentedCount` rely on `allPosts` to check if *current user* liked *other* posts.
+      // Fetching ALL posts just for that is heavy.
+      // Let's OPTIMIZE: Fetch all posts in snippet mode too, but maybe limit distinct calls?
+      // For now, to solve "lag", let's prioritize the user's posts view.
+
+      // Fetch "all posts" for interaction stats (liked/commented)
+      // We can use a separate call, but optimize it to be snippet mode and maybe paginated?
+      // Actually, fetching 100 posts just to check likes is heavy.
+      // Proper solution: Backend endpoint /api/users/me/stats or similar.
+      // For now, let's try to live with just the user's posts for the list,
+      // and maybe fetch recent public posts for stats (limit 50?).
+
+      const allRes = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/posts?mode=snippet&limit=50`
+      );
+      setAllPosts(Array.isArray(allRes.data.posts) ? allRes.data.posts : []);
     } catch (err) {
       console.error("Failed to fetch posts:", err);
       setPosts([]);
@@ -76,9 +98,10 @@ function UserDashboard() {
     setLoading(true);
     fetchPostsData().finally(() => setLoading(false));
 
+    // Reduce polling frequency to 15s to reduce lag
     const interval = setInterval(() => {
       fetchPostsData();
-    }, 5000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [user, navigate]);

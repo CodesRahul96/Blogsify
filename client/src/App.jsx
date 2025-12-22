@@ -20,6 +20,9 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Sitemap = lazy(() => import("./pages/Sitemap"));
 const Support = lazy(() => import("./pages/Support"));
 const Profile = lazy(() => import("./pages/Profile"));
+const PrivacyPolicy = lazy(() => import("./pages/Privacy.jsx"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService.jsx"));
+const WritingGuidelines = lazy(() => import("./pages/WritingGuidelines.jsx"));
 
 // Dashboard router component that determines which dashboard to show
 function DashboardRouter() {
@@ -38,14 +41,16 @@ function DashboardRouter() {
   return user.isAdmin ? <AdminDashboard /> : <UserDashboard />;
 }
 
+import ScrollToTop from "./components/ScrollToTop";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
+      <ScrollToTop />
       <Navbar />
-      <main>
+      <main className="animate-fade-in">
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route exact path="/" element={<Home />} />
@@ -59,6 +64,9 @@ function App() {
             <Route path="/dashboard" element={<DashboardRouter />} />
             <Route path="/support" element={<Support />} />
             <Route path="/sitemap" element={<Sitemap />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/guidelines" element={<WritingGuidelines />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Suspense>

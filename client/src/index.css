@@ -10,10 +10,18 @@
   --glass-border: rgba(255, 255, 255, 0.2);
   --glass-bg: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --accent-color: #fca5a5; /* red-300 like */
+}
+
+::selection {
+  background: rgba(252, 165, 165, 0.3); /* red-300 with opacity */
+  color: #fff;
 }
 
 body {
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background: #0f0c29;
   background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
   background-size: 400% 400%;
@@ -35,6 +43,19 @@ body {
   100% {
     background-position: 0% 50%;
   }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
 /* Custom Scrollbar to mimicking iOS/Mac floating scrollbar */
