@@ -11,7 +11,7 @@ function Blogs() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showTopBtn, setShowTopBtn] = useState(false);
   const lastBlogElementRef = useRef();

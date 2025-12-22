@@ -3,7 +3,7 @@ import Logo from "../assets/lettering.png";
 
 function Loader() {
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-[9999]">
       {/* Glass overlay */}
       <div className="absolute inset-0 bg-black/20 backdrop-blur-xl" />
 
