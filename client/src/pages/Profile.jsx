@@ -15,6 +15,8 @@ import {
   FiLayout,
 } from "react-icons/fi";
 
+import { toast } from "react-toastify";
+
 function Profile() {
   const { user, logout, changePassword, updateUsername, deleteAccount } =
     useContext(AuthContext);
@@ -28,18 +30,14 @@ function Profile() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [pwLoading, setPwLoading] = useState(false);
-  const [pwError, setPwError] = useState("");
-  const [pwSuccess, setPwSuccess] = useState("");
 
   // Account Deletion
   const [delLoading, setDelLoading] = useState(false);
-  const [delError, setDelError] = useState("");
 
   // Username edit state
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [newUsername, setNewUsername] = useState(user?.username || "");
   const [usernameLoading, setUsernameLoading] = useState(false);
-  const [usernameError, setUsernameError] = useState("");
 
   useEffect(() => {
     document.title = "Profile - Blogsify";
@@ -58,6 +56,7 @@ function Profile() {
   const handleLogout = () => {
     logout();
     navigate("/login");
+    toast.info("Logged out successfully", { theme: "dark" });
   };
 
   const handleDeleteAccount = async () => {
@@ -67,13 +66,15 @@ function Profile() {
       )
     )
       return;
-    setDelError("");
     setDelLoading(true);
     try {
       await deleteAccount();
       navigate("/signup");
+      toast.success("Account deleted successfully", { theme: "dark" });
     } catch (err) {
-      setDelError(err?.message || "Failed to delete account.");
+      toast.error(err?.message || "Failed to delete account.", {
+        theme: "dark",
+      });
     } finally {
       setDelLoading(false);
     }
@@ -81,29 +82,30 @@ function Profile() {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
-    setPwError("");
-    setPwSuccess("");
 
     if (!currentPassword || !newPassword) {
-      setPwError("Please fill in both fields.");
+      toast.warn("Please fill in both fields.", { theme: "dark" });
       return;
     }
     if (newPassword.length < 8) {
-      setPwError("New password must be at least 8 characters.");
+      toast.warn("New password must be at least 8 characters.", {
+        theme: "dark",
+      });
       return;
     }
 
     setPwLoading(true);
     try {
       await changePassword(currentPassword, newPassword);
-      setPwSuccess("Password changed successfully!");
+      toast.success("Password changed successfully!", { theme: "dark" });
       setCurrentPassword("");
       setNewPassword("");
     } catch (err) {
-      setPwError(
+      toast.error(
         err?.response?.data?.message ||
           err?.message ||
-          "Failed to change password."
+          "Failed to change password.",
+        { theme: "dark" }
       );
     } finally {
       setPwLoading(false);
@@ -111,17 +113,20 @@ function Profile() {
   };
 
   const handleUpdateUsername = async () => {
-    setUsernameError("");
     if (!newUsername.trim())
-      return setUsernameError("Username cannot be empty.");
-    if (newUsername.length < 3) return setUsernameError("Min 3 characters.");
+      return toast.warn("Username cannot be empty.", { theme: "dark" });
+    if (newUsername.length < 3)
+      return toast.warn("Min 3 characters.", { theme: "dark" });
 
     setUsernameLoading(true);
     try {
       await updateUsername(newUsername);
       setIsEditingUsername(false);
+      toast.success("Username updated!", { theme: "dark" });
     } catch (err) {
-      setUsernameError(err?.message || "Failed to update username.");
+      toast.error(err?.message || "Failed to update username.", {
+        theme: "dark",
+      });
     } finally {
       setUsernameLoading(false);
     }
@@ -217,9 +222,6 @@ function Profile() {
                           </>
                         )}
                       </div>
-                      {usernameError && (
-                        <p className="text-red-400 text-sm">{usernameError}</p>
-                      )}
 
                       <p className="text-white/50">{user?.email}</p>
                       <div className="flex gap-2 justify-center md:justify-start mt-2">
@@ -277,13 +279,6 @@ function Profile() {
                       >
                         {pwLoading ? "Updating..." : "Update Password"}
                       </button>
-
-                      {pwError && (
-                        <p className="text-red-400 text-sm">{pwError}</p>
-                      )}
-                      {pwSuccess && (
-                        <p className="text-green-400 text-sm">{pwSuccess}</p>
-                      )}
                     </form>
                   </div>
 
@@ -302,9 +297,6 @@ function Profile() {
                     >
                       {delLoading ? "Deleting Account..." : "Delete My Account"}
                     </button>
-                    {delError && (
-                      <p className="text-red-400 text-sm mt-3">{delError}</p>
-                    )}
                   </div>
                 </div>
               )}

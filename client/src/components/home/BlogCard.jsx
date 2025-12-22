@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import GlassCard from "../ui/GlassCard";
 import { FiUser, FiCalendar, FiClock } from "react-icons/fi";
+import PosterTemp from "../../assets/poster_temp.jpg";
 
 const BlogCard = ({ blog }) => {
   const formatDate = (dateString) => {
@@ -31,10 +32,7 @@ const BlogCard = ({ blog }) => {
               src={blog.imageUrl}
               alt={blog.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              onError={(e) =>
-                (e.target.src =
-                  "https://via.placeholder.com/600x300?text=No+Image")
-              }
+              onError={(e) => (e.target.src = `${PosterTemp}`)}
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">

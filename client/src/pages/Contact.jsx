@@ -1,10 +1,11 @@
 import { useState } from "react";
 import GlassCard from "../components/ui/GlassCard";
 import { FiMail, FiPhone, FiSend } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -12,13 +13,19 @@ function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) {
-      setStatus("Please complete all fields.");
+      toast.warn("Please complete all fields.", { theme: "dark" });
       return;
     }
-    setStatus("Sending...");
+    setLoading(true);
     setTimeout(() => {
-      setStatus("Message sent successfully! We will get back to you soon.");
+      toast.success(
+        "Message sent successfully! We andapos;ll get back to you soon.",
+        {
+          theme: "dark",
+        }
+      );
       setForm({ name: "", email: "", message: "" });
+      setLoading(false);
     }, 1500);
   };
 
@@ -108,24 +115,15 @@ function Contact() {
 
               <button
                 type="submit"
-                className="w-full bg-white text-black py-4 rounded-xl font-bold text-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2 group active:scale-[0.98]"
+                disabled={loading}
+                className="w-full bg-white text-black py-4 rounded-xl font-bold text-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2 group active:scale-[0.98] disabled:opacity-50"
               >
-                <span>Send Message</span>
-                <FiSend className="group-hover:translate-x-1 transition-transform" />
+                <span>{loading ? "Sending..." : "Send Message"}</span>
+                {!loading && (
+                  <FiSend className="group-hover:translate-x-1 transition-transform" />
+                )}
               </button>
             </form>
-
-            {status && (
-              <div
-                className={`mt-6 p-4 rounded-xl text-center text-sm font-medium ${
-                  status.includes("success")
-                    ? "bg-green-500/10 text-green-300"
-                    : "bg-blue-500/10 text-blue-300"
-                }`}
-              >
-                {status}
-              </div>
-            )}
           </GlassCard>
         </div>
       </div>

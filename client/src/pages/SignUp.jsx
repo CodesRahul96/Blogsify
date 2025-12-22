@@ -6,6 +6,8 @@ import AuthLayout from "../components/AuthLayout";
 import Loader from "../components/Loader";
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
+import { toast } from "react-toastify";
+
 function SignUp() {
   const [formData, setFormData] = useState({
     username: "",
@@ -13,7 +15,6 @@ function SignUp() {
     password: "",
   });
   const [passwordStrength, setPasswordStrength] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -25,19 +26,24 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (passwordStrength !== "Strong") {
-      setError("Password must be strong to register.");
+      toast.warning(
+        "Password must be strong (include mix of case, numbers, symbols)",
+        { theme: "dark" }
+      );
       return;
     }
     setLoading(true);
-    setError("");
     try {
       await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/auth/register`,
         formData
       );
+      toast.success("Account created! Please log in.", { theme: "dark" });
       navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      toast.error(err.response?.data?.message || "Registration failed", {
+        theme: "dark",
+      });
     } finally {
       setLoading(false);
     }
@@ -52,18 +58,6 @@ function SignUp() {
           <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
           <p className="text-white/50 text-sm">Join the community today</p>
         </div>
-
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-3 rounded-xl mb-6 text-center text-sm relative">
-            <button
-              onClick={() => setError("")}
-              className="absolute right-3 top-3 text-red-200/50 hover:text-red-200"
-            >
-              ✕
-            </button>
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-4">

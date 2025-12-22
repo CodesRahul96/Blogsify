@@ -8,6 +8,7 @@ import {
   FiSend,
   FiMessageCircle,
 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const faqs = [
   {
@@ -31,18 +32,21 @@ const faqs = [
 function Support() {
   const [open, setOpen] = useState(null);
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const submit = (e) => {
     e.preventDefault();
     if (!message) {
-      setStatus("Please provide details of your issue.");
+      toast.warn("Please provide details of your issue.", { theme: "dark" });
       return;
     }
-    setStatus("Sending request...");
+    setLoading(true);
     setTimeout(() => {
-      setStatus("Support request sent! We will respond shortly.");
+      toast.success("Support request sent! We will respond shortly.", {
+        theme: "dark",
+      });
       setMessage("");
+      setLoading(false);
     }, 1500);
   };
 
@@ -122,22 +126,12 @@ function Support() {
                 />
                 <button
                   type="submit"
-                  className="w-full bg-white text-black py-3 rounded-full font-bold hover:bg-gray-200 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                  disabled={loading}
+                  className="w-full bg-white text-black py-3 rounded-full font-bold hover:bg-gray-200 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <span>Submit Request</span>
-                  <FiSend />
+                  <span>{loading ? "Sending..." : "Submit Request"}</span>
+                  {!loading && <FiSend />}
                 </button>
-                {status && (
-                  <div
-                    className={`mt-4 p-3 rounded-lg text-center text-sm font-medium ${
-                      status.includes("sent")
-                        ? "bg-green-500/10 text-green-300"
-                        : "bg-blue-500/10 text-blue-300"
-                    }`}
-                  >
-                    {status}
-                  </div>
-                )}
               </form>
             </GlassCard>
           </div>

@@ -19,12 +19,7 @@ import {
   FiMessageCircle,
 } from "react-icons/fi";
 
-const DOCK_ITEMS = [
-  { icon: FiHome, label: "Home", path: "/" },
-  { icon: FiGrid, label: "Dashboard", path: "/dashboard" },
-  { icon: FiUser, label: "Profile", path: "/profile" },
-  { icon: FiSettings, label: "Settings", path: "/settings" }, // Placeholder
-];
+import { toast } from "react-toastify";
 
 function UserDashboard() {
   const { user } = useContext(AuthContext) || {};
@@ -34,10 +29,21 @@ function UserDashboard() {
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [editId, setEditId] = useState(null);
-  const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const navigate = useNavigate();
+
+  const handleCreateClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById("title")?.focus();
+  };
+
+  const DOCK_ITEMS = [
+    { icon: FiHome, label: "Home", path: "/" },
+    { icon: FiGrid, label: "My Posts", path: "/dashboard" },
+    { icon: FiPlusSquare, label: "Create", onClick: handleCreateClick },
+    { icon: FiUser, label: "Profile", path: "/profile" },
+  ];
 
   const fetchPostsData = async () => {
     try {
@@ -117,9 +123,8 @@ function UserDashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     if (!title || !content) {
-      setError("Title and content are required");
+      toast.warn("Title and content are required", { theme: "dark" });
       return;
     }
     setSaving(true);
@@ -131,6 +136,7 @@ function UserDashboard() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts((prev) => prev.map((p) => (p._id === editId ? res.data : p)));
+        toast.success("Post updated successfully!", { theme: "dark" });
       } else {
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/api/posts`,
@@ -143,11 +149,13 @@ function UserDashboard() {
           }
         );
         setPosts((prev) => [res.data, ...prev]);
+        toast.success("Post published successfully!", { theme: "dark" });
       }
       resetForm();
     } catch (err) {
-      setError(
-        err.response?.data?.message || err.message || "Failed to save post"
+      toast.error(
+        err.response?.data?.message || err.message || "Failed to save post",
+        { theme: "dark" }
       );
     } finally {
       setSaving(false);
@@ -169,9 +177,11 @@ function UserDashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPosts((prev) => prev.filter((p) => p._id !== id));
+      toast.success("Post deleted successfully", { theme: "dark" });
     } catch (err) {
-      setError(
-        err.response?.data?.message || err.message || "Failed to delete post"
+      toast.error(
+        err.response?.data?.message || err.message || "Failed to delete post",
+        { theme: "dark" }
       );
     }
   };
@@ -245,12 +255,6 @@ function UserDashboard() {
                 Sync
               </button>
             </div>
-
-            {error && (
-              <div className="bg-red-500/20 border border-red-500/30 text-red-200 p-3 rounded-xl mb-4 text-sm">
-                {error}
-              </div>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <input

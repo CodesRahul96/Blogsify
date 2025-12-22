@@ -38,6 +38,9 @@ function DashboardRouter() {
   return user.isAdmin ? <AdminDashboard /> : <UserDashboard />;
 }
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   return (
     <>
@@ -61,6 +64,7 @@ function App() {
         </Suspense>
       </main>
       <Footer />
+      <ToastContainer position="bottom-right" theme="dark" />
     </>
   );
 }

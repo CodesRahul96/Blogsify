@@ -6,10 +6,11 @@ import { AuthContext } from "../context/AuthContext";
 import AuthLayout from "../components/AuthLayout";
 import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
+import { toast } from "react-toastify";
+
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { user, login } = useContext(AuthContext);
@@ -25,7 +26,6 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
 
     try {
       const res = await axios.post(
@@ -33,9 +33,12 @@ function Login() {
         { username, password }
       );
       login(res.data.token);
+      toast.success("Welcome back!", { theme: "dark" });
       navigate("/blogs");
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid username or password");
+      toast.error(err.response?.data?.message || "Invalid credentials", {
+        theme: "dark",
+      });
     } finally {
       setLoading(false);
     }
@@ -52,18 +55,6 @@ function Login() {
             Sign in to continue to your dashboard
           </p>
         </div>
-
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-3 rounded-xl mb-6 text-center text-sm flex items-center justify-between">
-            <span>{error}</span>
-            <button
-              onClick={() => setError("")}
-              className="text-red-200/50 hover:text-red-200"
-            >
-              ✕
-            </button>
-          </div>
-        )}
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div className="space-y-5">

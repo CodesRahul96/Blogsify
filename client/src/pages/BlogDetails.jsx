@@ -15,6 +15,8 @@ import {
   FiArrowLeft,
 } from "react-icons/fi";
 
+import { toast } from "react-toastify";
+
 function BlogDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -59,7 +61,10 @@ function BlogDetails() {
   }, [id]);
 
   const handleLike = async () => {
-    if (!token) return alert("Please log in to like this post");
+    if (!token) {
+      toast.info("Please log in to like this post", { theme: "dark" });
+      return;
+    }
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/posts/${id}/like`,
@@ -68,13 +73,16 @@ function BlogDetails() {
       );
       setBlog(res.data);
     } catch (err) {
-      setError("Failed to like post");
+      toast.error("Failed to like post", { theme: "dark" });
     }
   };
 
   const handleComment = async (e) => {
     e.preventDefault();
-    if (!token) return alert("Please log in to comment");
+    if (!token) {
+      toast.info("Please log in to comment", { theme: "dark" });
+      return;
+    }
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/posts/${id}/comment`,
@@ -83,13 +91,14 @@ function BlogDetails() {
       );
       setBlog(res.data);
       setComment("");
+      toast.success("Comment added", { theme: "dark" });
     } catch (err) {
-      setError("Failed to add comment");
+      toast.error("Failed to add comment", { theme: "dark" });
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!token) return alert("Please log in to delete comments");
+    if (!token) return;
     if (!window.confirm("Delete this comment?")) return;
     try {
       const res = await axios.delete(
@@ -97,8 +106,9 @@ function BlogDetails() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBlog(res.data);
+      toast.success("Comment deleted", { theme: "dark" });
     } catch (err) {
-      setError("Failed to delete comment");
+      toast.error("Failed to delete comment", { theme: "dark" });
     }
   };
 

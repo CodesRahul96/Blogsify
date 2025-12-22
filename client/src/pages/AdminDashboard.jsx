@@ -25,12 +25,7 @@ import {
   FiRefreshCw,
 } from "react-icons/fi";
 
-const DOCK_ITEMS = [
-  { icon: FiHome, label: "Home", path: "/" },
-  { icon: FiLayout, label: "Dashboard", path: "/dashboard" },
-  { icon: FiUsers, label: "Users", path: "#users" }, // Just a visual indicator in this context, logic handled via tabs
-  { icon: FiSettings, label: "Settings", path: "/settings" },
-];
+import { toast } from "react-toastify";
 
 function AdminDashboard() {
   const [posts, setPosts] = useState([]);
@@ -39,7 +34,6 @@ function AdminDashboard() {
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [editId, setEditId] = useState(null);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState("overview"); // overview, posts, users
@@ -49,6 +43,17 @@ function AdminDashboard() {
   const [showTopBtn, setShowTopBtn] = useState(false);
 
   const { user } = useContext(AuthContext) || {};
+
+  const DOCK_ITEMS = [
+    { icon: FiHome, label: "Home", path: "/" },
+    {
+      icon: FiLayout,
+      label: "Overview",
+      onClick: () => setActiveTab("overview"),
+    },
+    { icon: FiGrid, label: "Posts", onClick: () => setActiveTab("posts") },
+    { icon: FiUsers, label: "Users", onClick: () => setActiveTab("users") },
+  ];
 
   useEffect(() => {
     document.title = "Admin Dashboard";
@@ -74,8 +79,9 @@ function AdminDashboard() {
       );
       setPosts(Array.isArray(res.data.posts) ? res.data.posts : []);
     } catch (err) {
-      setError(
-        "Failed to load posts: " + (err.response?.data?.message || err.message)
+      toast.error(
+        "Failed to load posts: " + (err.response?.data?.message || err.message),
+        { theme: "dark" }
       );
       setPosts([]);
     }
@@ -89,8 +95,9 @@ function AdminDashboard() {
       );
       setUsers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      setError(
-        "Failed to load users: " + (err.response?.data?.message || err.message)
+      toast.error(
+        "Failed to load users: " + (err.response?.data?.message || err.message),
+        { theme: "dark" }
       );
       setUsers([]);
     }
@@ -113,7 +120,6 @@ function AdminDashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     try {
       if (editId) {
         const res = await axios.put(
@@ -125,6 +131,7 @@ function AdminDashboard() {
           prev.map((post) => (post._id === editId ? res.data : post))
         );
         setEditId(null);
+        toast.success("Post updated successfully", { theme: "dark" });
       } else {
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/api/posts`,
@@ -132,13 +139,15 @@ function AdminDashboard() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts((prev) => [res.data, ...prev]);
+        toast.success("Post created successfully", { theme: "dark" });
       }
       setTitle("");
       setImageUrl("");
       setContent("");
     } catch (err) {
-      setError(
-        "Failed to save post: " + (err.response?.data?.message || err.message)
+      toast.error(
+        "Failed to save post: " + (err.response?.data?.message || err.message),
+        { theme: "dark" }
       );
     }
   };
@@ -150,9 +159,12 @@ function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPosts((prev) => prev.filter((post) => post._id !== id));
+      toast.success("Post deleted successfully", { theme: "dark" });
     } catch (err) {
-      setError(
-        "Failed to delete post: " + (err.response?.data?.message || err.message)
+      toast.error(
+        "Failed to delete post: " +
+          (err.response?.data?.message || err.message),
+        { theme: "dark" }
       );
     }
   };
@@ -177,18 +189,21 @@ function AdminDashboard() {
     const newPassword = window.prompt("Enter new password for this user:");
     if (!newPassword) return;
     if (newPassword.length < 6)
-      return alert("Password must be at least 6 characters");
+      return toast.warn("Password must be at least 6 characters", {
+        theme: "dark",
+      });
     try {
       await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/auth/reset-password/${userId}`,
         { newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert("Password reset successfully");
+      toast.success("Password reset successfully", { theme: "dark" });
     } catch (err) {
-      alert(
+      toast.error(
         "Failed to reset password: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
+        { theme: "dark" }
       );
     }
   };
@@ -207,9 +222,12 @@ function AdminDashboard() {
       );
       setUsers((prev) => prev.filter((u) => u._id !== userId));
       fetchPosts();
+      toast.success("User deleted successfully", { theme: "dark" });
     } catch (err) {
-      alert(
-        "Failed to delete user: " + (err.response?.data?.message || err.message)
+      toast.error(
+        "Failed to delete user: " +
+          (err.response?.data?.message || err.message),
+        { theme: "dark" }
       );
     }
   };
@@ -269,12 +287,6 @@ function AdminDashboard() {
             ))}
           </div>
         </div>
-
-        {error && (
-          <div className="bg-red-500/20 text-red-100 p-4 rounded-2xl border border-red-500/30 text-center backdrop-blur-md">
-            {error}
-          </div>
-        )}
 
         {activeTab === "overview" && (
           <div className="space-y-6">
