@@ -2,14 +2,13 @@ const express = require("express");
 
 const Post = require("../models/Post");
 const router = express.Router();
-const {auth, isAdmin} = require("../middleware/auth") // Middleware
-
-
+const { auth, isAdmin } = require("../middleware/auth"); // Middleware
 
 // Get all posts with optional pagination (public)
 router.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1; // Default to page 1
   const limit = parseInt(req.query.limit) || 6; // Default to 6 posts per page
+  const snippet = req.query.mode === "snippet"; // Check for snippet mode
   const skip = (page - 1) * limit;
 
   try {
@@ -17,13 +16,26 @@ router.get("/", async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate({ path: 'comments.user', select: 'username' });
+      .populate({ path: "comments.user", select: "username" });
+
     const totalPosts = await Post.countDocuments();
-    // console.log("Sending posts:", posts); // Debug backend
-    // Normalize author to an object for frontend compatibility when needed
+
+    // Normalize and optionally truncate
     const normalized = posts.map((p) => {
       const po = p.toObject();
-      po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+      po.author =
+        typeof po.author === "string" ? { username: po.author } : po.author;
+
+      if (snippet) {
+        // Calculate read time
+        const words = (po.content || "").trim().split(/\s+/).length;
+        const minutes = Math.max(1, Math.round(words / 200));
+        po.readTime = `${minutes} min read`;
+
+        // Truncate content
+        po.content = (po.content || "").substring(0, 200) + "...";
+      }
+
       return po;
     });
 
@@ -41,10 +53,14 @@ router.get("/", async (req, res) => {
 // Get a single post by ID (public)
 router.get("/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).populate({ path: 'comments.user', select: 'username' });
+    const post = await Post.findById(req.params.id).populate({
+      path: "comments.user",
+      select: "username",
+    });
     if (!post) return res.status(404).json({ message: "Post not found" });
     const po = post.toObject();
-    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    po.author =
+      typeof po.author === "string" ? { username: po.author } : po.author;
     res.json(po);
   } catch (err) {
     // console.error("Error fetching post:", err);
@@ -56,7 +72,8 @@ router.get("/:id", async (req, res) => {
 router.post("/", auth, async (req, res) => {
   try {
     // Use username from the token to prevent forged authorship
-    const author = req.user && req.user.username ? req.user.username : "Anonymous";
+    const author =
+      req.user && req.user.username ? req.user.username : "Anonymous";
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
@@ -67,15 +84,18 @@ router.post("/", auth, async (req, res) => {
     });
     await post.save();
     // return populated normalized post
-    const created = await Post.findById(post._id).populate({ path: 'comments.user', select: 'username' });
+    const created = await Post.findById(post._id).populate({
+      path: "comments.user",
+      select: "username",
+    });
     const po = created.toObject();
-    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    po.author =
+      typeof po.author === "string" ? { username: po.author } : po.author;
     res.status(201).json(po);
   } catch (err) {
     res.status(500).json({ message: "Server error creating post" });
   }
 });
-
 
 // Update a post (owner or admin)
 router.put("/:id", auth, async (req, res) => {
@@ -85,7 +105,9 @@ router.put("/:id", auth, async (req, res) => {
 
     // Allow only the post owner (by username) or admin to update
     if (post.author !== req.user.username && !req.user.isAdmin) {
-      return res.status(403).json({ message: "Not authorized to update this post" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this post" });
     }
 
     post.title = req.body.title ?? post.title;
@@ -108,7 +130,9 @@ router.delete("/:id", auth, async (req, res) => {
 
     // Allow only the post owner (by username) or admin to delete
     if (post.author !== req.user.username && !req.user.isAdmin) {
-      return res.status(403).json({ message: "Not authorized to delete this post" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this post" });
     }
 
     await Post.findByIdAndDelete(req.params.id);
@@ -129,9 +153,13 @@ router.post("/:id/like", auth, async (req, res) => {
       post.likes.push(req.user.id);
     }
     await post.save();
-    const updated = await Post.findById(post._id).populate({ path: 'comments.user', select: 'username' });
+    const updated = await Post.findById(post._id).populate({
+      path: "comments.user",
+      select: "username",
+    });
     const po = updated.toObject();
-    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    po.author =
+      typeof po.author === "string" ? { username: po.author } : po.author;
     res.json(po);
   } catch (err) {
     // console.error("Error liking post:", err);
@@ -146,9 +174,13 @@ router.post("/:id/comment", auth, async (req, res) => {
     if (!post) return res.status(404).json({ message: "Post not found" });
     post.comments.push({ user: req.user.id, text: req.body.text });
     await post.save();
-    const updated = await Post.findById(post._id).populate({ path: 'comments.user', select: 'username' });
+    const updated = await Post.findById(post._id).populate({
+      path: "comments.user",
+      select: "username",
+    });
     const po = updated.toObject();
-    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    po.author =
+      typeof po.author === "string" ? { username: po.author } : po.author;
     res.json(po);
   } catch (err) {
     // console.error("Error commenting on post:", err);
@@ -157,28 +189,36 @@ router.post("/:id/comment", auth, async (req, res) => {
 });
 
 // Delete a comment (auth required, user or admin)
-router.delete('/:id/comment/:commentId', auth, async (req, res) => {
+router.delete("/:id/comment/:commentId", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (!post) return res.status(404).json({ message: "Post not found" });
 
     const comment = post.comments.id(req.params.commentId);
-    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
 
     // Check if user is the comment owner or an admin
     if (comment.user.toString() !== req.user.id && !req.user.isAdmin) {
-      return res.status(403).json({ message: 'Not authorized to delete this comment' });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this comment" });
     }
 
-    post.comments = post.comments.filter((c) => c._id.toString() !== req.params.commentId);
+    post.comments = post.comments.filter(
+      (c) => c._id.toString() !== req.params.commentId
+    );
     await post.save();
-    const updated = await Post.findById(post._id).populate({ path: 'comments.user', select: 'username' });
+    const updated = await Post.findById(post._id).populate({
+      path: "comments.user",
+      select: "username",
+    });
     const po = updated.toObject();
-    po.author = typeof po.author === 'string' ? { username: po.author } : po.author;
+    po.author =
+      typeof po.author === "string" ? { username: po.author } : po.author;
     res.json(po); // Return updated post
   } catch (err) {
     // console.error('Error deleting comment:', err);
-    res.status(500).json({ message: 'Server error deleting comment' });
+    res.status(500).json({ message: "Server error deleting comment" });
   }
 });
 
