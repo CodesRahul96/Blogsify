@@ -1,30 +1,39 @@
 import { Link } from "react-router-dom";
+import GlassCard from "../ui/GlassCard";
 
 const CTASection = () => {
   return (
-    <section className="py-16">
-      <div className="container mx-auto px-4 text-center bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl max-w-4xl py-12 border border-gray-700/50">
-<h2 className="text-3xl md:text-4xl font-bold mb-6">
-          Ready to Get Started?
-        </h2>
-        <p className="text-lg mb-8 max-w-xl mx-auto text-gray-300">
-          Join Blogsify today and start exploring, learning, or reading our
-          stories!
-        </p>
-        <div className="flex justify-center space-x-4">
-          <Link
-            to="/register"
-            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-8 rounded-full font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-md"
-          >
-            Sign Up
-          </Link>
-          <Link
-            to="/blogs"
-            className="bg-transparent border-2 border-white text-white py-3 px-8 rounded-full font-semibold hover:bg-white/20 hover:border-white/50 transition-all duration-300"
-          >
-            View Blogs
-          </Link>
-        </div>
+    <section className="py-24">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <GlassCard className="text-center p-12 md:p-16 bg-gradient-to-br from-blue-900/40 to-purple-900/40 border-white/10 relative overflow-hidden">
+          {/* Background decorative glow */}
+          <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+
+          <div className="relative z-10">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+              Ready to Get Started?
+            </h2>
+            <p className="text-xl mb-10 max-w-2xl mx-auto text-white/70">
+              Join Blogsify today and start exploring, learning, or reading our
+              stories!
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link
+                to="/register"
+                className="bg-white text-black py-4 px-10 rounded-full font-bold text-lg hover:bg-gray-100 transition-all duration-300 shadow-xl shadow-white/10 active:scale-95"
+              >
+                Create Account
+              </Link>
+              <Link
+                to="/blogs"
+                className="bg-white/10 text-white py-4 px-10 rounded-full font-semibold text-lg hover:bg-white/20 border border-white/20 transition-all duration-300 backdrop-blur-md active:scale-95"
+              >
+                View Blogs
+              </Link>
+            </div>
+          </div>
+        </GlassCard>
       </div>
     </section>
   );

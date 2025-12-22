@@ -1,61 +1,145 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import GlassCard from "../components/ui/GlassCard";
+import {
+  FiHelpCircle,
+  FiChevronDown,
+  FiChevronUp,
+  FiSend,
+  FiMessageCircle,
+} from "react-icons/fi";
 
 const faqs = [
-  { q: 'How do I publish a post?', a: 'Register, go to your dashboard and click Create Post.' },
-  { q: 'How do I edit my post?', a: 'Open the post from your dashboard and click Edit.' },
-  { q: 'How do I report abuse?', a: 'Use the contact form or email support@example.com.' },
+  {
+    q: "How do I publish a post?",
+    a: 'Register for an account, navigate to your dashboard, and click "Create Post" to start writing.',
+  },
+  {
+    q: "How do I edit my post?",
+    a: 'Go to your dashboard, find the post you want to edit in the list, and click the "Edit" button.',
+  },
+  {
+    q: "Can I delete my account?",
+    a: "Yes, you can delete your account from the Profile settings page. This action is irreversible.",
+  },
+  {
+    q: "How do I report inappropriate content?",
+    a: "You can use the contact form or email our support team directly at support@blogsify.com.",
+  },
 ];
 
 function Support() {
   const [open, setOpen] = useState(null);
-  const [message, setMessage] = useState('');
-  const [status, setStatus] = useState('');
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState("");
 
   const submit = (e) => {
     e.preventDefault();
-    if (!message) { setStatus('Please provide details of your issue.'); return; }
-    setStatus('Sending request...');
-    setTimeout(()=>{ setStatus('Support request sent — we will respond shortly.'); setMessage(''); }, 800);
+    if (!message) {
+      setStatus("Please provide details of your issue.");
+      return;
+    }
+    setStatus("Sending request...");
+    setTimeout(() => {
+      setStatus("Support request sent! We will respond shortly.");
+      setMessage("");
+    }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-16">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
-      <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{backgroundImage: "url(/src/assets/blogsify-bg.avif)"}} />
-
-      <div className="relative z-10 mx-auto max-w-5xl px-6 text-gray-100">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-extrabold mb-2">Support</h1>
-          <p className="text-gray-300">Find quick answers or send us a support request.</p>
+    <div className="min-h-screen pt-32 pb-16 relative overflow-hidden">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 lg:px-8 text-white">
+        <header className="text-center mb-16">
+          <div className="inline-flex items-center justify-center p-3 rounded-full bg-white/5 border border-white/10 mb-6 text-2xl text-blue-400">
+            <FiHelpCircle />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Support Center
+          </h1>
+          <p className="text-white/60 text-lg">We&apos;re here to help.</p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          {/* FAQ Section */}
           <div>
-            <h2 className="text-2xl font-semibold mb-4">Frequently asked</h2>
-            <div className="space-y-3">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-4">
               {faqs.map((f, i) => (
-                <div key={i} className="bg-white/5 p-4 rounded-lg border border-gray-700/40">
-                  <button onClick={()=> setOpen(open===i?null:i)} className="w-full text-left flex justify-between items-center">
-                    <span className="font-medium text-gray-100">{f.q}</span>
-                    <span className="text-gray-300">{open===i? '−' : '+'}</span>
+                <GlassCard
+                  key={i}
+                  className="p-0 border-white/10 bg-white/5 overflow-hidden"
+                >
+                  <button
+                    onClick={() => setOpen(open === i ? null : i)}
+                    className="w-full text-left flex justify-between items-center p-6 hover:bg-white/5 transition-colors"
+                  >
+                    <span className="font-semibold text-white/90">{f.q}</span>
+                    <span className="text-white/50">
+                      {open === i ? <FiChevronUp /> : <FiChevronDown />}
+                    </span>
                   </button>
-                  {open===i && <div className="mt-3 text-gray-300">{f.a}</div>}
-                </div>
+                  {open === i && (
+                    <div className="px-6 pb-6 text-white/60 leading-relaxed border-t border-white/5 pt-4 animate-fade-in">
+                      {f.a}
+                    </div>
+                  )}
+                </GlassCard>
               ))}
             </div>
-            <p className="mt-6 text-gray-400">Still need help? <Link to="/contact" className="text-purple-300">Contact us</Link></p>
+            <div className="mt-8 p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
+              <p className="text-white/60 mb-4">
+                Can&apos;t find what you&apos;re looking for?
+              </p>
+              <Link
+                to="/contact"
+                className="text-blue-400 font-semibold hover:text-blue-300"
+              >
+                Contact our team &rarr;
+              </Link>
+            </div>
           </div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Send a request</h2>
-            <form onSubmit={submit} className="bg-white/5 p-6 rounded-lg border border-gray-700/40">
-              <textarea value={message} onChange={(e)=> setMessage(e.target.value)} rows={6} placeholder="Describe your issue" className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white" />
-              <div className="mt-3 flex items-center justify-between">
-                <button className="bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2 rounded-full">Submit</button>
-                {status && <span className="text-sm text-gray-300">{status}</span>}
-              </div>
-            </form>
+          {/* Request Form */}
+          <div className="lg:sticky lg:top-28">
+            <GlassCard className="p-8 border-white/10 bg-white/5">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <FiMessageCircle /> Send a Request
+              </h2>
+              <p className="text-white/50 mb-6 text-sm">
+                Describe your issue in detail and we&apos;ll get back to you as
+                soon as possible.
+              </p>
+
+              <form onSubmit={submit} className="space-y-4">
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={6}
+                  placeholder="How can we assist you today?"
+                  className="w-full p-4 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-blue-500/50 resize-none transition-colors"
+                />
+                <button
+                  type="submit"
+                  className="w-full bg-white text-black py-3 rounded-full font-bold hover:bg-gray-200 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <span>Submit Request</span>
+                  <FiSend />
+                </button>
+                {status && (
+                  <div
+                    className={`mt-4 p-3 rounded-lg text-center text-sm font-medium ${
+                      status.includes("sent")
+                        ? "bg-green-500/10 text-green-300"
+                        : "bg-blue-500/10 text-blue-300"
+                    }`}
+                  >
+                    {status}
+                  </div>
+                )}
+              </form>
+            </GlassCard>
           </div>
         </div>
       </div>

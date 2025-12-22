@@ -4,6 +4,7 @@ import axios from "axios";
 import PasswordChecker from "../components/PasswordChecker";
 import AuthLayout from "../components/AuthLayout";
 import Loader from "../components/Loader";
+import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -47,36 +48,28 @@ function SignUp() {
   return (
     <AuthLayout>
       <div>
-        <h2 className="text-3xl font-bold text-white mb-6 text-center">
-          Register
-        </h2>
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
+          <p className="text-white/50 text-sm">Join the community today</p>
+        </div>
+
         {error && (
-          <div className="bg-red-500/20 text-red-200 p-4 rounded-lg mb-6 text-center relative">
+          <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-3 rounded-xl mb-6 text-center text-sm relative">
             <button
               onClick={() => setError("")}
-              className="absolute right-3 top-3 text-red-200 opacity-80 hover:opacity-100"
+              className="absolute right-3 top-3 text-red-200/50 hover:text-red-200"
             >
               ✕
             </button>
             {error}
           </div>
         )}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-4">
+            <div className="relative group">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-white/30 group-focus-within:text-blue-400 transition-colors">
+                <FiUser size={18} />
               </span>
               <input
                 type="text"
@@ -84,52 +77,29 @@ function SignUp() {
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="Username"
-                className="w-full p-4 pl-10 pr-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full p-4 pl-12 bg-black/20 border border-white/10 rounded-2xl text-white placeholder-white/20 focus:outline-none focus:border-blue-500/50 focus:bg-black/30 transition-all font-medium"
                 required
               />
             </div>
-          </div>
 
-          <div>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                </svg>
+            <div className="relative group">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-white/30 group-focus-within:text-blue-400 transition-colors">
+                <FiMail size={18} />
               </span>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Email"
-                className="w-full p-4 pl-10 pr-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="Email Address"
+                className="w-full p-4 pl-12 bg-black/20 border border-white/10 rounded-2xl text-white placeholder-white/20 focus:outline-none focus:border-blue-500/50 focus:bg-black/30 transition-all font-medium"
                 required
               />
             </div>
-          </div>
 
-          <div>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+            <div className="relative group">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-white/30 group-focus-within:text-blue-400 transition-colors">
+                <FiLock size={18} />
               </span>
               <input
                 type={showPassword ? "text" : "password"}
@@ -137,35 +107,44 @@ function SignUp() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Password"
-                className="w-full p-4 pl-10 pr-10 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full p-4 pl-12 pr-12 bg-black/20 border border-white/10 rounded-2xl text-white placeholder-white/20 focus:outline-none focus:border-blue-500/50 focus:bg-black/30 transition-all font-medium"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((s) => !s)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors"
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
               </button>
             </div>
-            <PasswordChecker
-              password={formData.password}
-              setPasswordStrength={setPasswordStrength}
-            />
+
+            <div className="px-1">
+              <PasswordChecker
+                password={formData.password}
+                setPasswordStrength={setPasswordStrength}
+              />
+            </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-full hover:from-purple-700 hover:to-blue-700 transition duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={loading || passwordStrength !== "Strong"}
-          >
-            {loading ? "Registering..." : "Register"}
-          </button>
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="w-full bg-white text-black py-4 rounded-2xl font-bold text-lg hover:bg-gray-100 transition-all duration-300 shadow-lg shadow-white/5 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading || passwordStrength !== "Strong"}
+            >
+              {loading ? "Creating..." : "Sign Up"}
+            </button>
+          </div>
         </form>
-        <p className="mt-4 text-center text-gray-300">
+
+        <p className="mt-8 text-center text-sm text-white/50">
           Already have an account?{" "}
-          <Link to="/login" className="text-purple-400 hover:text-purple-300">
-            Login
+          <Link
+            to="/login"
+            className="text-white hover:underline decoration-blue-500 underline-offset-4 font-semibold transition-all"
+          >
+            Log In
           </Link>
         </p>
       </div>

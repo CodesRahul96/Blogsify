@@ -1,33 +1,62 @@
-import 'react';
-import bg from '../assets/blogsify-bg.avif';
+import "react";
+import GlassCard from "./ui/GlassCard";
+import { motion } from "framer-motion";
 
 // eslint-disable-next-line react/prop-types
 function AuthLayout({ children }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900"></div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
+      {/* Background handled by global index.css now, but we can add a localized overlay if needed */}
+      <div className="relative z-10 w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        {/* Left Side Content */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="hidden md:flex flex-col justify-center text-white space-y-6"
+        >
+          <h1 className="text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+            Welcome to <br /> Blogsify
+          </h1>
+          <p className="text-lg text-white/60 leading-relaxed max-w-md">
+            Create, discover, and share thoughtful stories. Join a community of
+            writers and readers on a platform designed for focus.
+          </p>
 
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{ backgroundImage: `url(${bg})` }}
-      />
-
-      <div className="relative z-10 w-full max-w-4xl mx-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        <div className="hidden md:flex flex-col justify-center p-8 text-white">
-          <h1 className="text-4xl font-extrabold mb-3">Welcome to Blogsify</h1>
-          <p className="text-gray-200 mb-6">Create and discover thoughtful blog posts. Fast, simple, and beautiful.</p>
-
-          <ul className="space-y-2 text-gray-300">
-            <li className="flex items-center"><span className="mr-3 text-purple-400">•</span> Clean editor</li>
-            <li className="flex items-center"><span className="mr-3 text-purple-400">•</span> Responsive themes</li>
-            <li className="flex items-center"><span className="mr-3 text-purple-400">•</span> Community engagement</li>
-          </ul>
-        </div>
-
-        <div className="flex items-center justify-center">
-          <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
-            {children}
+          <div className="space-y-4 pt-4">
+            {[
+              {
+                title: "Clean Editor",
+                desc: "Distraction-free writing environment.",
+              },
+              {
+                title: "Responsive Themes",
+                desc: "Beautiful on every device.",
+              },
+              {
+                title: "Community",
+                desc: "Engage with readers and other writers.",
+              },
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm"
+              >
+                <div className="w-2 h-2 rounded-full bg-blue-500 mt-2" />
+                <div>
+                  <h3 className="font-semibold text-white">{item.title}</h3>
+                  <p className="text-sm text-white/50">{item.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
+        </motion.div>
+
+        {/* Right Side Form */}
+        <div className="flex items-center justify-center w-full">
+          <GlassCard className="w-full max-w-md p-8 md:p-10 shadow-2xl border-white/10">
+            {children}
+          </GlassCard>
         </div>
       </div>
     </div>

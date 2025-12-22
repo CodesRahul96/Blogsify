@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import GlassCard from "../ui/GlassCard";
+import { FiUser, FiCalendar, FiClock } from "react-icons/fi";
 
 const BlogCard = ({ blog }) => {
   const formatDate = (dateString) => {
@@ -16,44 +18,63 @@ const BlogCard = ({ blog }) => {
   };
 
   return (
-    <Link
-      to={`/blog/${blog._id}`}
-      className="group block overflow-hidden rounded-2xl shadow-lg transform hover:-translate-y-2 transition-all duration-300 border border-gray-700/40 bg-gradient-to-b from-white/5 to-white/2"
-    >
-      <div className="relative">
-        {blog.imageUrl ? (
-          <img
-            src={blog.imageUrl}
-            alt={blog.title}
-            className="w-full h-48 object-cover"
-            onError={(e) => (e.target.src = "https://via.placeholder.com/600x300?text=No+Image" )}
-          />
-        ) : (
-          <div className="w-full h-48 bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center text-white font-semibold">No Image</div>
-        )}
+    <Link to={`/blog/${blog._id}`} className="block h-full">
+      <GlassCard
+        hoverEffect
+        className="!p-0 h-full flex flex-col overflow-hidden group border-white/10 bg-white/5"
+      >
+        {/* Image Container */}
+        <div className="relative h-56 overflow-hidden">
+          {blog.imageUrl ? (
+            <img
+              src={blog.imageUrl}
+              alt={blog.title}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              onError={(e) =>
+                (e.target.src =
+                  "https://via.placeholder.com/600x300?text=No+Image")
+              }
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+              <span className="text-white/20 font-bold text-xl">Blogsify</span>
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60" />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-90" />
-
-        <div className="absolute left-4 bottom-4 right-4 text-white">
-          <h3 className="text-xl font-bold leading-tight line-clamp-2">{blog.title || 'Untitled'}</h3>
-          <div className="mt-2 flex items-center justify-between text-sm text-gray-200">
-            <span className="bg-white/10 px-2 py-1 rounded-md">{blog.author?.username || 'Admin'}</span>
-            <span className="text-gray-200">{formatDate(blog.createdAt)}</span>
+          <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium text-white border border-white/10">
+            {blog.category || "General"}
           </div>
         </div>
-      </div>
 
-      <div className="p-5 bg-gray-900/60">
-        <p className="text-gray-300 text-sm mb-3 line-clamp-3">{blog.content || 'No content available'}</p>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {blog.tags?.slice(0,3).map((t, i) => (
-              <span key={i} className="text-xs bg-gray-800/60 text-gray-200 px-2 py-1 rounded">{t}</span>
-            ))}
+        {/* Content */}
+        <div className="p-6 flex flex-col flex-1 relative">
+          <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 leading-tight group-hover:text-blue-400 transition-colors">
+            {blog.title || "Untitled"}
+          </h3>
+
+          <p className="text-white/60 text-sm mb-6 line-clamp-3 flex-1">
+            {blog.content || "No content available"}
+          </p>
+
+          <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs text-white/40">
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1.5">
+                <FiUser className="text-blue-400" />
+                {blog.author?.username || "Writer"}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <FiCalendar className="text-purple-400" />
+                {formatDate(blog.createdAt)}
+              </span>
+            </div>
+            <span className="flex items-center gap-1.5">
+              <FiClock />
+              {estimateReadTime(blog.content)}
+            </span>
           </div>
-          <div className="text-xs text-gray-400">{estimateReadTime(blog.content)}</div>
         </div>
-      </div>
+      </GlassCard>
     </Link>
   );
 };

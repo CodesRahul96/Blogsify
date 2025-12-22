@@ -5,6 +5,32 @@ import Loader from "../components/Loader";
 import { AuthContext } from "../context/AuthContext";
 import Poster from "../assets/poster.jpg";
 import AdminDashboardStats from "../components/AdminDashboardStats";
+import GlassCard from "../components/ui/GlassCard";
+import Dock from "../components/ui/Dock";
+import {
+  FiHome,
+  FiLayout,
+  FiUser,
+  FiSettings,
+  FiLogOut,
+  FiPlusSquare,
+  FiGrid,
+  FiHeart,
+  FiMessageCircle,
+  FiUsers,
+  FiActivity,
+  FiSearch,
+  FiEdit2,
+  FiTrash2,
+  FiRefreshCw,
+} from "react-icons/fi";
+
+const DOCK_ITEMS = [
+  { icon: FiHome, label: "Home", path: "/" },
+  { icon: FiLayout, label: "Dashboard", path: "/dashboard" },
+  { icon: FiUsers, label: "Users", path: "#users" }, // Just a visual indicator in this context, logic handled via tabs
+  { icon: FiSettings, label: "Settings", path: "/settings" },
+];
 
 function AdminDashboard() {
   const [posts, setPosts] = useState([]);
@@ -21,12 +47,11 @@ function AdminDashboard() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [showTopBtn, setShowTopBtn] = useState(false);
-  document.title = "Admin Dashboard";
 
   const { user } = useContext(AuthContext) || {};
 
-  // Fetch posts and users on mount
   useEffect(() => {
+    document.title = "Admin Dashboard";
     if (!token) {
       navigate("/login");
       return;
@@ -34,14 +59,12 @@ function AdminDashboard() {
     setLoading(true);
     Promise.all([fetchPosts(), fetchUsers()]).finally(() => setLoading(false));
 
-    // Auto-refresh posts and users every 5 seconds
     const interval = setInterval(() => {
       Promise.all([fetchPosts(), fetchUsers()]);
     }, 5000);
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, navigate]);
 
   const fetchPosts = async () => {
     try {
@@ -49,10 +72,11 @@ function AdminDashboard() {
         `${import.meta.env.VITE_BASE_URL}/api/posts?page=1&limit=100`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const fetchedPosts = Array.isArray(res.data.posts) ? res.data.posts : [];
-      setPosts(fetchedPosts);
+      setPosts(Array.isArray(res.data.posts) ? res.data.posts : []);
     } catch (err) {
-      setError("Failed to load posts: " + (err.response?.data?.message || err.message));
+      setError(
+        "Failed to load posts: " + (err.response?.data?.message || err.message)
+      );
       setPosts([]);
     }
   };
@@ -63,26 +87,30 @@ function AdminDashboard() {
         `${import.meta.env.VITE_BASE_URL}/api/auth/users`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Fetched users:", res.data);
       setUsers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error("Failed to load users:", err.response?.data || err.message);
-      setError("Failed to load users: " + (err.response?.data?.message || err.message));
+      setError(
+        "Failed to load users: " + (err.response?.data?.message || err.message)
+      );
       setUsers([]);
     }
   };
 
-  // Derived stats
   const stats = useMemo(() => {
     const totalPosts = posts.length;
-    const totalComments = posts.reduce((sum, p) => sum + (p.comments?.length || 0), 0);
-    const totalLikes = posts.reduce((sum, p) => sum + (p.likes?.length || 0), 0);
+    const totalComments = posts.reduce(
+      (sum, p) => sum + (p.comments?.length || 0),
+      0
+    );
+    const totalLikes = posts.reduce(
+      (sum, p) => sum + (p.likes?.length || 0),
+      0
+    );
     const totalUsers = users.length;
-    const totalAdmins = users.filter(u => u.isAdmin).length;
+    const totalAdmins = users.filter((u) => u.isAdmin).length;
     return { totalPosts, totalComments, totalLikes, totalUsers, totalAdmins };
   }, [posts, users]);
 
-  // Create or Update Post
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -93,7 +121,9 @@ function AdminDashboard() {
           { title, content, imageUrl: imageUrl || Poster },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setPosts((prev) => prev.map((post) => (post._id === editId ? res.data : post)));
+        setPosts((prev) =>
+          prev.map((post) => (post._id === editId ? res.data : post))
+        );
         setEditId(null);
       } else {
         const res = await axios.post(
@@ -107,17 +137,23 @@ function AdminDashboard() {
       setImageUrl("");
       setContent("");
     } catch (err) {
-      setError("Failed to save post: " + (err.response?.data?.message || err.message));
+      setError(
+        "Failed to save post: " + (err.response?.data?.message || err.message)
+      );
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this post?")) return;
     try {
-      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/posts/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/posts/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setPosts((prev) => prev.filter((post) => post._id !== id));
     } catch (err) {
-      setError("Failed to delete post: " + (err.response?.data?.message || err.message));
+      setError(
+        "Failed to delete post: " + (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -140,10 +176,8 @@ function AdminDashboard() {
   const handleResetPassword = async (userId) => {
     const newPassword = window.prompt("Enter new password for this user:");
     if (!newPassword) return;
-    if (newPassword.length < 6) {
-      alert("Password must be at least 6 characters");
-      return;
-    }
+    if (newPassword.length < 6)
+      return alert("Password must be at least 6 characters");
     try {
       await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/auth/reset-password/${userId}`,
@@ -152,300 +186,391 @@ function AdminDashboard() {
       );
       alert("Password reset successfully");
     } catch (err) {
-      alert("Failed to reset password: " + (err.response?.data?.message || err.message));
+      alert(
+        "Failed to reset password: " +
+          (err.response?.data?.message || err.message)
+      );
     }
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user and all their content?")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this user and all their content?"
+      )
+    )
+      return;
     try {
       await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/auth/user/${userId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUsers((prev) => prev.filter((u) => u._id !== userId));
-      // Refresh posts in case deleted user created posts
       fetchPosts();
     } catch (err) {
-      alert("Failed to delete user: " + (err.response?.data?.message || err.message));
+      alert(
+        "Failed to delete user: " + (err.response?.data?.message || err.message)
+      );
     }
   };
 
-  useEffect(() => {
-    const handleScroll = () => setShowTopBtn(window.scrollY > 200);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const filteredPosts = posts.filter(
+    (p) =>
+      p.title?.toLowerCase().includes(query.toLowerCase()) ||
+      p.content?.toLowerCase().includes(query.toLowerCase())
+  );
+  const filteredUsers = users.filter(
+    (u) =>
+      u.username?.toLowerCase().includes(userQuery.toLowerCase()) ||
+      u.email?.toLowerCase().includes(userQuery.toLowerCase())
+  );
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  if (!token || !user) return null;
 
-  const filteredPosts = posts.filter((p) => p.title?.toLowerCase().includes(query.toLowerCase()) || p.content?.toLowerCase().includes(query.toLowerCase()));
-  const filteredUsers = users.filter((u) => u.username?.toLowerCase().includes(userQuery.toLowerCase()) || u.email?.toLowerCase().includes(userQuery.toLowerCase()));
-
-  if (!token) return null;
-  if (!user) return null;
-  
-  // Debug log to verify user is admin
-  console.log("Current user:", user);
-  
-  // Check if user is admin
   if (!user.isAdmin) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="bg-red-500/20 text-red-200 p-6 rounded-lg">
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <GlassCard className="text-red-200 border-red-500/30">
           <p className="text-lg font-semibold">Access Denied</p>
-          <p className="text-sm mt-2">You do not have admin privileges to access this dashboard.</p>
-        </div>
+          <p className="text-sm mt-2">You do not have admin privileges.</p>
+        </GlassCard>
       </div>
     );
   }
 
   if (loading) return <Loader />;
 
-  // Stats component
-  // eslint-disable-next-line react/prop-types
-  const StatCard = ({ label, value, color = "purple" }) => {
-    const colorClass = {
-      purple: "from-purple-600 to-blue-500",
-      green: "from-green-600 to-emerald-500",
-      orange: "from-orange-600 to-red-500",
-      pink: "from-pink-600 to-rose-500",
-    }[color];
-    return (
-      <div className="p-4 bg-gradient-to-br from-white/5 to-white/10 rounded-xl border border-gray-700/40 flex flex-col">
-        <span className="text-sm text-gray-300">{label}</span>
-        <span className={`text-3xl font-bold bg-gradient-to-r ${colorClass} bg-clip-text text-transparent mt-2`}>{value}</span>
-      </div>
-    );
-  };
-
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden py-12">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900"></div>
-      <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: "url(/src/assets/blogsify-bg.avif)" }} />
-
-      <div className="relative z-10 mx-auto px-4 max-w-7xl py-12 pt-24">
-        <h1 className="text-5xl font-extrabold text-white mb-2 text-center tracking-tight">Admin Dashboard</h1>
-        <p className="text-gray-400 text-center mb-8">Manage users, posts, and content</p>
-
-        {/* Global Stats */}
-        <AdminDashboardStats stats={stats} />
-
-        {error && <div className="bg-red-500/20 text-red-200 p-3 rounded mb-6 text-center">{error}</div>}
-
-        {/* Tab Navigation */}
-        <div className="flex gap-2 mb-6 flex-wrap">
-          <button
-            onClick={() => setActiveTab("overview")}
-            className={`px-4 py-2 rounded-full font-semibold transition-all ${
-              activeTab === "overview"
-                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                : "bg-white/10 text-gray-300 hover:bg-white/20"
-            }`}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => setActiveTab("posts")}
-            className={`px-4 py-2 rounded-full font-semibold transition-all ${
-              activeTab === "posts"
-                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                : "bg-white/10 text-gray-300 hover:bg-white/20"
-            }`}
-          >
-            Manage Posts
-          </button>
-          <button
-            onClick={() => setActiveTab("users")}
-            className={`px-4 py-2 rounded-full font-semibold transition-all ${
-              activeTab === "users"
-                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-                : "bg-white/10 text-gray-300 hover:bg-white/20"
-            }`}
-          >
-            Users ({stats.totalUsers})
-          </button>
+    <div className="min-h-screen pb-32 pt-24 px-6 md:px-12 relative">
+      <div className="mx-auto max-w-[1600px] relative z-10 space-y-8">
+        <div className="flex flex-col md:flex-row items-end justify-between gap-4 mb-2">
+          <div>
+            <h1 className="text-5xl font-bold text-white tracking-tight mb-2">
+              Admin Control
+            </h1>
+            <p className="text-white/60 text-lg">
+              Manage platform resources and users.
+            </p>
+          </div>
+          {/* Tab Switcher */}
+          <div className="flex bg-black/20 backdrop-blur-xl p-1.5 rounded-[20px] border border-white/10">
+            {["overview", "posts", "users"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-6 py-2.5 rounded-2xl font-medium transition-all text-sm capitalize ${
+                  activeTab === tab
+                    ? "bg-white text-black shadow-lg"
+                    : "text-white/60 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Overview Tab */}
+        {error && (
+          <div className="bg-red-500/20 text-red-100 p-4 rounded-2xl border border-red-500/30 text-center backdrop-blur-md">
+            {error}
+          </div>
+        )}
+
         {activeTab === "overview" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
-              <h3 className="text-xl font-semibold text-white mb-4">📊 System Overview</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between text-gray-200">
-                  <span>Total Users:</span>
-                  <span className="font-bold">{stats.totalUsers}</span>
-                </div>
-                <div className="flex justify-between text-gray-200">
-                  <span>Posts Created:</span>
-                  <span className="font-bold">{stats.totalPosts}</span>
-                </div>
-                <div className="flex justify-between text-gray-200">
-                  <span>Total Comments:</span>
-                  <span className="font-bold">{stats.totalComments}</span>
-                </div>
-                <div className="flex justify-between text-gray-200">
-                  <span>Total Likes:</span>
-                  <span className="font-bold">{stats.totalLikes}</span>
-                </div>
-                <div className="flex justify-between text-gray-200">
-                  <span>Admin Accounts:</span>
-                  <span className="font-bold text-yellow-400">{stats.totalAdmins}</span>
-                </div>
-                <div className="flex justify-between text-gray-200">
-                  <span>Regular Users:</span>
-                  <span className="font-bold">{stats.totalUsers - stats.totalAdmins}</span>
-                </div>
-              </div>
-            </div>
+          <div className="space-y-6">
+            <AdminDashboardStats stats={stats} />
 
-            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
-              <h3 className="text-xl font-semibold text-white mb-4">⚡ Quick Actions</h3>
-              <div className="space-y-2">
-                <button onClick={() => setActiveTab("posts")} className="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition">
-                  📝 Manage All Posts
-                </button>
-                <button onClick={() => setActiveTab("users")} className="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition">
-                  👥 Manage Users
-                </button>
-                <button onClick={() => { fetchPosts(); fetchUsers(); }} className="w-full px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg hover:from-orange-700 hover:to-red-700 transition">
-                  🔄 Refresh Data
-                </button>
-              </div>
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <GlassCard
+                hoverEffect
+                className="flex flex-col justify-between h-full bg-gradient-to-br from-blue-500/10 to-purple-500/10"
+              >
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <FiActivity /> Quick Actions
+                  </h3>
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => setActiveTab("posts")}
+                      className="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-white/80 flex items-center justify-between group"
+                    >
+                      <span>Create New Post</span>
+                      <FiPlusSquare className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("users")}
+                      className="w-full text-left px-4 py-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-white/80 flex items-center justify-between group"
+                    >
+                      <span>Manage Users</span>
+                      <FiUsers className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  </div>
+                </div>
+              </GlassCard>
 
-            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
-              <h3 className="text-xl font-semibold text-white mb-4">📈 Content Stats</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between text-gray-200">
-                  <span>Avg Comments per Post:</span>
-                  <span className="font-bold">{posts.length > 0 ? (stats.totalComments / posts.length).toFixed(1) : '0'}</span>
+              <GlassCard className="col-span-1 lg:col-span-2">
+                <h3 className="text-xl font-semibold text-white mb-6">
+                  Engagement Analytics
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <div className="text-white/40 text-xs uppercase font-bold tracking-wider mb-1">
+                      Avg Likes
+                    </div>
+                    <div className="text-2xl font-bold text-white">
+                      {posts.length > 0
+                        ? (stats.totalLikes / posts.length).toFixed(1)
+                        : "–"}
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <div className="text-white/40 text-xs uppercase font-bold tracking-wider mb-1">
+                      Avg Comments
+                    </div>
+                    <div className="text-2xl font-bold text-white">
+                      {posts.length > 0
+                        ? (stats.totalComments / posts.length).toFixed(1)
+                        : "–"}
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <div className="text-white/40 text-xs uppercase font-bold tracking-wider mb-1">
+                      Active Rate
+                    </div>
+                    <div className="text-2xl font-bold text-white">
+                      {(stats.totalUsers > 0
+                        ? stats.totalPosts / stats.totalUsers
+                        : 0
+                      ).toFixed(1)}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-between text-gray-200">
-                  <span>Avg Likes per Post:</span>
-                  <span className="font-bold">{posts.length > 0 ? (stats.totalLikes / posts.length).toFixed(1) : '0'}</span>
-                </div>
-                <div className="flex justify-between text-gray-200">
-                  <span>Posts per User:</span>
-                  <span className="font-bold">{users.length > 0 ? (stats.totalPosts / users.length).toFixed(1) : '0'}</span>
-                </div>
-                <div className="flex justify-between text-gray-200">
-                  <span>Most Active Users:</span>
-                  <span className="font-bold">{users.length > 0 ? Math.ceil(users.length * 0.2) : '0'}</span>
-                </div>
-              </div>
+              </GlassCard>
             </div>
           </div>
         )}
 
-        {/* Posts Tab */}
         {activeTab === "posts" && (
-          <>
-            {/* Search Bar */}
-            <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 rounded-2xl shadow-lg mb-6 border border-white/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <h2 className="text-2xl font-semibold text-white">{editId ? '✏️ Edit Post' : '➕ Create New Post'}</h2>
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search posts..." className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white w-full sm:w-auto" />
-                <button onClick={fetchPosts} className="px-3 py-2 rounded bg-gray-700 hover:bg-gray-600 w-full sm:w-auto">Refresh</button>
-              </div>
-            </div>
-
-            {/* Create/Edit Post Form */}
-            <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg mb-8 border border-white/20">
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
-                <input id="imageUrl" type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Image URL" className="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white w-full" />
-                <input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required className="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white w-full" />
-                <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} rows={6} placeholder="Content" required className="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white w-full" />
-                <div className="flex gap-3 flex-col sm:flex-row justify-end">
-                  {editId && <button type="button" onClick={handleCancelEdit} className="px-4 py-2 rounded-full bg-gray-600 w-full sm:w-auto">Cancel</button>}
-                  <button type="submit" className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 w-full sm:w-auto">{editId ? 'Update Post' : 'Create Post'}</button>
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <GlassCard className="xl:col-span-1 h-fit">
+              <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                {editId ? (
+                  <>
+                    <FiEdit2 /> Edit Post
+                  </>
+                ) : (
+                  <>
+                    <FiPlusSquare /> Create Post
+                  </>
+                )}
+              </h2>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  id="imageUrl"
+                  type="text"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="Cover Image URL..."
+                  className="w-full p-4 bg-black/20 border border-white/10 rounded-2xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all"
+                />
+                <input
+                  id="title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Post Title..."
+                  required
+                  className="w-full p-4 bg-black/20 border border-white/10 rounded-2xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all font-semibold"
+                />
+                <textarea
+                  id="content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  rows={8}
+                  placeholder="Content..."
+                  required
+                  className="w-full p-4 bg-black/20 border border-white/10 rounded-2xl text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-all resize-none"
+                />
+                <div className="flex gap-2 justify-end">
+                  {editId && (
+                    <button
+                      type="button"
+                      onClick={handleCancelEdit}
+                      className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    className="flex-1 px-6 py-3 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition-colors shadow-lg shadow-white/10"
+                  >
+                    {editId ? "Update" : "Publish"}
+                  </button>
                 </div>
               </form>
-            </div>
+            </GlassCard>
 
-            {/* Post List */}
-            <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg border border-white/20">
-              <h2 className="text-2xl font-semibold text-white mb-6">📋 All Posts ({filteredPosts.length})</h2>
-              {filteredPosts.length === 0 ? (
-                <p className="text-gray-300">No posts found.</p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredPosts.map((post) => (
-                    <div key={post._id} className="bg-gray-800/60 rounded-lg overflow-hidden border border-gray-700/40 shadow-sm hover:border-purple-500/50 transition flex flex-col">
-                      <div className="h-40 bg-cover bg-center" style={{ backgroundImage: `url(${post.imageUrl || Poster})` }} />
-                      <div className="p-4 flex flex-col h-full">
-                        <h3 className="text-lg font-semibold text-white line-clamp-1">{post.title}</h3>
-                        <p className="text-gray-300 text-sm line-clamp-3 my-3">{post.content}</p>
-                        <div className="text-xs text-gray-400 mb-3">👤 {post.author?.username || post.author} • 💬 {post.comments?.length || 0} • ❤️ {post.likes?.length || 0}</div>
-                        <div className="flex gap-2 justify-end mt-auto flex-wrap">
-                          <button onClick={() => handleEdit(post)} className="px-3 py-1 rounded-full bg-yellow-500 text-white hover:bg-yellow-600 w-full sm:w-auto">Edit</button>
-                          <button onClick={() => handleDelete(post._id)} className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700 w-full sm:w-auto">Delete</button>
-                        </div>
+            <div className="xl:col-span-2 space-y-6">
+              <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl backdrop-blur-md border border-white/10">
+                <FiSearch className="text-white/40 ml-3" size={20} />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search posts..."
+                  className="bg-transparent border-none text-white focus:ring-0 w-full placeholder-white/30 h-10"
+                />
+                <button
+                  onClick={fetchPosts}
+                  className="p-2 bg-white/10 hover:bg-white/20 rounded-xl text-white transition-colors"
+                >
+                  <FiRefreshCw />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredPosts.map((post) => (
+                  <GlassCard
+                    key={post._id}
+                    hoverEffect
+                    className="!p-0 h-full flex flex-col group cursor-default"
+                  >
+                    <div
+                      className="h-40 bg-cover bg-center relative"
+                      style={{
+                        backgroundImage: `url(${post.imageUrl || Poster})`,
+                      }}
+                    >
+                      <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleEdit(post)}
+                          className="p-2 rounded-lg bg-black/50 text-white hover:bg-black/70 backdrop-blur-md"
+                        >
+                          <FiEdit2 size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(post._id)}
+                          className="p-2 rounded-lg bg-red-500/50 text-white hover:bg-red-500/70 backdrop-blur-md"
+                        >
+                          <FiTrash2 size={14} />
+                        </button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-        {/* Users Tab */}
-        {activeTab === "users" && (
-          <div className="bg-white/10 backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-2xl shadow-lg border border-white/20">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
-              <h2 className="text-2xl font-semibold text-white">👥 User Management</h2>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <input value={userQuery} onChange={(e) => setUserQuery(e.target.value)} placeholder="Search users..." className="px-3 py-2 rounded bg-gray-800 border border-gray-700 text-white w-full sm:w-auto" />
-                <button onClick={fetchUsers} className="px-3 py-2 rounded bg-gray-700 hover:bg-gray-600 w-full sm:w-auto">Refresh</button>
-              </div>
-            </div>
-
-            {filteredUsers.length === 0 ? (
-              <p className="text-gray-300">No users found.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm min-w-[400px]">
-                  <thead>
-                    <tr className="border-b border-gray-700">
-                      <th className="text-left py-2 px-2 sm:px-4 text-gray-300">Username</th>
-                      <th className="text-left py-2 px-2 sm:px-4 text-gray-300">Email</th>
-                      <th className="text-left py-2 px-2 sm:px-4 text-gray-300">Role</th>
-                      <th className="text-left py-2 px-2 sm:px-4 text-gray-300">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredUsers.map((u) => (
-                      <tr key={u._id} className="border-b border-gray-700 hover:bg-white/5">
-                        <td className="py-3 px-2 sm:px-4 text-white break-all">{u.username}</td>
-                        <td className="py-3 px-2 sm:px-4 text-gray-300 truncate break-all">{u.email}</td>
-                        <td className="py-3 px-2 sm:px-4">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${u.isAdmin ? 'bg-yellow-500/20 text-yellow-300' : 'bg-blue-500/20 text-blue-300'}`}>
-                            {u.isAdmin ? 'Admin' : 'User'}
+                    <div className="p-4 flex flex-col flex-1">
+                      <h3 className="font-bold text-white mb-2 line-clamp-1">
+                        {post.title}
+                      </h3>
+                      <p className="text-white/50 text-xs line-clamp-2 mb-4 flex-1">
+                        {post.content}
+                      </p>
+                      <div className="flex items-center justify-between text-xs text-white/30 pt-3 border-t border-white/5">
+                        <span className="flex items-center gap-1">
+                          <FiUser size={10} />{" "}
+                          {post.author?.username || post.author}
+                        </span>
+                        <span className="flex items-center gap-2">
+                          <span className="flex items-center gap-1">
+                            <FiMessageCircle size={10} />{" "}
+                            {post.comments?.length || 0}
                           </span>
-                        </td>
-                        <td className="py-3 px-2 sm:px-4">
-                          <div className="flex gap-2 flex-col sm:flex-row">
-                            <button onClick={() => handleResetPassword(u._id)} className="px-2 py-1 text-xs rounded bg-orange-600 hover:bg-orange-700 text-white w-full sm:w-auto">Reset Password</button>
-                            {user.id !== u._id && <button onClick={() => handleDeleteUser(u._id)} className="px-2 py-1 text-xs rounded bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto">Delete</button>}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                          <span className="flex items-center gap-1">
+                            <FiHeart size={10} /> {post.likes?.length || 0}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </GlassCard>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         )}
 
-        {showTopBtn && (
-          <button onClick={scrollToTop} className="fixed bottom-6 right-6 bg-white/10 backdrop-blur-lg text-white p-3 rounded-full shadow-md hover:bg-purple-600/50 transition-all duration-300 border border-gray-700/50 z-50">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"/></svg>
-          </button>
+        {activeTab === "users" && (
+          <GlassCard>
+            <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+              <h2 className="text-xl font-semibold text-white">
+                User Registry
+              </h2>
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-xl border border-white/10 flex-1">
+                  <FiSearch className="text-white/40" />
+                  <input
+                    value={userQuery}
+                    onChange={(e) => setUserQuery(e.target.value)}
+                    placeholder="Filter users..."
+                    className="bg-transparent border-none text-white focus:ring-0 w-full placeholder-white/30 text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="text-white/40 text-xs border-b border-white/10">
+                    <th className="p-4 font-medium uppercase tracking-wider">
+                      User
+                    </th>
+                    <th className="p-4 font-medium uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="p-4 font-medium uppercase tracking-wider text-right">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  {filteredUsers.map((u) => (
+                    <tr
+                      key={u._id}
+                      className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                    >
+                      <td className="p-4">
+                        <div className="font-medium text-white">
+                          {u.username}
+                        </div>
+                        <div className="text-white/40 text-xs">{u.email}</div>
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`px-2 py-1 rounded-md text-xs font-medium border ${
+                            u.isAdmin
+                              ? "bg-yellow-500/10 border-yellow-500/20 text-yellow-200"
+                              : "bg-blue-500/10 border-blue-500/20 text-blue-200"
+                          }`}
+                        >
+                          {u.isAdmin ? "Admin" : "Member"}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleResetPassword(u._id)}
+                            className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-xs transition-colors"
+                          >
+                            Pwd Reset
+                          </button>
+                          {user.id !== u._id && (
+                            <button
+                              onClick={() => handleDeleteUser(u._id)}
+                              className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+                            >
+                              <FiTrash2 size={14} />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </GlassCard>
         )}
       </div>
+
+      <Dock items={DOCK_ITEMS} />
     </div>
   );
 }
