@@ -211,10 +211,10 @@ function UserDashboard() {
   };
 
   return (
-    <div className="min-h-screen pb-32 pt-24 px-6 md:px-12">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <header className="flex items-center justify-between mb-8">
-          <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+    <div className="min-h-screen pb-32 pt-32 px-4 md:px-8">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
             Dashboard
           </h1>
           <div className="text-white/60 text-lg">
@@ -223,7 +223,7 @@ function UserDashboard() {
         </header>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           <GlassCard className="lg:col-span-2">
             <UserDashboardStats
               totalPosts={totalPosts}
@@ -264,7 +264,7 @@ function UserDashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Create Post Form */}
           <GlassCard className="xl:col-span-1 h-fit">
             <div className="flex items-center justify-between mb-6">
