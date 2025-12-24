@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -9,10 +9,8 @@ import GlassCard from "../components/ui/GlassCard";
 import Dock from "../components/ui/Dock";
 import {
   FiHome,
-  FiLayout,
   FiUser,
   FiSettings,
-  FiLogOut,
   FiPlusSquare,
   FiGrid,
   FiHeart,
@@ -32,6 +30,7 @@ function UserDashboard() {
   const [saving, setSaving] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   const handleCreateClick = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -45,7 +44,7 @@ function UserDashboard() {
     { icon: FiUser, label: "Profile", path: "/profile" },
   ];
 
-  const fetchPostsData = async () => {
+  const fetchPostsData = useCallback(async () => {
     try {
       // Use server-side filtering and snippet mode
       const res = await axios.get(
@@ -85,11 +84,10 @@ function UserDashboard() {
       console.error("Failed to fetch posts:", err);
       setPosts([]);
     }
-  };
+  }, [token, user?.username]);
 
   useEffect(() => {
     document.title = "My Posts";
-    const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
       return;
@@ -104,9 +102,7 @@ function UserDashboard() {
     }, 15000);
 
     return () => clearInterval(interval);
-  }, [user, navigate]);
-
-  const token = localStorage.getItem("token");
+  }, [user, navigate, fetchPostsData, token]);
 
   // Derived stats
   const userId = user?.id;
@@ -135,7 +131,12 @@ function UserDashboard() {
   );
 
   if (!user) return null;
-  if (loading) return <Loader />;
+  if (loading)
+    return (
+      <div className="min-h-screen pt-32">
+        <Loader />
+      </div>
+    );
 
   const resetForm = () => {
     setTitle("");

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useMemo } from "react";
+import { useContext, useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -11,8 +11,6 @@ import {
   FiHome,
   FiLayout,
   FiUser,
-  FiSettings,
-  FiLogOut,
   FiPlusSquare,
   FiGrid,
   FiHeart,
@@ -40,7 +38,6 @@ function AdminDashboard() {
   const [userQuery, setUserQuery] = useState("");
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const [showTopBtn, setShowTopBtn] = useState(false);
 
   const { user } = useContext(AuthContext) || {};
 
@@ -69,9 +66,9 @@ function AdminDashboard() {
     }, 15000);
 
     return () => clearInterval(interval);
-  }, [token, navigate]);
+  }, [token, navigate, fetchPosts, fetchUsers]);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       const res = await axios.get(
         `${
@@ -87,9 +84,9 @@ function AdminDashboard() {
       );
       setPosts([]);
     }
-  };
+  }, [token]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/auth/users`,
@@ -103,7 +100,7 @@ function AdminDashboard() {
       );
       setUsers([]);
     }
-  };
+  }, [token]);
 
   const stats = useMemo(() => {
     const totalPosts = posts.length;
@@ -258,7 +255,12 @@ function AdminDashboard() {
     );
   }
 
-  if (loading) return <Loader />;
+  if (loading)
+    return (
+      <div className="min-h-screen pt-32">
+        <Loader />
+      </div>
+    );
 
   return (
     <div className="min-h-screen pb-32 pt-24 px-6 md:px-12 relative">

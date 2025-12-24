@@ -53,7 +53,7 @@ function BlogDetails() {
           `${import.meta.env.VITE_BASE_URL}/api/posts?page=1&limit=4`
         );
         setRecent(res.data.posts.filter((p) => p._id !== id));
-      } catch (error) {
+      } catch {
         // ignore
       }
     };
@@ -72,7 +72,7 @@ function BlogDetails() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBlog(res.data);
-    } catch (err) {
+    } catch {
       toast.error("Failed to like post", { theme: "dark" });
     }
   };
@@ -92,7 +92,7 @@ function BlogDetails() {
       setBlog(res.data);
       setComment("");
       toast.success("Comment added", { theme: "dark" });
-    } catch (err) {
+    } catch {
       toast.error("Failed to add comment", { theme: "dark" });
     }
   };
@@ -107,7 +107,7 @@ function BlogDetails() {
       );
       setBlog(res.data);
       toast.success("Comment deleted", { theme: "dark" });
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete comment", { theme: "dark" });
     }
   };
@@ -260,7 +260,7 @@ function BlogDetails() {
               <div className="prose prose-invert prose-base md:prose-lg max-w-none text-white/80 leading-relaxed font-light prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-blockquote:border-l-4 prose-blockquote:border-white/30 prose-blockquote:pl-4 prose-blockquote:italic prose-code:text-pink-400 prose-code:bg-white/10 prose-code:rounded prose-code:px-1 prose-pre:bg-black/30 prose-pre:rounded-xl">
                 <ReactMarkdown
                   components={{
-                    a: ({ node, ...props }) => (
+                    a: ({ ...props }) => (
                       <a
                         {...props}
                         target="_blank"

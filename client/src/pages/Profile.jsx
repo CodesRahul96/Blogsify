@@ -51,7 +51,12 @@ function Profile() {
   }, [token, navigate, user]);
 
   if (!token) return null;
-  if (loading) return <Loader />;
+  if (token && loading)
+    return (
+      <div className="min-h-screen pt-32">
+        <Loader />
+      </div>
+    );
 
   const handleLogout = () => {
     logout();
