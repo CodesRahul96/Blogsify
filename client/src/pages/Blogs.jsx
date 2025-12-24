@@ -103,16 +103,18 @@ function Blogs() {
 
         {/* Search Bar */}
         <div className="max-w-xl mx-auto mb-16 relative z-20">
-          <GlassCard className="!p-2 flex items-center bg-white/10 border-white/20">
-            <FiSearch className="text-white/50 ml-4 w-5 h-5" />
+          <div className="relative group">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-white/40 group-focus-within:text-blue-400 transition-colors">
+              <FiSearch className="w-5 h-5" />
+            </span>
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full p-3 bg-transparent text-white placeholder-white/30 focus:outline-none"
+              className="w-full p-4 pl-12 bg-black/20 border border-white/10 rounded-2xl text-white placeholder-white/30 focus:outline-none focus:border-blue-500/50 focus:bg-black/30 transition-all font-medium backdrop-blur-sm"
               placeholder="Search by title or content..."
             />
-          </GlassCard>
+          </div>
         </div>
 
         {error && (
