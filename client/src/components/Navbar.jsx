@@ -9,6 +9,8 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const mobileMenuRef = useRef(null);
+  const mobileButtonRef = useRef(null);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -26,14 +28,28 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
-    const handleClick = (e) => {
+    const handleClickOutside = (e) => {
+      // Close User Dropdown if clicked outside
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
       }
+
+      // Close Mobile Menu if clicked outside
+      // We check if click is NOT on the menu AND NOT on the toggle button
+      if (
+        isOpen &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(e.target) &&
+        mobileButtonRef.current &&
+        !mobileButtonRef.current.contains(e.target)
+      ) {
+        setIsOpen(false);
+      }
     };
-    if (menuOpen) document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
-  }, [menuOpen]);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, menuOpen]);
 
   return (
     <motion.nav
@@ -166,6 +182,7 @@ function Navbar() {
 
             {/* Mobile Menu Button */}
             <button
+              ref={mobileButtonRef}
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 text-white/70 hover:text-white"
             >
@@ -197,7 +214,10 @@ function Navbar() {
               exit={{ height: 0, opacity: 0 }}
               className="md:hidden overflow-hidden mt-2"
             >
-              <div className="bg-[#1c1c1e]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 space-y-1">
+              <div
+                ref={mobileMenuRef}
+                className="bg-[#1c1c1e]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 space-y-1"
+              >
                 {[
                   { name: "Home", path: "/" },
                   { name: "Blogs", path: "/blogs" },
