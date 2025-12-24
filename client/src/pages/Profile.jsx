@@ -187,9 +187,13 @@ function Profile() {
               {activeTab === "profile" && (
                 <div className="space-y-10 animate-fade-in-up">
                   <div className="flex flex-col md:flex-row items-center gap-8">
-                    <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center text-white text-5xl font-bold shadow-2xl border-4 border-white/5">
-                      {(user?.username || "U").charAt(0).toUpperCase()}
-                    </div>
+                    <img
+                      src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                        user?.username || "User"
+                      )}`}
+                      alt="Profile"
+                      className="w-32 h-32 rounded-full shadow-2xl border-4 border-white/5 bg-black/20"
+                    />
                     <div className="flex-1 text-center md:text-left space-y-2">
                       <div className="flex items-center justify-center md:justify-start gap-4">
                         {isEditingUsername ? (

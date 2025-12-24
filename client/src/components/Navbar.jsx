@@ -111,9 +111,13 @@ function Navbar() {
                   onClick={() => setMenuOpen(!menuOpen)}
                   className="flex items-center gap-3 pl-1 pr-4 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold shadow-lg">
-                    {(user.username || "U").charAt(0).toUpperCase()}
-                  </div>
+                  <img
+                    src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                      user.username || "User"
+                    )}`}
+                    alt="Avatar"
+                    className="w-8 h-8 rounded-full bg-black/20 shadow-lg"
+                  />
                   <span className="hidden sm:block text-sm font-medium text-white/90">
                     {user.username}
                   </span>
