@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
+import Loader from "../components/layout/Loader";
 import { AuthContext } from "../context/AuthContext";
 import Poster from "../assets/poster.jpg";
-import UserDashboardStats from "../components/UserDashboardStats";
+import UserDashboardStats from "../components/dashboard/UserDashboardStats";
 import GlassCard from "../components/ui/GlassCard";
 import Dock from "../components/ui/Dock";
 import {

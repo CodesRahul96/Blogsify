@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Loader from "./components/Loader";
+import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
+import Loader from "./components/layout/Loader";
 import { AuthContext } from "./context/AuthContext";
 
 // Lazy load pages for faster initial bundle
@@ -14,7 +14,7 @@ const UserDashboard = lazy(() => import("./pages/UserDashboard"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const BlogDetails = lazy(() => import("./pages/BlogDetails"));
 const Blogs = lazy(() => import("./pages/Blogs"));
-const PageNotFound = lazy(() => import("./components/PageNotFound"));
+const PageNotFound = lazy(() => import("./pages/PageNotFound"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Sitemap = lazy(() => import("./pages/Sitemap"));
@@ -41,7 +41,7 @@ function DashboardRouter() {
   return user.isAdmin ? <AdminDashboard /> : <UserDashboard />;
 }
 
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/layout/ScrollToTop";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

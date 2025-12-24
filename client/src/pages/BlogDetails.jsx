@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import Loader from "../components/Loader";
+import Loader from "../components/layout/Loader";
 import GlassCard from "../components/ui/GlassCard";
 import ReactMarkdown from "react-markdown";
 import { FcLike } from "react-icons/fc";
@@ -37,7 +37,7 @@ function BlogDetails() {
         setBlog(res.data);
         document.title = res.data.title || "Blog";
         window.scrollTo(0, 0);
-      } catch (error) {
+      } catch {
         setError("Failed to load blog details");
       } finally {
         setLoading(false);
@@ -195,9 +195,13 @@ function BlogDetails() {
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-lg font-bold shadow-lg ring-2 ring-white/10">
-                      {(blog.author?.username || "A").charAt(0).toUpperCase()}
-                    </div>
+                    <img
+                      src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                        blog.author?.username || "A"
+                      )}`}
+                      alt="Author"
+                      className="w-10 h-10 rounded-full shadow-lg ring-2 ring-white/10 bg-black/20"
+                    />
                     <div>
                       <div className="text-white font-bold">
                         {blog.author?.username || "Unknown Author"}
@@ -257,7 +261,7 @@ function BlogDetails() {
                 </div>
               )}
 
-              <div className="prose prose-invert prose-base md:prose-lg max-w-none text-white/80 leading-relaxed font-light prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-blockquote:border-l-4 prose-blockquote:border-white/30 prose-blockquote:pl-4 prose-blockquote:italic prose-code:text-pink-400 prose-code:bg-white/10 prose-code:rounded prose-code:px-1 prose-pre:bg-black/30 prose-pre:rounded-xl">
+              <div className="bg-black/40 p-6 md:p-8 rounded-2xl break-words break-all overflow-hidden prose prose-invert prose-base md:prose-lg max-w-none text-gray-300 leading-relaxed font-light prose-headings:font-bold prose-headings:text-white prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-blockquote:border-l-4 prose-blockquote:border-white/30 prose-blockquote:pl-4 prose-blockquote:italic prose-code:text-pink-400 prose-code:bg-white/10 prose-code:rounded prose-code:px-1 prose-pre:bg-black/30 prose-pre:rounded-xl prose-img:rounded-xl">
                 <ReactMarkdown
                   components={{
                     a: ({ ...props }) => (
@@ -290,9 +294,13 @@ function BlogDetails() {
                 {user ? (
                   <form onSubmit={handleComment} className="mb-10 relative">
                     <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex-shrink-0 flex items-center justify-center text-white font-bold text-sm shadow-md mt-1">
-                        {(user?.username || "U").charAt(0).toUpperCase()}
-                      </div>
+                      <img
+                        src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                          user?.username || "User"
+                        )}`}
+                        alt="Avatar"
+                        className="w-10 h-10 rounded-full shadow-md mt-1 bg-black/20"
+                      />
                       <div className="flex-1">
                         <textarea
                           value={comment}
@@ -338,9 +346,13 @@ function BlogDetails() {
                         className="group p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/[0.07] transition-colors"
                       >
                         <div className="flex items-start gap-4">
-                          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 text-xs font-bold mt-1">
-                            {(c.user?.username || "?").charAt(0).toUpperCase()}
-                          </div>
+                          <img
+                            src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                              c.user?.username || "?"
+                            )}`}
+                            alt="Avatar"
+                            className="w-8 h-8 rounded-full bg-black/20"
+                          />
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2">

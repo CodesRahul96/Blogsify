@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import Loader from "../components/Loader";
+import Loader from "../components/layout/Loader";
 import BlogCard from "../components/home/BlogCard";
 import GlassCard from "../components/ui/GlassCard";
 import { FiSearch, FiArrowUp } from "react-icons/fi";
