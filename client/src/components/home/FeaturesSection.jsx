@@ -1,4 +1,5 @@
 import GlassCard from "../ui/GlassCard";
+import { motion } from "framer-motion";
 import { FiFeather, FiUsers, FiEdit3 } from "react-icons/fi";
 
 const FEATURES = [
@@ -24,9 +25,15 @@ const FEATURES = [
 
 const FeaturesSection = () => {
   return (
-    <section className="py-20">
+    <section className="py-20 relative z-10">
       <div className="mx-auto px-6 max-w-7xl">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
           <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 mb-4">
             Why Blogsify?
           </h2>
@@ -34,25 +41,32 @@ const FeaturesSection = () => {
             Built for writers, designed for readers. Experience a platform that
             puts content first.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {FEATURES.map((feature, idx) => (
-            <GlassCard
+            <motion.div
               key={idx}
-              hoverEffect
-              className="p-8 border-white/5 bg-white/5"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              viewport={{ once: true }}
             >
-              <div
-                className={`w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-6 text-2xl ${feature.color}`}
+              <GlassCard
+                hoverEffect
+                className="p-8 border-white/5 bg-white/5 h-full"
               >
-                <feature.icon />
-              </div>
-              <h3 className="text-2xl font-bold mb-3 text-white">
-                {feature.title}
-              </h3>
-              <p className="text-white/60 leading-relaxed">{feature.desc}</p>
-            </GlassCard>
+                <div
+                  className={`w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-6 text-2xl ${feature.color}`}
+                >
+                  <feature.icon />
+                </div>
+                <h3 className="text-2xl font-bold mb-3 text-white">
+                  {feature.title}
+                </h3>
+                <p className="text-white/60 leading-relaxed">{feature.desc}</p>
+              </GlassCard>
+            </motion.div>
           ))}
         </div>
       </div>

@@ -1,23 +1,10 @@
-import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-
 import HeroSection from "../components/home/HeroSection";
 import FeaturesSection from "../components/home/FeaturesSection";
 import RecentBlogsSection from "../components/home/RecentBlogsSection";
 import CTASection from "../components/home/CTASection";
 
 function Home() {
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   document.title = "Blogsify";
-
-  useEffect(() => {
-    if (user) {
-      navigate("/blogs", { replace: true });
-    }
-  }, [user, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-900 relative overflow-hidden text-white">

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const HeroSection = () => {
   return (
-    <section className="py-20 md:py-32 relative z-10">
+    <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative z-10">
       <div className="container mx-auto px-4 max-w-5xl">
         <GlassCard className="text-center p-12 md:p-16 border-white/10 shadow-2xl bg-black/20 backdrop-blur-xl">
           <motion.div

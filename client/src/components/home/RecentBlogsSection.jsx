@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Loader from "../Loader";
 import BlogCard from "./BlogCard";
 import GlassCard from "../ui/GlassCard";
+import { motion } from "framer-motion";
 
 const RecentBlogsSection = () => {
   const [blogs, setBlogs] = useState([]);
@@ -20,7 +21,7 @@ const RecentBlogsSection = () => {
           }/api/posts?page=1&limit=3&mode=snippet`
         );
         setBlogs(res.data.posts);
-      } catch (err) {
+      } catch (_err) {
         setError("Failed to load recent blogs.");
       } finally {
         setLoading(false);
@@ -32,7 +33,13 @@ const RecentBlogsSection = () => {
   return (
     <section className="py-24 relative">
       <div className="mx-auto px-6 max-w-7xl relative z-10">
-        <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6"
+        >
           <div>
             <h2 className="text-4xl font-bold text-white mb-2">
               Recent Stories
@@ -48,7 +55,7 @@ const RecentBlogsSection = () => {
           >
             View All Stories
           </Link>
-        </div>
+        </motion.div>
 
         {loading && (
           <div className="flex justify-center py-12">
@@ -64,22 +71,35 @@ const RecentBlogsSection = () => {
 
         {!loading && !error && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {blogs.map((blog) => (
-              <div key={blog._id} className="h-full">
+            {blogs.map((blog, idx) => (
+              <motion.div
+                key={blog._id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                className="h-full"
+              >
                 <BlogCard blog={blog} />
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
 
-        <div className="text-center mt-12 md:hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          viewport={{ once: true }}
+          className="text-center mt-12 md:hidden"
+        >
           <Link
             to="/blogs"
             className="inline-block bg-white text-black py-3 px-8 rounded-full font-bold shadow-lg shadow-white/10 hover:bg-gray-200 transition-colors"
           >
             Explore More
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

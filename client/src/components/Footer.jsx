@@ -3,6 +3,7 @@ import { FaTwitter, FaGithub, FaInstagram, FaFacebook } from "react-icons/fa";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Logo from "../assets/lettering.png";
+import { motion } from "framer-motion";
 
 function Footer() {
   const { user } = useContext(AuthContext) || {};
@@ -29,7 +30,13 @@ function Footer() {
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
             <Link to="/" className="flex items-center gap-3">
               <img src={Logo} alt="Blogsify" className="h-8 opacity-90" />
             </Link>
@@ -73,9 +80,14 @@ function Footer() {
                 </a>
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
             <h4 className="text-white font-semibold mb-6 flex items-center gap-2">
               <span className="w-1 h-4 bg-blue-500 rounded-full"></span> Explore
             </h4>
@@ -91,9 +103,14 @@ function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
             <h4 className="text-white font-semibold mb-6 flex items-center gap-2">
               <span className="w-1 h-4 bg-purple-500 rounded-full"></span>{" "}
               Resources
@@ -141,9 +158,15 @@ function Footer() {
                 )}
               </li>
             </ul>
-          </div>
+          </motion.div>
 
-          <div className="bg-white/5 p-6 rounded-2xl border border-white/5 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="bg-white/5 p-6 rounded-2xl border border-white/5 backdrop-blur-sm"
+          >
             <h4 className="text-white font-semibold mb-2">Stay Updated</h4>
             <p className="text-white/50 text-xs mb-4 leading-relaxed">
               Get the latest stories and updates delivered to your inbox with
@@ -167,7 +190,7 @@ function Footer() {
               </div>
               {status && <p className="text-xs text-blue-300 ml-1">{status}</p>}
             </form>
-          </div>
+          </motion.div>
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
