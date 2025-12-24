@@ -130,13 +130,15 @@ function UserDashboard() {
     1
   );
 
-  if (!user) return null;
-  if (loading)
+  // Show loader if explicitly loading OR if we have a token but user context isn't ready yet
+  if (loading || (token && !user))
     return (
       <div className="min-h-screen pt-32">
         <Loader />
       </div>
     );
+
+  if (!user) return null;
 
   const resetForm = () => {
     setTitle("");
