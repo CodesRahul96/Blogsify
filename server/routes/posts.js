@@ -8,17 +8,23 @@ const { auth, isAdmin } = require("../middleware/auth"); // Middleware
 router.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1; // Default to page 1
   const limit = parseInt(req.query.limit) || 6; // Default to 6 posts per page
+  const author = req.query.author; // Optional author filter
   const snippet = req.query.mode === "snippet"; // Check for snippet mode
   const skip = (page - 1) * limit;
 
   try {
-    const posts = await Post.find()
+    const query = {};
+    if (author) {
+      query.author = author;
+    }
+
+    const posts = await Post.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate({ path: "comments.user", select: "username" });
 
-    const totalPosts = await Post.countDocuments();
+    const totalPosts = await Post.countDocuments(query);
 
     // Normalize and optionally truncate
     const normalized = posts.map((p) => {
