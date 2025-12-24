@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import Logo from "../assets/lettering.png";
+import { AuthContext } from "../../context/AuthContext";
+import Logo from "../../assets/lettering.png";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Navbar() {

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import Logo from "../assets/lettering.png";
+import Logo from "../../assets/lettering.png";
 
 function Loader() {
   return (
