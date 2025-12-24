@@ -64,7 +64,7 @@ function Contact() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-white">Call Us</h3>
-                  <p className="text-white/50 text-sm">+91 98765 43210</p>
+                  <p className="text-white/50 text-sm">+91 88051-59425</p>
                 </div>
               </GlassCard>
             </div>
