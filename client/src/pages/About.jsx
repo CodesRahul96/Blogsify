@@ -1,13 +1,7 @@
 import { Link } from "react-router-dom";
 import GlassCard from "../components/ui/GlassCard";
-import {
-  FiTarget,
-  FiUsers,
-  FiCpu,
-  FiGithub,
-  FiTwitter,
-  FiLinkedin,
-} from "react-icons/fi";
+import { FiTarget, FiUsers, FiCpu } from "react-icons/fi";
+import TeamSection from "../components/about/TeamSection";
 
 function About() {
   return (
@@ -65,61 +59,7 @@ function About() {
           ))}
         </section>
 
-        <section className="mb-20">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-10 px-4">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">Meet the Team</h2>
-              <p className="text-white/50">The minds behind the platform.</p>
-            </div>
-            <Link
-              to="/contact"
-              className="px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition-colors text-sm"
-            >
-              Join the team
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: "Rahul",
-                role: "Founder & Full Stack Developer",
-                initial: "R",
-              },
-              { name: "Pranit", role: "Product Manager", initial: "P" },
-              { name: "Sandeep", role: "UI/UX Designer", initial: "S" },
-            ].map((m) => (
-              <GlassCard
-                key={m.name}
-                className="p-6 flex items-center gap-5 border-white/5 hover:bg-white/10 transition-colors group"
-              >
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-gray-700 to-gray-800 flex items-center justify-center text-white text-2xl font-bold border border-white/10 group-hover:scale-110 transition-transform shadow-lg">
-                  {m.initial}
-                </div>
-                <div>
-                  <div className="font-bold text-lg text-white group-hover:text-blue-400 transition-colors">
-                    {m.name}
-                  </div>
-                  <div className="text-sm text-white/40">{m.role}</div>
-                  <div className="flex gap-2 mt-2 text-white/20">
-                    <FiGithub
-                      size={14}
-                      className="hover:text-white transition-colors cursor-pointer"
-                    />
-                    <FiTwitter
-                      size={14}
-                      className="hover:text-blue-400 transition-colors cursor-pointer"
-                    />
-                    <FiLinkedin
-                      size={14}
-                      className="hover:text-blue-600 transition-colors cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-        </section>
+        <TeamSection />
 
         <section className="text-center py-16">
           <GlassCard className="max-w-3xl mx-auto p-12 bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-white/10">
