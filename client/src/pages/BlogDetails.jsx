@@ -127,7 +127,12 @@ function BlogDetails() {
     return `${minutes} min read`;
   };
 
-  if (loading) return <Loader />;
+  if (loading)
+    return (
+      <div className="min-h-screen pt-32">
+        <Loader />
+      </div>
+    );
   if (error)
     return (
       <div className="min-h-screen flex items-center justify-center">

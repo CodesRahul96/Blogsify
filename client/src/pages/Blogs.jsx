@@ -85,7 +85,12 @@ function Blogs() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  if (loading && page === 1) return <Loader />;
+  if (loading && page === 1)
+    return (
+      <div className="min-h-screen pt-32">
+        <Loader />
+      </div>
+    );
 
   return (
     <div className="min-h-screen pt-32 pb-12 relative overflow-hidden">
