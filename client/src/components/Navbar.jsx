@@ -121,19 +121,24 @@ function Navbar() {
                       </div>
                       <Link
                         to="/profile"
+                        onClick={() => setMenuOpen(false)}
                         className="block px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
                       >
                         Profile
                       </Link>
                       <Link
                         to="/dashboard"
+                        onClick={() => setMenuOpen(false)}
                         className="block px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
                       >
                         Dashboard
                       </Link>
                       <div className="h-px bg-white/5 my-2" />
                       <button
-                        onClick={handleLogout}
+                        onClick={() => {
+                          setMenuOpen(false);
+                          handleLogout();
+                        }}
                         className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
                       >
                         Sign Out
