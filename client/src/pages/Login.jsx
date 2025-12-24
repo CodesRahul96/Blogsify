@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
+import Loader from "../components/layout/Loader";
 import { AuthContext } from "../context/AuthContext";
-import AuthLayout from "../components/AuthLayout";
+import AuthLayout from "../components/layout/AuthLayout";
 import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 import { toast } from "react-toastify";

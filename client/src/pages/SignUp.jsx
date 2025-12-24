@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import PasswordChecker from "../components/PasswordChecker";
-import AuthLayout from "../components/AuthLayout";
-import Loader from "../components/Loader";
+import PasswordChecker from "../components/auth/PasswordChecker";
+import AuthLayout from "../components/layout/AuthLayout";
+import Loader from "../components/layout/Loader";
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 import { toast } from "react-toastify";

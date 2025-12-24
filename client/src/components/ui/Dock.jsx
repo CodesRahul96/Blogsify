@@ -1,17 +1,9 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FiHome,
-  FiLayout,
-  FiUser,
-  FiSettings,
-  FiLogOut,
-  FiGrid,
-} from "react-icons/fi";
-
+// FiHome, FiLayout, FiUser, FiSettings, FiLogOut, FiGrid removed as unused
+import {} from "react-icons/fi";
 // Magnification constraints
-const BASE_WIDTH = 50;
 const DISTANCE = 140;
 
 const DockIcon = ({ mouseX, icon: Icon, label, path, onClick }) => {

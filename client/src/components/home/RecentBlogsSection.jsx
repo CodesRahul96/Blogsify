@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Loader from "../Loader";
+import Loader from "../layout/Loader";
 import BlogCard from "./BlogCard";
 import GlassCard from "../ui/GlassCard";
 import { motion } from "framer-motion";
@@ -21,7 +21,7 @@ const RecentBlogsSection = () => {
           }/api/posts?page=1&limit=3&mode=snippet`
         );
         setBlogs(res.data.posts);
-      } catch (_err) {
+      } catch {
         setError("Failed to load recent blogs.");
       } finally {
         setLoading(false);

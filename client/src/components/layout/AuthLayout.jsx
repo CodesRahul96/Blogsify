@@ -1,5 +1,5 @@
 import "react";
-import GlassCard from "./ui/GlassCard";
+import GlassCard from "../ui/GlassCard";
 import { motion } from "framer-motion";
 
 // eslint-disable-next-line react/prop-types

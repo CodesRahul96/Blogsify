@@ -1,5 +1,5 @@
 // AdminDashboardStats.jsx
-import React from "react";
+// AdminDashboardStats.jsx
 
 const StatCard = ({ label, value, color = "purple" }) => {
   const colorClass = {
@@ -11,7 +11,11 @@ const StatCard = ({ label, value, color = "purple" }) => {
   return (
     <div className="p-4 bg-gradient-to-br from-white/5 to-white/10 rounded-xl border border-gray-700/40 flex flex-col">
       <span className="text-sm text-gray-300">{label}</span>
-      <span className={`text-3xl font-bold bg-gradient-to-r ${colorClass} bg-clip-text text-transparent mt-2`}>{value}</span>
+      <span
+        className={`text-3xl font-bold bg-gradient-to-r ${colorClass} bg-clip-text text-transparent mt-2`}
+      >
+        {value}
+      </span>
     </div>
   );
 };
@@ -20,7 +24,11 @@ const AdminDashboardStats = ({ stats }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
     <StatCard label="Total Users" value={stats.totalUsers} color="green" />
     <StatCard label="Total Posts" value={stats.totalPosts} color="purple" />
-    <StatCard label="Total Comments" value={stats.totalComments} color="orange" />
+    <StatCard
+      label="Total Comments"
+      value={stats.totalComments}
+      color="orange"
+    />
     <StatCard label="Total Likes" value={stats.totalLikes} color="pink" />
     <StatCard label="Admin Users" value={stats.totalAdmins} color="green" />
   </div>

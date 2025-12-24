@@ -31,9 +31,9 @@ const TermsOfService = () => {
             <p>
               Our Service allows you to post, link, store, share and otherwise
               make available certain information, text, graphics, videos, or
-              other material ("Content"). You are responsible for the Content
-              that you post to the Service, including its legality, reliability,
-              and appropriateness.
+              other material (&quot;Content&quot;). You are responsible for the
+              Content that you post to the Service, including its legality,
+              reliability, and appropriateness.
             </p>
 
             <h3>4. Termination</h3>

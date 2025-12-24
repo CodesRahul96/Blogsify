@@ -26,8 +26,8 @@ function PageNotFound() {
           Page Not Found
         </h2>
         <p className="text-gray-300 mb-8 text-lg leading-relaxed font-merriweather">
-          Oops! It seems we've wandered off the blog path. The page you're
-          looking for doesn't exist or has been moved.
+          Oops! It seems we&apos;ve wandered off the blog path. The page
+          you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
 
         {/* Back to Home Button */}
@@ -61,7 +61,5 @@ function PageNotFound() {
     </div>
   );
 }
-
-
 
 export default PageNotFound;
