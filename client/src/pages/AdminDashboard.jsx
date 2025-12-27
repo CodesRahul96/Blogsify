@@ -52,22 +52,6 @@ function AdminDashboard() {
     { icon: FiUsers, label: "Users", onClick: () => setActiveTab("users") },
   ];
 
-  useEffect(() => {
-    document.title = "Admin Dashboard";
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-    setLoading(true);
-    Promise.all([fetchPosts(), fetchUsers()]).finally(() => setLoading(false));
-
-    const interval = setInterval(() => {
-      Promise.all([fetchPosts(), fetchUsers()]);
-    }, 15000);
-
-    return () => clearInterval(interval);
-  }, [token, navigate, fetchPosts, fetchUsers]);
-
   const fetchPosts = useCallback(async () => {
     try {
       const res = await axios.get(
@@ -101,6 +85,22 @@ function AdminDashboard() {
       setUsers([]);
     }
   }, [token]);
+
+  useEffect(() => {
+    document.title = "Admin Dashboard";
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    setLoading(true);
+    Promise.all([fetchPosts(), fetchUsers()]).finally(() => setLoading(false));
+
+    const interval = setInterval(() => {
+      Promise.all([fetchPosts(), fetchUsers()]);
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [token, navigate, fetchPosts, fetchUsers]);
 
   const stats = useMemo(() => {
     const totalPosts = posts.length;
