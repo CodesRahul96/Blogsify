@@ -11,6 +11,8 @@ import {
   FiMenu,
   FiX,
   FiLogOut,
+  FiCompass,
+  FiBookmark,
 } from "react-icons/fi";
 
 const CATEGORIES = [
@@ -39,6 +41,14 @@ function Navbar() {
     navigate("/login");
   };
 
+  // Close menus on page navigation
+  useEffect(() => {
+    setIsOpen(false);
+    setSearchOpen(false);
+    setMenuOpen(false);
+  }, [location.pathname, location.search]);
+
+  // Handle outside click for user dropdown
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -67,7 +77,7 @@ function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-[#09090b]/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800/80 transition-colors duration-200">
-      {/* Top Utility Bar */}
+      {/* Top Editorial Ribbon (Desktop) */}
       <div className="hidden lg:block border-b border-zinc-200 dark:border-zinc-800/50 py-1.5 px-6 text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-950/60">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-6">
@@ -91,7 +101,10 @@ function Navbar() {
             >
               Writing Standards
             </Link>
-            <Link to="/about" className="hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors">
+            <Link
+              to="/about"
+              className="hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
+            >
               About The Journal
             </Link>
             <Link
@@ -105,26 +118,28 @@ function Navbar() {
       </div>
 
       {/* Main Masthead Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Mobile Menu & Brand Left */}
-          <div className="flex items-center gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-18 lg:h-20">
+          {/* Left: Mobile Menu Toggle & Brand Logo */}
+          <div className="flex items-center gap-2.5 sm:gap-4 shrink-0">
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors"
-              aria-label="Toggle navigation"
+              onClick={() => {
+                setIsOpen(!isOpen);
+                if (searchOpen) setSearchOpen(false);
+              }}
+              className="lg:hidden p-1.5 sm:p-2 rounded-lg text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/70 transition-colors focus:outline-none"
+              aria-label="Toggle menu"
             >
-              {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+              {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
             </button>
 
-            {/* Publication Masthead Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
+            <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
               <img
                 src={Logo}
                 alt="Blogsify"
-                className="h-7 sm:h-9 object-contain filter contrast-125 dark:brightness-100 invert dark:invert-0"
+                className="h-6 sm:h-8 lg:h-9 object-contain filter contrast-125 dark:brightness-100 invert dark:invert-0 transition-transform group-hover:scale-[1.02]"
               />
-              <span className="hidden sm:inline-block pl-3 border-l border-zinc-300 dark:border-zinc-700/60 text-[11px] font-serif uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+              <span className="hidden md:inline-block pl-3 border-l border-zinc-300 dark:border-zinc-700/60 text-[11px] font-serif uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
                 The Journal of Modern Ideas
               </span>
             </Link>
@@ -133,74 +148,81 @@ function Navbar() {
           {/* Center Search Input (Desktop) */}
           <form
             onSubmit={handleSearchSubmit}
-            className="hidden md:flex items-center relative w-72 lg:w-96"
+            className="hidden md:flex items-center relative w-64 lg:w-96 mx-4"
           >
-            <FiSearch className="absolute left-3.5 text-zinc-400 dark:text-zinc-500" size={16} />
+            <FiSearch
+              className="absolute left-3.5 text-zinc-400 dark:text-zinc-500"
+              size={15}
+            />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search stories, topics, authors..."
-              className="w-full bg-zinc-100 dark:bg-zinc-900/90 border border-zinc-300 dark:border-zinc-800 rounded-full pl-9 pr-4 py-1.5 text-xs text-zinc-900 dark:text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-500 transition-all"
+              className="w-full bg-zinc-100 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 rounded-full pl-9 pr-4 py-1.5 text-xs text-zinc-900 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 transition-all shadow-2xs"
             />
           </form>
 
           {/* Right Action Controls */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Search Trigger for Mobile */}
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            {/* Mobile Search Toggle */}
             <button
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="md:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+              onClick={() => {
+                setSearchOpen(!searchOpen);
+                if (isOpen) setIsOpen(false);
+              }}
+              className="md:hidden p-2 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors"
               aria-label="Search"
             >
-              <FiSearch size={20} />
+              <FiSearch size={18} />
             </button>
 
-            {/* Light / Dark Mode Toggle */}
+            {/* Dark/Light Theme Toggle */}
             <ThemeToggle />
 
-            {/* Write Story CTA */}
-            {user ? (
+            {/* Write Story CTA (Desktop & Tablet) */}
+            {user && (
               <Link
                 to="/dashboard"
-                className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-600/15 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-600/25 text-xs font-semibold tracking-wide transition-colors"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-600/15 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-600/25 text-xs font-semibold tracking-wide transition-colors"
               >
-                <FiEdit3 size={14} />
-                <span>Write Story</span>
+                <FiEdit3 size={13} />
+                <span>Write</span>
               </Link>
-            ) : null}
+            )}
 
-            {/* User Dropdown / Auth Buttons */}
+            {/* Logged-In User Profile Pill or Guest Auth */}
             {user ? (
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center gap-2 p-1 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-800 transition-colors"
+                  className="flex items-center gap-1.5 p-0.5 sm:p-1 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-800 transition-colors focus:outline-none"
+                  aria-label="User menu"
                 >
                   <img
                     src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
                       user.username || "Editor"
                     )}`}
                     alt="Avatar"
-                    className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 object-cover"
                   />
                 </button>
 
                 <AnimatePresence>
                   {menuOpen && (
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                      initial={{ opacity: 0, scale: 0.95, y: 8 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.96, y: 8 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 8 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-60 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl dark:shadow-2xl overflow-hidden py-1.5 z-50 transition-colors"
+                      className="absolute right-0 top-full mt-2 w-56 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl dark:shadow-2xl overflow-hidden py-1.5 z-50 transition-colors"
                     >
                       <div className="px-4 py-2.5 border-b border-zinc-100 dark:border-zinc-800/80">
                         <p className="text-xs font-semibold text-zinc-950 dark:text-white tracking-wide truncate">
                           {user.username}
                         </p>
-                        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
-                          {user.email || "Staff Contributor"}
+                        <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                          {user.email || "Contributor"}
                         </p>
                       </div>
 
@@ -229,7 +251,7 @@ function Navbar() {
                             setMenuOpen(false);
                             handleLogout();
                           }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors font-medium"
+                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors font-medium text-left"
                         >
                           <FiLogOut size={14} />
                           <span>Sign Out</span>
@@ -240,16 +262,16 @@ function Navbar() {
                 </AnimatePresence>
               </div>
             ) : (
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-1.5 sm:gap-2.5">
                 <Link
                   to="/login"
-                  className="px-3.5 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors"
+                  className="px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-1.5 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-sm border border-zinc-900 dark:border-white"
+                  className="px-3 sm:px-4 py-1.5 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-xs border border-zinc-900 dark:border-white"
                 >
                   Get Started
                 </Link>
@@ -258,34 +280,43 @@ function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Search Input Drawer */}
-        {searchOpen && (
-          <form
-            onSubmit={handleSearchSubmit}
-            className="md:hidden pb-3 pt-1 flex items-center gap-2"
-          >
-            <div className="relative flex-1">
-              <FiSearch className="absolute left-3 top-2.5 text-zinc-400 dark:text-zinc-500" size={16} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search stories..."
-                autoFocus
-                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-lg pl-9 pr-4 py-2 text-xs text-zinc-900 dark:text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
-              />
-            </div>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 rounded-lg text-xs font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+        {/* Mobile Search Input Drawer with Animation */}
+        <AnimatePresence>
+          {searchOpen && (
+            <motion.form
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              onSubmit={handleSearchSubmit}
+              className="md:hidden pb-3 pt-1 flex items-center gap-2 overflow-hidden"
             >
-              Search
-            </button>
-          </form>
-        )}
+              <div className="relative flex-1">
+                <FiSearch
+                  className="absolute left-3 top-2.5 text-zinc-400 dark:text-zinc-500"
+                  size={15}
+                />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search articles, topics..."
+                  autoFocus
+                  className="w-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-9 pr-3 py-2 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-zinc-400 transition-colors"
+                />
+              </div>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 rounded-xl text-xs font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shrink-0"
+              >
+                Search
+              </button>
+            </motion.form>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Editorial Category Sub-bar (Newspaper Section Header) */}
+      {/* Desktop Category Sub-bar */}
       <div className="hidden lg:block border-t border-zinc-200 dark:border-zinc-800/60 bg-zinc-50/70 dark:bg-zinc-950/40">
         <div className="max-w-7xl mx-auto px-6">
           <nav className="flex items-center space-x-1 overflow-x-auto py-2 scrollbar-none text-xs font-medium text-zinc-600 dark:text-zinc-400">
@@ -294,9 +325,11 @@ function Navbar() {
                 cat.value === "All"
                   ? ""
                   : `?category=${encodeURIComponent(cat.value)}`;
-              const currentCat = new URLSearchParams(location.search).get("category") || "All";
+              const currentCat =
+                new URLSearchParams(location.search).get("category") || "All";
               const isSelected =
-                location.pathname === "/blogs" && currentCat.toLowerCase() === cat.value.toLowerCase();
+                location.pathname === "/blogs" &&
+                currentCat.toLowerCase() === cat.value.toLowerCase();
 
               return (
                 <Link
@@ -316,128 +349,162 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Navigation Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-5 py-4 space-y-3"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: "easeInOut" }}
+            className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090b] px-4 py-4 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-                Sections & Desks
-              </p>
-              <ThemeToggle showLabel />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {CATEGORIES.map((cat) => (
-                <Link
-                  key={cat.value}
-                  to={
-                    cat.value === "All"
-                      ? "/blogs"
-                      : `/blogs?category=${encodeURIComponent(cat.value)}`
-                  }
-                  onClick={() => setIsOpen(false)}
-                  className="px-3 py-2 rounded-lg bg-zinc-100 dark:bg-zinc-900/80 border border-zinc-200 dark:border-zinc-800/70 text-xs text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white"
-                >
-                  {cat.label}
-                </Link>
-              ))}
-            </div>
-
-            <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800/80 space-y-1 text-xs">
-              <Link
-                to="/about"
-                onClick={() => setIsOpen(false)}
-                className="block py-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
-              >
-                About The Publication
-              </Link>
-              <Link
-                to="/guidelines"
-                onClick={() => setIsOpen(false)}
-                className="block py-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
-              >
-                Editorial Guidelines
-              </Link>
-              <Link
-                to="/support"
-                onClick={() => setIsOpen(false)}
-                className="block py-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
-              >
-                Support & Contact
-              </Link>
-            </div>
-
-            {/* Mobile User / Auth Status */}
-            <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800/80">
-              {user ? (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3 p-2 rounded-xl bg-zinc-100 dark:bg-zinc-900/80">
-                    <img
-                      src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
-                        user.username || "User"
-                      )}`}
-                      alt="User avatar"
-                      className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-zinc-900 dark:text-white truncate">
-                        {user.username}
-                      </p>
-                      <p className="text-[10px] text-zinc-500 truncate">
-                        {user.email || "Contributor"}
-                      </p>
-                    </div>
+            {/* User Profile Card or Auth CTA in Drawer */}
+            {user ? (
+              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/80">
+                <div className="flex items-center gap-3 mb-3">
+                  <img
+                    src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                      user.username || "User"
+                    )}`}
+                    alt="User avatar"
+                    className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold font-serif text-zinc-950 dark:text-white truncate">
+                      {user.username}
+                    </p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                      {user.email || "Publication Contributor"}
+                    </p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold text-xs border border-blue-200 dark:border-blue-500/20"
-                    >
-                      <FiEdit3 size={13} /> Dashboard
-                    </Link>
-                    <Link
-                      to="/profile"
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-xs border border-zinc-200 dark:border-zinc-700"
-                    >
-                      <FiUser size={13} /> Profile
-                    </Link>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setIsOpen(false);
-                      handleLogout();
-                    }}
-                    className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-xs font-semibold transition-colors"
-                  >
-                    <FiLogOut size={13} /> Sign Out
-                  </button>
                 </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-2 pt-1">
+
+                <div className="grid grid-cols-2 gap-2">
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold text-xs border border-blue-200 dark:border-blue-500/20 active:scale-98 transition-transform"
+                  >
+                    <FiEdit3 size={13} /> Write Story
+                  </Link>
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-xs border border-zinc-200 dark:border-zinc-700 active:scale-98 transition-transform"
+                  >
+                    <FiUser size={13} /> Profile
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/70">
+                <p className="text-xs font-semibold text-zinc-900 dark:text-white mb-1">
+                  Join The Community
+                </p>
+                <p className="text-[11px] text-zinc-500 mb-3">
+                  Read unlimited dispatches and publish your perspective.
+                </p>
+                <div className="grid grid-cols-2 gap-2">
                   <Link
                     to="/login"
                     onClick={() => setIsOpen(false)}
-                    className="text-center py-2 px-3 rounded-lg border border-zinc-300 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    className="text-center py-2.5 px-3 rounded-xl border border-zinc-300 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 transition-colors"
                   >
                     Sign In
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setIsOpen(false)}
-                    className="text-center py-2 px-3 rounded-lg bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200"
+                    className="text-center py-2.5 px-3 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold shadow-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
                   >
                     Get Started
                   </Link>
                 </div>
-              )}
+              </div>
+            )}
+
+            {/* Publication Desks / Categories Section */}
+            <div>
+              <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2.5 px-1">
+                <FiCompass size={12} />
+                <span>Editorial Desks</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {CATEGORIES.map((cat) => {
+                  const currentCat =
+                    new URLSearchParams(location.search).get("category") || "All";
+                  const isSelected =
+                    location.pathname === "/blogs" &&
+                    currentCat.toLowerCase() === cat.value.toLowerCase();
+
+                  return (
+                    <Link
+                      key={cat.value}
+                      to={
+                        cat.value === "All"
+                          ? "/blogs"
+                          : `/blogs?category=${encodeURIComponent(cat.value)}`
+                      }
+                      onClick={() => setIsOpen(false)}
+                      className={`px-3 py-2.5 rounded-xl border text-xs font-medium transition-all ${
+                        isSelected
+                          ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-zinc-950 dark:border-white font-semibold"
+                          : "bg-zinc-50 dark:bg-zinc-900/60 border-zinc-200 dark:border-zinc-800/80 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      }`}
+                    >
+                      {cat.label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
+
+            {/* Quick Publication Links */}
+            <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2 px-1">
+                Publication Links
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <Link
+                  to="/about"
+                  onClick={() => setIsOpen(false)}
+                  className="py-2 px-2 rounded-lg bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                >
+                  About
+                </Link>
+                <Link
+                  to="/guidelines"
+                  onClick={() => setIsOpen(false)}
+                  className="py-2 px-2 rounded-lg bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                >
+                  Guidelines
+                </Link>
+                <Link
+                  to="/support"
+                  onClick={() => setIsOpen(false)}
+                  className="py-2 px-2 rounded-lg bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                >
+                  Support
+                </Link>
+              </div>
+            </div>
+
+            {/* Log Out Button in Drawer for Logged In Users */}
+            {user && (
+              <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80">
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-xs font-semibold transition-colors active:scale-98"
+                >
+                  <FiLogOut size={14} />
+                  <span>Sign Out of Blogsify</span>
+                </button>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
