@@ -12,7 +12,10 @@ import {
   FiX,
   FiLogOut,
   FiCompass,
+  FiChevronDown,
+  FiShield,
   FiBookmark,
+  FiSliders,
 } from "react-icons/fi";
 
 const CATEGORIES = [
@@ -194,20 +197,46 @@ function Navbar() {
             {/* Logged-In User Profile Pill or Guest Auth */}
             {user ? (
               <div className="relative" ref={menuRef}>
+                {/* Elevated Interactive Profile Pill Trigger */}
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center gap-1.5 p-0.5 sm:p-1 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-800 transition-colors focus:outline-none"
+                  className={`group flex items-center gap-2 pl-1.5 pr-2.5 sm:pr-3 py-1 rounded-full border transition-all duration-200 focus:outline-none ${
+                    menuOpen
+                      ? "bg-zinc-100 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 shadow-sm"
+                      : "bg-zinc-50 dark:bg-zinc-900/80 hover:bg-zinc-100 dark:hover:bg-zinc-800/70 border-zinc-200 dark:border-zinc-800/90 shadow-2xs"
+                  }`}
                   aria-label="User menu"
                 >
-                  <img
-                    src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
-                      user.username || "Editor"
-                    )}`}
-                    alt="Avatar"
-                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 object-cover"
+                  <div className="relative">
+                    <img
+                      src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                        user.username || "Editor"
+                      )}`}
+                      alt="Avatar"
+                      className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 object-cover ring-2 ring-blue-500/20"
+                    />
+                    <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-white dark:border-zinc-900" />
+                  </div>
+
+                  {/* Name and Role Badging (Desktop & Tablet) */}
+                  <div className="hidden sm:flex flex-col items-start text-left leading-tight pr-1">
+                    <span className="text-xs font-bold text-zinc-900 dark:text-white max-w-[90px] lg:max-w-[120px] truncate">
+                      {user.username}
+                    </span>
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-semibold">
+                      {user.isAdmin ? "Admin Desk" : "Writer"}
+                    </span>
+                  </div>
+
+                  <FiChevronDown
+                    size={13}
+                    className={`text-zinc-400 dark:text-zinc-500 transition-transform duration-200 ${
+                      menuOpen ? "rotate-180 text-zinc-900 dark:text-white" : "group-hover:text-zinc-700 dark:group-hover:text-zinc-300"
+                    }`}
                   />
                 </button>
 
+                {/* Enhanced Dropdown Menu Card */}
                 <AnimatePresence>
                   {menuOpen && (
                     <motion.div
@@ -215,43 +244,86 @@ function Navbar() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: 8 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-56 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl dark:shadow-2xl overflow-hidden py-1.5 z-50 transition-colors"
+                      className="absolute right-0 top-full mt-2 w-64 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden py-1.5 z-50 transition-colors"
                     >
-                      <div className="px-4 py-2.5 border-b border-zinc-100 dark:border-zinc-800/80">
-                        <p className="text-xs font-semibold text-zinc-950 dark:text-white tracking-wide truncate">
-                          {user.username}
-                        </p>
-                        <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
-                          {user.email || "Contributor"}
-                        </p>
+                      {/* Dropdown Header Card */}
+                      <div className="p-4 bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-800/40 dark:to-zinc-900 border-b border-zinc-100 dark:border-zinc-800/80">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                              user.username || "Editor"
+                            )}`}
+                            alt="Avatar"
+                            className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 shadow-xs"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <p className="text-xs font-bold font-serif text-zinc-950 dark:text-white truncate">
+                                {user.username}
+                              </p>
+                              {user.isAdmin && (
+                                <span className="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                  Admin
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                              {user.email || "Staff Contributor"}
+                            </p>
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="py-1">
+                      {/* Dropdown Navigation Actions */}
+                      <div className="p-1.5 space-y-0.5">
                         <Link
                           to="/dashboard"
                           onClick={() => setMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/70 hover:text-zinc-950 dark:hover:text-white transition-colors"
+                          className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/70 hover:text-zinc-950 dark:hover:text-white transition-colors group"
                         >
-                          <FiEdit3 size={14} className="text-blue-600 dark:text-blue-400" />
-                          <span>Writer Dashboard</span>
+                          <span className="flex items-center gap-2.5 font-medium">
+                            <FiEdit3 size={14} className="text-blue-600 dark:text-blue-400" />
+                            <span>Writer Dashboard</span>
+                          </span>
+                          <span className="text-[10px] font-mono text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300">
+                            Stories
+                          </span>
                         </Link>
+
                         <Link
                           to="/profile"
                           onClick={() => setMenuOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/70 hover:text-zinc-950 dark:hover:text-white transition-colors"
+                          className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/70 hover:text-zinc-950 dark:hover:text-white transition-colors group"
                         >
-                          <FiUser size={14} className="text-zinc-500 dark:text-zinc-400" />
-                          <span>Author Profile</span>
+                          <span className="flex items-center gap-2.5 font-medium">
+                            <FiUser size={14} className="text-zinc-500 dark:text-zinc-400" />
+                            <span>Author Profile</span>
+                          </span>
+                          <span className="text-[10px] font-mono text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300">
+                            Settings
+                          </span>
+                        </Link>
+
+                        <Link
+                          to="/guidelines"
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800/70 hover:text-zinc-950 dark:hover:text-white transition-colors group"
+                        >
+                          <span className="flex items-center gap-2.5 font-medium">
+                            <FiBookmark size={14} className="text-zinc-500 dark:text-zinc-400" />
+                            <span>Writing Standards</span>
+                          </span>
                         </Link>
                       </div>
 
-                      <div className="border-t border-zinc-100 dark:border-zinc-800/80 pt-1">
+                      {/* Sign Out Footer */}
+                      <div className="border-t border-zinc-100 dark:border-zinc-800/80 p-1.5">
                         <button
                           onClick={() => {
                             setMenuOpen(false);
                             handleLogout();
                           }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors font-medium text-left"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors font-medium text-left"
                         >
                           <FiLogOut size={14} />
                           <span>Sign Out</span>
@@ -359,22 +431,30 @@ function Navbar() {
             transition={{ duration: 0.18, ease: "easeInOut" }}
             className="lg:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090b] px-4 py-4 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto"
           >
-            {/* User Profile Card or Auth CTA in Drawer */}
+            {/* User Profile Card in Drawer */}
             {user ? (
-              <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/80">
-                <div className="flex items-center gap-3 mb-3">
-                  <img
-                    src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
-                      user.username || "User"
-                    )}`}
-                    alt="User avatar"
-                    className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700"
-                  />
+              <div className="p-4 rounded-2xl bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-900/90 dark:to-zinc-900/50 border border-zinc-200 dark:border-zinc-800 shadow-xs">
+                <div className="flex items-center gap-3 mb-3.5">
+                  <div className="relative">
+                    <img
+                      src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                        user.username || "User"
+                      )}`}
+                      alt="User avatar"
+                      className="w-11 h-11 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 shadow-xs object-cover"
+                    />
+                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-900" />
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold font-serif text-zinc-950 dark:text-white truncate">
-                      {user.username}
-                    </p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold font-serif text-zinc-950 dark:text-white truncate">
+                        {user.username}
+                      </p>
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20">
+                        {user.isAdmin ? "Admin" : "Writer"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
                       {user.email || "Publication Contributor"}
                     </p>
                   </div>
@@ -398,7 +478,7 @@ function Navbar() {
                 </div>
               </div>
             ) : (
-              <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/70">
+              <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/70">
                 <p className="text-xs font-semibold text-zinc-900 dark:text-white mb-1">
                   Join The Community
                 </p>
