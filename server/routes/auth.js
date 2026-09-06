@@ -2,7 +2,7 @@ const express = require("express");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { authenticator } = require("otplib");
+const { generateSecret, generateURI, verifySync } = require("otplib");
 const QRCode = require("qrcode");
 const User = require("../models/User");
 const Post = require("../models/Post");
@@ -196,10 +196,11 @@ router.post("/verify-2fa", async (req, res) => {
     }
 
     const cleanCode = String(code).trim().replace(/\s/g, "");
-    const isValid = authenticator.verify({
+    const checkResult = verifySync({
       token: cleanCode,
       secret: user.twoFactorSecret,
     });
+    const isValid = Boolean(checkResult?.valid);
 
     if (!isValid) {
       return res.status(401).json({ message: "Invalid verification code. Please check your authenticator app." });
@@ -239,8 +240,12 @@ router.post("/2fa/setup", auth, async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // Generate standard base32 secret
-    const secret = authenticator.generateSecret();
-    const otpauth = authenticator.keyuri(user.email, "Blogsify", secret);
+    const secret = generateSecret();
+    const otpauth = generateURI({
+      issuer: "Blogsify",
+      label: user.email,
+      secret,
+    });
     const qrCodeUrl = await QRCode.toDataURL(otpauth);
 
     // Save temporary secret to user (not yet activated until verified)
@@ -272,10 +277,11 @@ router.post("/2fa/verify-setup", auth, async (req, res) => {
     }
 
     const cleanCode = String(code).trim().replace(/\s/g, "");
-    const isValid = authenticator.verify({
+    const checkResult = verifySync({
       token: cleanCode,
       secret: user.twoFactorSecret,
     });
+    const isValid = Boolean(checkResult?.valid);
 
     if (!isValid) {
       return res.status(400).json({ message: "Invalid code from authenticator app. Please try again." });
