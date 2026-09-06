@@ -59,8 +59,9 @@ function Login() {
 
   const handleVerify2FA = async (e) => {
     e.preventDefault();
-    if (!verificationCode.trim() || verificationCode.trim().length !== 6) {
-      return toast.warn("Please enter a valid 6-digit verification code.");
+    const clean = verificationCode.trim().replace(/[\s-]/g, "");
+    if (!clean || (clean.length !== 6 && clean.length !== 8)) {
+      return toast.warn("Please enter a 6-digit authenticator code or 8-character recovery key.");
     }
 
     setLoading(true);
@@ -69,7 +70,7 @@ function Login() {
         `${import.meta.env.VITE_BASE_URL}/api/auth/verify-2fa`,
         {
           userId: twoFAUserId,
-          code: verificationCode.trim(),
+          code: clean,
         }
       );
 
@@ -110,16 +111,16 @@ function Login() {
                   htmlFor="verificationCode"
                   className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5 text-center"
                 >
-                  6-Digit Security Code
+                  Authenticator Code or Recovery Key
                 </label>
                 <div className="relative">
                   <input
                     type="text"
                     id="verificationCode"
-                    maxLength={6}
+                    maxLength={8}
                     value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
-                    className="w-full text-center tracking-[0.5em] text-xl font-mono py-3.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 placeholder-zinc-300 dark:placeholder-zinc-700 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 transition-colors font-bold shadow-xs"
+                    onChange={(e) => setVerificationCode(e.target.value.toUpperCase())}
+                    className="w-full text-center tracking-[0.3em] text-xl font-mono py-3.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 placeholder-zinc-300 dark:placeholder-zinc-700 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 transition-colors font-bold shadow-xs uppercase"
                     placeholder="••••••"
                     autoFocus
                     required
@@ -127,7 +128,7 @@ function Login() {
                   />
                 </div>
                 <p className="text-[11px] text-zinc-400 text-center mt-2">
-                  Code expires in 10 minutes.
+                  Enter 6-digit TOTP code or an 8-character backup recovery key
                 </p>
               </div>
 

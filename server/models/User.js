@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   avatar: { type: String, default: '' },
   twoFactorEnabled: { type: Boolean, default: false },
   twoFactorSecret: { type: String, default: '' },
+  twoFactorPendingSecret: { type: String, default: '' },
+  twoFactorRecoveryCodes: { type: [String], default: [] },
   twoFactorCode: { type: String, default: '' },
   twoFactorCodeExpires: { type: Date },
 });

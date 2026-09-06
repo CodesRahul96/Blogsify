@@ -42,6 +42,8 @@ function Profile() {
   const [setupCode, setSetupCode] = useState("");
   const [showDisableModal, setShowDisableModal] = useState(false);
   const [disablePassword, setDisablePassword] = useState("");
+  const [recoveryCodes, setRecoveryCodes] = useState([]);
+  const [showRecoveryModal, setShowRecoveryModal] = useState(false);
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -172,11 +174,15 @@ function Profile() {
 
     setTwoFALoading(true);
     try {
-      await verify2FASetup(setupCode.trim());
+      const res = await verify2FASetup(setupCode.trim());
       setShowSetupModal(false);
       setSetupCode("");
       setQrCodeUrl("");
       setSecretKey("");
+      if (res.recoveryCodes && res.recoveryCodes.length > 0) {
+        setRecoveryCodes(res.recoveryCodes);
+        setShowRecoveryModal(true);
+      }
       toast.success("Two-Step Verification activated successfully with your Authenticator app!");
     } catch (err) {
       toast.error(
@@ -624,6 +630,63 @@ function Profile() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Emergency Backup Recovery Codes Modal */}
+      {showRecoveryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
+              <div className="flex items-center gap-2">
+                <FiShield className="text-emerald-500" size={18} />
+                <h3 className="text-base font-bold text-zinc-950 dark:text-white">
+                  Emergency Recovery Keys
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowRecoveryModal(false)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+              >
+                <FiX size={16} />
+              </button>
+            </div>
+
+            <p className="text-xs text-zinc-600 dark:text-zinc-300">
+              Save these one-time backup keys in a secure password manager. If you ever lose access to your phone or authenticator app, you can enter any of these codes to sign in.
+            </p>
+
+            <div className="grid grid-cols-2 gap-2 p-3 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800 font-mono text-xs font-bold text-zinc-800 dark:text-zinc-200 text-center">
+              {recoveryCodes.map((code, idx) => (
+                <div
+                  key={idx}
+                  className="p-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 select-all"
+                >
+                  {code}
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(recoveryCodes.join("\n"));
+                  toast.success("Recovery keys copied to clipboard!");
+                }}
+                className="flex-1 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              >
+                Copy Keys
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowRecoveryModal(false)}
+                className="flex-1 py-2.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold transition-all shadow-xs"
+              >
+                I've Saved Them
+              </button>
+            </div>
           </div>
         </div>
       )}
