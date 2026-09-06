@@ -58,22 +58,27 @@ router.get("/", async (req, res) => {
   const skip = (page - 1) * limit;
 
   try {
+    // Helper: escape regex special characters from user input to prevent ReDoS
+    const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
     const query = {};
-    if (author) {
-      query.author = author;
+    if (author && typeof author === 'string') {
+      // Exact match by username (case-insensitive for safety)
+      query.author = { $regex: new RegExp(`^${escapeRegex(author.trim())}$`, 'i') };
     }
-    if (category && category.toLowerCase() !== "all") {
-      query.category = new RegExp(`^${category}$`, "i");
+    if (category && typeof category === 'string' && category.toLowerCase() !== "all") {
+      query.category = new RegExp(`^${escapeRegex(category.trim())}$`, "i");
     }
-    if (tag) {
-      query.tags = { $in: [new RegExp(`^${tag}$`, "i")] };
+    if (tag && typeof tag === 'string') {
+      query.tags = { $in: [new RegExp(`^${escapeRegex(tag.trim())}$`, "i")] };
     }
-    if (search) {
+    if (search && typeof search === 'string') {
+      const safeSearch = escapeRegex(search.trim().substring(0, 200)); // cap length
       query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { subtitle: { $regex: search, $options: "i" } },
-        { content: { $regex: search, $options: "i" } },
-        { tags: { $in: [new RegExp(search, "i")] } },
+        { title: { $regex: safeSearch, $options: "i" } },
+        { subtitle: { $regex: safeSearch, $options: "i" } },
+        { content: { $regex: safeSearch, $options: "i" } },
+        { tags: { $in: [new RegExp(safeSearch, "i")] } },
       ];
     }
 
@@ -160,8 +165,14 @@ router.post("/", auth, async (req, res) => {
   try {
     const { title, subtitle, content, imageUrl, videoUrl, category, tags } = req.body;
 
-    if (!title || !content) {
+    if (typeof title !== 'string' || typeof content !== 'string' || !title.trim() || !content.trim()) {
       return res.status(400).json({ message: "Title and content are required" });
+    }
+    if (title.trim().length > 200) {
+      return res.status(400).json({ message: "Title must be 200 characters or fewer" });
+    }
+    if (content.trim().length > 200000) {
+      return res.status(400).json({ message: "Content is too long (max 200,000 characters)" });
     }
 
     const author =
@@ -171,14 +182,19 @@ router.post("/", auth, async (req, res) => {
     const minutes = Math.max(1, Math.round(words / 200));
     const calculatedReadTime = `${minutes} min read`;
 
+    // Sanitize tags: max 10 tags, each max 50 chars
+    const sanitizedTags = Array.isArray(tags)
+      ? tags.slice(0, 10).map((t) => String(t).trim().substring(0, 50)).filter(Boolean)
+      : [];
+
     const post = new Post({
       title: title.trim(),
-      subtitle: subtitle ? subtitle.trim() : "",
+      subtitle: subtitle ? String(subtitle).trim().substring(0, 500) : "",
       content: content.trim(),
-      imageUrl: imageUrl ? imageUrl.trim() : "",
-      videoUrl: videoUrl ? videoUrl.trim() : "",
-      category: category ? category.trim() : "General",
-      tags: Array.isArray(tags) ? tags.map((t) => String(t).trim()).filter(Boolean) : [],
+      imageUrl: imageUrl ? String(imageUrl).trim().substring(0, 2048) : "",
+      videoUrl: videoUrl ? String(videoUrl).trim().substring(0, 2048) : "",
+      category: category ? String(category).trim().substring(0, 100) : "General",
+      tags: sanitizedTags,
       readTime: calculatedReadTime,
       author,
       likes: [],
@@ -270,21 +286,26 @@ router.post("/:id/like", auth, async (req, res) => {
       return res.status(400).json({ message: "Invalid post identifier" });
     }
 
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
-    if (post.likes.includes(req.user.id)) {
-      post.likes = post.likes.filter((id) => id.toString() !== req.user.id);
-    } else {
-      post.likes.push(req.user.id);
-    }
-    await post.save();
-    const updated = await Post.findById(post._id).populate({
-      path: "comments.user",
-      select: "username",
-    });
+    // First check if user already liked — use atomic ops to avoid race conditions
+    const userId = new mongoose.Types.ObjectId(req.user.id);
+    const postExists = await Post.findById(req.params.id).select('likes');
+    if (!postExists) return res.status(404).json({ message: "Post not found" });
+
+    const alreadyLiked = postExists.likes.some((id) => id.equals(userId));
+
+    // Use atomic $addToSet (like) or $pull (unlike) — no race condition
+    const updated = await Post.findByIdAndUpdate(
+      req.params.id,
+      alreadyLiked
+        ? { $pull: { likes: userId } }
+        : { $addToSet: { likes: userId } },
+      { new: true }
+    ).populate({ path: "comments.user", select: "username" });
+
+    if (!updated) return res.status(404).json({ message: "Post not found" });
+
     const po = updated.toObject();
-    po.author =
-      typeof po.author === "string" ? { username: po.author } : po.author;
+    po.author = typeof po.author === "string" ? { username: po.author } : po.author;
     res.json(po);
   } catch (err) {
     res.status(500).json({ message: "Server error liking post", error: err.message });
@@ -301,6 +322,9 @@ router.post("/:id/comment", auth, async (req, res) => {
     const text = req.body.text ? String(req.body.text).trim() : "";
     if (!text) {
       return res.status(400).json({ message: "Comment text cannot be empty" });
+    }
+    if (text.length > 2000) {
+      return res.status(400).json({ message: "Comment must be 2000 characters or fewer" });
     }
 
     const post = await Post.findById(req.params.id);

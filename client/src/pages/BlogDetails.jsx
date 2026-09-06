@@ -347,18 +347,22 @@ function BlogDetails() {
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-              a: ({ href, children, ...props }) => (
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-baseline gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline underline-offset-4 decoration-blue-500/40 hover:decoration-blue-500 font-medium transition-colors break-words"
-                  {...props}
-                >
-                  <span>{children}</span>
-                  <span className="text-[10px] opacity-70">↗</span>
-                </a>
-              ),
+              a: ({ href, children, ...props }) => {
+                // Block javascript:, data:, vbscript: and other dangerous schemes
+                const safeSrc = typeof href === 'string' && /^(https?:\/\/|\/|#)/i.test(href) ? href : '#';
+                return (
+                  <a
+                    href={safeSrc}
+                    target={safeSrc !== '#' ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className="inline-flex items-baseline gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline underline-offset-4 decoration-blue-500/40 hover:decoration-blue-500 font-medium transition-colors break-words"
+                    {...props}
+                  >
+                    <span>{children}</span>
+                    {safeSrc !== '#' && <span className="text-[10px] opacity-70">↗</span>}
+                  </a>
+                );
+              },
               table: ({ children }) => (
                 <div className="overflow-x-auto my-6 rounded-xl border border-zinc-200 dark:border-zinc-800">
                   <table className="w-full text-sm text-left">{children}</table>

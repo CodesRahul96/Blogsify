@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Helper to validate email format
 const isValidEmail = (email) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
 // Register
@@ -16,16 +16,27 @@ router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Validate presence
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+    // Validate presence and type
+    if (
+      typeof username !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string" ||
+      !username.trim() ||
+      !email.trim() ||
+      !password
+    ) {
+      return res.status(400).json({ message: "All fields are required and must be valid text" });
     }
 
     const trimmedUsername = username.trim();
     const trimmedEmail = email.trim().toLowerCase();
 
-    if (trimmedUsername.length < 3) {
-      return res.status(400).json({ message: "Username must be at least 3 characters long" });
+    if (trimmedUsername.length < 3 || trimmedUsername.length > 30) {
+      return res.status(400).json({ message: "Username must be between 3 and 30 characters" });
+    }
+
+    if (!/^[a-zA-Z0-9_.-]+$/.test(trimmedUsername)) {
+      return res.status(400).json({ message: "Username can only contain letters, numbers, underscores, dots, and hyphens" });
     }
 
     if (!isValidEmail(trimmedEmail)) {
@@ -36,9 +47,12 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Password must be at least 6 characters long" });
     }
 
-    // Check for existing user
+    // Check for existing user (case-insensitive for username as well)
     const existing = await User.findOne({
-      $or: [{ username: trimmedUsername }, { email: trimmedEmail }],
+      $or: [
+        { username: { $regex: new RegExp(`^${trimmedUsername.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } },
+        { email: trimmedEmail }
+      ],
     });
 
     if (existing) {
@@ -76,14 +90,20 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
-    if (!username || !password) {
+    if (
+      typeof username !== "string" ||
+      typeof password !== "string" ||
+      !username.trim() ||
+      !password
+    ) {
       return res.status(400).json({ message: "Username/email and password are required" });
     }
 
     const query = username.trim();
-    // Try to find user by username or email
+    // Try to find user by username (case-insensitive) or email
+    const safeRegex = new RegExp(`^${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i');
     const user = await User.findOne({
-      $or: [{ username: query }, { email: query.toLowerCase() }],
+      $or: [{ username: safeRegex }, { email: query.toLowerCase() }],
     });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -121,8 +141,16 @@ router.get("/me", auth, async (req, res) => {
 router.put('/change-password', auth, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    if (!currentPassword || !newPassword) {
+    if (
+      typeof currentPassword !== 'string' ||
+      typeof newPassword !== 'string' ||
+      !currentPassword ||
+      !newPassword
+    ) {
       return res.status(400).json({ message: 'currentPassword and newPassword are required' });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters' });
     }
 
     const user = await User.findById(req.user.id);
@@ -145,7 +173,12 @@ router.put('/change-password', auth, async (req, res) => {
 router.put('/reset-password/:id', auth, isAdmin, async (req, res) => {
   try {
     const { newPassword } = req.body;
-    if (!newPassword) return res.status(400).json({ message: 'newPassword is required' });
+    if (typeof newPassword !== 'string' || !newPassword) {
+      return res.status(400).json({ message: 'newPassword is required' });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters' });
+    }
 
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -233,10 +266,23 @@ router.delete('/user/:id', auth, isAdmin, async (req, res) => {
 router.put('/update-username', auth, async (req, res) => {
   try {
     const { newUsername } = req.body;
-    if (!newUsername) return res.status(400).json({ message: 'newUsername is required' });
-    
-    // Check if new username is already taken
-    const existingUser = await User.findOne({ username: newUsername });
+    if (typeof newUsername !== 'string' || !newUsername.trim()) {
+      return res.status(400).json({ message: 'newUsername is required and must be a string' });
+    }
+
+    const trimmedNew = newUsername.trim();
+
+    if (trimmedNew.length < 3 || trimmedNew.length > 30) {
+      return res.status(400).json({ message: 'Username must be between 3 and 30 characters' });
+    }
+
+    if (!/^[a-zA-Z0-9_.-]+$/.test(trimmedNew)) {
+      return res.status(400).json({ message: 'Username can only contain letters, numbers, underscores, dots, and hyphens' });
+    }
+
+    // Check if new username is already taken (case-insensitive)
+    const safeRegex = new RegExp(`^${trimmedNew.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i');
+    const existingUser = await User.findOne({ username: safeRegex });
     if (existingUser && existingUser._id.toString() !== req.user.id) {
       return res.status(409).json({ message: 'Username already taken' });
     }
@@ -246,13 +292,13 @@ router.put('/update-username', auth, async (req, res) => {
 
     // Update username
     const oldUsername = user.username;
-    user.username = newUsername;
+    user.username = trimmedNew;
     await user.save();
 
     // Update all posts by this user
-    await Post.updateMany({ author: oldUsername }, { author: newUsername });
+    await Post.updateMany({ author: oldUsername }, { author: trimmedNew });
 
-    // Return updated token with new username
+    // Return updated token with new username (same 7d expiry as login)
     const token = jwt.sign(
       {
         id: user._id,
@@ -261,7 +307,7 @@ router.put('/update-username', auth, async (req, res) => {
         isAdmin: user.isAdmin,
       },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '7d' }
     );
 
     res.json({ message: 'Username updated successfully', token });
@@ -276,7 +322,9 @@ router.put('/update-username', auth, async (req, res) => {
 router.put('/sync-posts', auth, async (req, res) => {
   try {
     const { oldUsername } = req.body;
-    if (!oldUsername) return res.status(400).json({ message: 'oldUsername is required' });
+    if (typeof oldUsername !== 'string' || !oldUsername.trim()) {
+      return res.status(400).json({ message: 'oldUsername is required and must be a string' });
+    }
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -286,7 +334,7 @@ router.put('/sync-posts', auth, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to sync posts for this user' });
     }
 
-    const result = await Post.updateMany({ author: oldUsername }, { author: user.username });
+    const result = await Post.updateMany({ author: oldUsername.trim() }, { author: user.username });
     res.json({ message: 'Posts synced', matched: result.matchedCount ?? result.n, modified: result.modifiedCount ?? result.nModified });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -297,12 +345,20 @@ router.put('/sync-posts', auth, async (req, res) => {
 router.put('/update-avatar', auth, async (req, res) => {
   try {
     const { avatar } = req.body;
-    if (!avatar) return res.status(400).json({ message: 'avatar is required' });
+    if (typeof avatar !== 'string' || !avatar.trim()) {
+      return res.status(400).json({ message: 'avatar is required and must be a string' });
+    }
+
+    // Basic URL safety check
+    const trimmedAvatar = avatar.trim();
+    if (trimmedAvatar.length > 2048) {
+      return res.status(400).json({ message: 'Avatar URL is too long' });
+    }
 
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    user.avatar = avatar;
+    user.avatar = trimmedAvatar;
     await user.save();
 
     // Return updated user (no token change)
