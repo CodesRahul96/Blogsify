@@ -1,4 +1,5 @@
 const express = require("express");
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
@@ -6,9 +7,42 @@ const Post = require("../models/Post");
 const { auth, isAdmin } = require("../middleware/auth");
 const router = express.Router();
 
+// Helper to escape regex characters
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 // Helper to validate email format
 const isValidEmail = (email) => {
   return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+// Generates a clean, professional unique username based on base name
+const generateUniqueUsername = async (base) => {
+  let cleanBase = String(base || "writer")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, "")
+    .substring(0, 18);
+
+  if (cleanBase.length < 3) cleanBase = "member";
+
+  // Check if base is already available
+  const existingExact = await User.findOne({
+    username: { $regex: new RegExp(`^${escapeRegex(cleanBase)}$`, "i") }
+  });
+  if (!existingExact) return cleanBase;
+
+  // Otherwise, append professional random numeric suffix (e.g. alex_4829, rahul_719)
+  for (let attempts = 0; attempts < 15; attempts++) {
+    const num = crypto.randomInt(100, 9999);
+    const candidate = `${cleanBase}_${num}`;
+    const taken = await User.findOne({
+      username: { $regex: new RegExp(`^${escapeRegex(candidate)}$`, "i") }
+    });
+    if (!taken) return candidate;
+  }
+
+  // Fallback with timestamp hash
+  return `${cleanBase}_${Date.now().toString(36).slice(-4)}`;
 };
 
 // Register
@@ -18,26 +52,15 @@ router.post("/register", async (req, res) => {
 
     // Validate presence and type
     if (
-      typeof username !== "string" ||
       typeof email !== "string" ||
       typeof password !== "string" ||
-      !username.trim() ||
       !email.trim() ||
       !password
     ) {
-      return res.status(400).json({ message: "All fields are required and must be valid text" });
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
-    const trimmedUsername = username.trim();
     const trimmedEmail = email.trim().toLowerCase();
-
-    if (trimmedUsername.length < 3 || trimmedUsername.length > 30) {
-      return res.status(400).json({ message: "Username must be between 3 and 30 characters" });
-    }
-
-    if (!/^[a-zA-Z0-9_.-]+$/.test(trimmedUsername)) {
-      return res.status(400).json({ message: "Username can only contain letters, numbers, underscores, dots, and hyphens" });
-    }
 
     if (!isValidEmail(trimmedEmail)) {
       return res.status(400).json({ message: "Please provide a valid email address" });
@@ -47,24 +70,44 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Password must be at least 6 characters long" });
     }
 
-    // Check for existing user (case-insensitive for username as well)
-    const existing = await User.findOne({
-      $or: [
-        { username: { $regex: new RegExp(`^${trimmedUsername.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } },
-        { email: trimmedEmail }
-      ],
-    });
-
-    if (existing) {
-      if (existing.username.toLowerCase() === trimmedUsername.toLowerCase()) {
-        return res.status(409).json({ message: "Username is already registered" });
-      }
+    // Check if email is already registered
+    const existingEmail = await User.findOne({ email: trimmedEmail });
+    if (existingEmail) {
       return res.status(409).json({ message: "Email is already registered" });
+    }
+
+    // Determine clean username
+    let chosenUsername = "";
+    if (typeof username === "string" && username.trim()) {
+      let cleanInput = username
+        .trim()
+        .replace(/[^a-zA-Z0-9_.-]/g, "")
+        .substring(0, 24);
+
+      if (cleanInput.length < 3) {
+        cleanInput = trimmedEmail.split("@")[0].replace(/[^a-zA-Z0-9_]/g, "") || "user";
+      }
+
+      // Check if candidate username is available
+      const exists = await User.findOne({
+        username: { $regex: new RegExp(`^${escapeRegex(cleanInput)}$`, "i") }
+      });
+
+      if (exists) {
+        // Automatically make it uniquely numbered & professional
+        chosenUsername = await generateUniqueUsername(cleanInput);
+      } else {
+        chosenUsername = cleanInput;
+      }
+    } else {
+      // Auto-generate from email prefix
+      const emailPrefix = trimmedEmail.split("@")[0];
+      chosenUsername = await generateUniqueUsername(emailPrefix);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
-      username: trimmedUsername,
+      username: chosenUsername,
       email: trimmedEmail,
       password: hashedPassword,
     });

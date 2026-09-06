@@ -42,11 +42,16 @@ function SignUp() {
     }
     setLoading(true);
     try {
-      await axios.post(
+      const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/auth/register`,
         formData
       );
-      toast.success("Account created! Please log in.");
+      const assignedUsername = res.data?.user?.username;
+      if (assignedUsername) {
+        toast.success(`Account registered as @${assignedUsername}! Please log in.`);
+      } else {
+        toast.success("Account created! Please log in.");
+      }
       navigate("/login");
     } catch (err) {
       toast.error(err.response?.data?.message || "Registration failed");
