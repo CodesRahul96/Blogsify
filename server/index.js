@@ -12,7 +12,8 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(express.json()); // Parse JSON bodies
+app.use(express.json({ limit: "10mb" })); // Parse JSON bodies with safe limit
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(helmet());
 app.use(
   cors({
@@ -36,10 +37,23 @@ const connectDB = async () => {
   }
 };
 
-// Connect to DB
-if (process.env.NODE_ENV !== "production") {
-  // We'll call connectDB inside the startup block
-}
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const statusMap = {
+    0: "disconnected",
+    1: "connected",
+    2: "connecting",
+    3: "disconnecting",
+  };
+
+  res.json({
+    status: dbState === 1 ? "ok" : "degraded",
+    database: statusMap[dbState] || "unknown",
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -47,7 +61,22 @@ app.use("/api/posts", postRoutes);
 
 // Root route (optional, for testing)
 app.get("/", (req, res) => {
-  res.json({ message: "Blogify Backend is running" });
+  res.json({ message: "Blogsify Backend is running" });
+});
+
+// 404 Handler for undefined API routes
+app.use("/api/*", (req, res) => {
+  res.status(404).json({ message: `Route not found: ${req.originalUrl}` });
+});
+
+// Centralized Global Error Handler Middleware
+app.use((err, req, res, next) => {
+  console.error("Unhandled server error:", err);
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({
+    message: err.message || "An unexpected internal server error occurred",
+    ...(process.env.NODE_ENV !== "production" && { stack: err.stack }),
+  });
 });
 
 // Export the app for Vercel serverless
@@ -67,16 +96,22 @@ if (process.env.NODE_ENV !== "production") {
         console.log(`Server running on port ${PORT}`);
       });
 
-      // Handle graceful shutdown for nodemon
-      process.on("SIGTERM", () => {
-        console.log("SIGTERM received. Shutting down gracefully...");
-        server.close(() => {
-          mongoose.connection.close(false, () => {
+      // Handle graceful shutdown
+      const shutdown = async (signal) => {
+        console.log(`${signal} received. Shutting down gracefully...`);
+        server.close(async () => {
+          try {
+            await mongoose.connection.close();
             console.log("MongoDB connection closed");
-            process.exit(0);
-          });
+          } catch (e) {
+            // ignore
+          }
+          process.exit(0);
         });
-      });
+      };
+
+      process.on("SIGTERM", () => shutdown("SIGTERM"));
+      process.on("SIGINT", () => shutdown("SIGINT"));
     }
   });
 } else {

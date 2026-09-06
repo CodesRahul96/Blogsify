@@ -6,36 +6,115 @@ const Post = require("../models/Post");
 const { auth, isAdmin } = require("../middleware/auth");
 const router = express.Router();
 
+// Helper to validate email format
+const isValidEmail = (email) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
 // Register
 router.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ username, email, password: hashedPassword });
-  await user.save();
-  res.status(201).json({ message: "User registered" });
+  try {
+    const { username, email, password } = req.body;
+
+    // Validate presence
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const trimmedUsername = username.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (trimmedUsername.length < 3) {
+      return res.status(400).json({ message: "Username must be at least 3 characters long" });
+    }
+
+    if (!isValidEmail(trimmedEmail)) {
+      return res.status(400).json({ message: "Please provide a valid email address" });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters long" });
+    }
+
+    // Check for existing user
+    const existing = await User.findOne({
+      $or: [{ username: trimmedUsername }, { email: trimmedEmail }],
+    });
+
+    if (existing) {
+      if (existing.username.toLowerCase() === trimmedUsername.toLowerCase()) {
+        return res.status(409).json({ message: "Username is already registered" });
+      }
+      return res.status(409).json({ message: "Email is already registered" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
+      username: trimmedUsername,
+      email: trimmedEmail,
+      password: hashedPassword,
+    });
+    await user.save();
+
+    res.status(201).json({
+      message: "Account created successfully. You can now log in.",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: "Username or email already in use" });
+    }
+    res.status(500).json({ message: "Server error during registration", error: err.message });
+  }
 });
 
 // Login - accept either username or email
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  // Try to find user by username or email
-  const user = await User.findOne({
-    $or: [{ username }, { email: username }]
-  });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ message: "Invalid credentials" });
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ message: "Username/email and password are required" });
+    }
+
+    const query = username.trim();
+    // Try to find user by username or email
+    const user = await User.findOne({
+      $or: [{ username: query }, { email: query.toLowerCase() }],
+    });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    res.json({ token, user: { id: user._id, username: user.username, email: user.email, isAdmin: user.isAdmin } });
+  } catch (err) {
+    res.status(500).json({ message: "Server error during login", error: err.message });
   }
-  const token = jwt.sign(
-    {
-      id: user._id,
-      username: user.username,
-      email: user.email,
-      isAdmin: user.isAdmin,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' }
-  );
-  res.json({ token });
+});
+
+// Current User Profile (auth required)
+router.get("/me", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Server error fetching user profile", error: err.message });
+  }
 });
 
 // Change password (self) - requires current password

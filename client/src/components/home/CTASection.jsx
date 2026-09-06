@@ -1,47 +1,65 @@
-import { Link } from "react-router-dom";
-import GlassCard from "../ui/GlassCard";
+import { useState } from "react";
+import { FiMail, FiCheck, FiArrowRight } from "react-icons/fi";
 
 const CTASection = () => {
-  return (
-    <section className="py-24">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <GlassCard
-          className="text-center p-12 md:p-16 bg-gradient-to-br from-blue-900/40 to-purple-900/40 border-white/10 relative overflow-hidden"
-          // Override motion props
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          animate={null} // Disable default mount animation of GlassCard
-        >
-          {/* Background decorative glow */}
-          <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl" />
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
-          <div className="relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Ready to Get Started?
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email) {
+      setSubscribed(true);
+      setEmail("");
+    }
+  };
+
+  return (
+    <section className="py-20 bg-zinc-100 dark:bg-zinc-950 border-t border-b border-zinc-200 dark:border-zinc-800/80 transition-colors duration-200">
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="rounded-3xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 p-8 sm:p-14 text-center relative overflow-hidden shadow-sm">
+          <div className="max-w-xl mx-auto">
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 mb-4 inline-block">
+              The Blogsify Dispatch
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-bold font-serif text-zinc-950 dark:text-white mb-3 tracking-tight">
+              Essential stories for inquiring minds.
             </h2>
-            <p className="text-xl mb-10 max-w-2xl mx-auto text-white/70">
-              Join Blogsify today and start exploring, learning, or reading our
-              stories!
+            <p className="text-zinc-600 dark:text-zinc-400 text-xs sm:text-sm leading-relaxed mb-8">
+              Join over 25,000 thinkers, engineers, designers, and founders who receive our curated weekly dispatch every Sunday morning.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link
-                to="/register"
-                className="bg-white text-black py-4 px-10 rounded-full font-bold text-lg hover:bg-gray-100 transition-all duration-300 shadow-xl shadow-white/10 active:scale-95"
-              >
-                Create Account
-              </Link>
-              <Link
-                to="/blogs"
-                className="bg-white/10 text-white py-4 px-10 rounded-full font-semibold text-lg hover:bg-white/20 border border-white/20 transition-all duration-300 backdrop-blur-md active:scale-95"
-              >
-                View Blogs
-              </Link>
-            </div>
+
+            {subscribed ? (
+              <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
+                <FiCheck className="text-emerald-600 dark:text-emerald-400" />
+                <span>You are subscribed! Welcome to the publication.</span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+                <div className="relative flex-1">
+                  <FiMail className="absolute left-3.5 top-3 text-zinc-400 dark:text-zinc-500" size={16} />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email address..."
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700/80 text-xs text-zinc-900 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-zinc-500 dark:focus:border-zinc-400 transition-colors shadow-xs"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-bold transition-all shrink-0 inline-flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <span>Subscribe</span>
+                  <FiArrowRight size={13} />
+                </button>
+              </form>
+            )}
+            <p className="text-[11px] text-zinc-500 dark:text-zinc-600 mt-4">
+              Free forever. Unsubscribe anytime with one click. Read our privacy charter.
+            </p>
           </div>
-        </GlassCard>
+        </div>
       </div>
     </section>
   );

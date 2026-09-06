@@ -138,8 +138,17 @@ function Profile() {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-16 relative overflow-hidden">
-      <div className="relative z-10 mx-auto max-w-5xl px-4 lg:px-8">
+    <div className="min-h-screen pt-28 pb-20 relative bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 lg:px-8 space-y-8">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold font-serif text-zinc-950 dark:text-white tracking-tight">
+            Account & Profile
+          </h1>
+          <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm mt-1">
+            Manage your personal bio, credentials, and publication settings.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1 space-y-4">
@@ -151,22 +160,22 @@ function Profile() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm ${
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-semibold text-xs ${
                     activeTab === item.id
-                      ? "bg-white text-black shadow-lg"
-                      : "text-white/60 hover:text-white hover:bg-white/5"
+                      ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-sm"
+                      : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
                   }`}
                 >
                   <item.icon /> {item.label}
                 </button>
               ))}
 
-              <div className="h-px bg-white/5 my-2 mx-4" />
+              <div className="h-px bg-zinc-200 dark:bg-zinc-800 my-2 mx-3" />
 
               {user?.isAdmin && (
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-yellow-500 hover:bg-yellow-500/10 transition-all font-medium text-sm"
+                  className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-all font-semibold text-xs"
                 >
                   <FiLayout /> Dashboard
                 </button>
@@ -174,7 +183,7 @@ function Profile() {
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-medium text-sm"
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all font-semibold text-xs"
               >
                 <FiLogOut /> Sign Out
               </button>
@@ -183,65 +192,66 @@ function Profile() {
 
           {/* Main Content Area */}
           <div className="lg:col-span-3">
-            <GlassCard className="p-8 md:p-10 min-h-[500px]">
+            <GlassCard className="p-6 md:p-8 min-h-[450px]">
               {activeTab === "profile" && (
-                <div className="space-y-10 animate-fade-in-up">
-                  <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="space-y-8 animate-fade-in-up">
+                  <div className="flex flex-col md:flex-row items-center gap-6 pb-6 border-b border-zinc-200 dark:border-zinc-800">
                     <img
                       src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
                         user?.username || "User"
                       )}`}
                       alt="Profile"
-                      className="w-32 h-32 rounded-full shadow-2xl border-4 border-white/5 bg-black/20"
+                      className="w-24 h-24 rounded-full shadow-md border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800"
                     />
                     <div className="flex-1 text-center md:text-left space-y-2">
-                      <div className="flex items-center justify-center md:justify-start gap-4">
+                      <div className="flex items-center justify-center md:justify-start gap-3">
                         {isEditingUsername ? (
                           <div className="flex items-center gap-2">
                             <input
                               value={newUsername}
                               onChange={(e) => setNewUsername(e.target.value)}
-                              className="bg-black/20 border border-white/10 rounded-lg px-3 py-1 text-white focus:outline-none focus:border-blue-500/50"
+                              className="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg px-3 py-1 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-blue-500"
                             />
                             <button
                               onClick={handleUpdateUsername}
                               disabled={usernameLoading}
-                              className="p-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30"
+                              className="p-1.5 bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 transition-colors"
                             >
-                              <FiCheck />
+                              <FiCheck size={14} />
                             </button>
                             <button
                               onClick={() => setIsEditingUsername(false)}
-                              className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30"
+                              className="p-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-lg hover:bg-zinc-200 transition-colors"
                             >
-                              <FiX />
+                              <FiX size={14} />
                             </button>
                           </div>
                         ) : (
                           <>
-                            <h1 className="text-3xl font-bold text-white">
+                            <h2 className="text-2xl font-bold font-serif text-zinc-950 dark:text-white">
                               {user?.username}
-                            </h1>
+                            </h2>
                             <button
                               onClick={() => setIsEditingUsername(true)}
-                              className="text-white/30 hover:text-white transition-colors"
+                              className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+                              title="Edit username"
                             >
-                              <FiEdit2 />
+                              <FiEdit2 size={15} />
                             </button>
                           </>
                         )}
                       </div>
 
-                      <p className="text-white/50">{user?.email}</p>
+                      <p className="text-zinc-500 dark:text-zinc-400 text-xs">{user?.email}</p>
                       <div className="flex gap-2 justify-center md:justify-start mt-2">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                             user?.isAdmin
-                              ? "bg-yellow-500/20 text-yellow-300"
-                              : "bg-blue-500/20 text-blue-300"
+                              ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-300"
+                              : "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-300"
                           }`}
                         >
-                          {user?.isAdmin ? "Administrator" : "Contributor"}
+                          {user?.isAdmin ? "Publication Administrator" : "Staff Contributor"}
                         </span>
                       </div>
                     </div>
@@ -250,59 +260,60 @@ function Profile() {
               )}
 
               {activeTab === "security" && (
-                <div className="space-y-10 animate-fade-in-up">
+                <div className="space-y-8 animate-fade-in-up">
                   <div>
-                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                      <FiSettings /> Change Password
+                    <h2 className="text-lg font-bold font-serif text-zinc-950 dark:text-white mb-4 flex items-center gap-2">
+                      <FiSettings className="text-blue-600 dark:text-blue-400" /> Change Account Password
                     </h2>
                     <form
                       onSubmit={handleChangePassword}
-                      className="space-y-5 max-w-md"
+                      className="space-y-4 max-w-md"
                     >
                       <div>
-                        <label className="text-sm text-white/60 mb-1 block">
+                        <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5 block">
                           Current Password
                         </label>
                         <input
                           type="password"
                           value={currentPassword}
                           onChange={(e) => setCurrentPassword(e.target.value)}
-                          className="w-full p-3 bg-black/20 border border-white/10 rounded-xl text-white focus:outline-none focus:border-white/30 transition-colors"
+                          className="w-full p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-blue-500 transition-colors"
+                          required
                         />
                       </div>
                       <div>
-                        <label className="text-sm text-white/60 mb-1 block">
+                        <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5 block">
                           New Password
                         </label>
                         <input
                           type="password"
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
-                          className="w-full p-3 bg-black/20 border border-white/10 rounded-xl text-white focus:outline-none focus:border-white/30 transition-colors"
+                          className="w-full p-2.5 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-blue-500 transition-colors"
+                          required
                         />
                       </div>
                       <button
                         type="submit"
                         disabled={pwLoading}
-                        className="bg-white text-black px-6 py-2 rounded-lg font-bold hover:bg-gray-200 transition-all disabled:opacity-50"
+                        className="bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-sm disabled:opacity-50"
                       >
                         {pwLoading ? "Updating..." : "Update Password"}
                       </button>
                     </form>
                   </div>
 
-                  <div className="pt-10 border-t border-white/5">
-                    <h2 className="text-2xl font-bold text-red-500 mb-4 flex items-center gap-3">
+                  <div className="pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <h2 className="text-lg font-bold font-serif text-rose-600 dark:text-rose-400 mb-2 flex items-center gap-2">
                       <FiTrash2 /> Danger Zone
                     </h2>
-                    <p className="text-white/40 text-sm mb-6">
-                      Once you delete your account, there is no going back.
-                      Please be certain.
+                    <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-4">
+                      Once you delete your account, your published drafts and profile details cannot be recovered.
                     </p>
                     <button
                       onClick={handleDeleteAccount}
                       disabled={delLoading}
-                      className="bg-red-500/10 text-red-500 border border-red-500/20 px-6 py-3 rounded-xl font-bold hover:bg-red-500/20 transition-all disabled:opacity-50"
+                      className="bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20 px-4 py-2 rounded-xl font-bold text-xs hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all disabled:opacity-50"
                     >
                       {delLoading ? "Deleting Account..." : "Delete My Account"}
                     </button>

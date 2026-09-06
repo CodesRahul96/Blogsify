@@ -1,87 +1,76 @@
 # Blogsify Client
 
-This is the client-side of the Blogsify application, a modern blogging platform. It is built with React and Vite, and it uses Tailwind CSS for styling.
+The modern frontend application for **Blogsify — The Journal of Modern Ideas**, built with React 19, Vite, Tailwind CSS, Framer Motion, and GitHub Flavored Markdown.
 
-## Features
+---
 
-- User authentication (signup, login, logout)
-- View, create, edit, and delete blog posts
-- User and Admin dashboards
-- Responsive design
+## 🚀 Setup & Development
 
-## Technologies Used
+### 1. Install Dependencies
+```bash
+npm install
+```
 
-- **React**: A JavaScript library for building user interfaces.
-- **Vite**: A fast build tool and development server.
-- **React Router**: For client-side routing.
-- **Tailwind CSS**: A utility-first CSS framework.
-- **Axios**: For making HTTP requests to the server.
-- **Context API**: for state management.
+### 2. Configure Environment Variables
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+Ensure `VITE_BASE_URL` matches your backend address (default: `http://localhost:5000`):
+```env
+VITE_BASE_URL=http://localhost:5000
+```
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js and npm (or yarn) installed on your machine.
-
-### Installation
-
-1.  Clone the repository:
-    ```sh
-    git clone https://github.com/codesrahul96/blogsify.git
-    ```
-2.  Navigate to the client directory:
-    ```sh
-    cd blogsify/client
-    ```
-3.  Install the dependencies:
-    ```sh
-    npm install
-    ```
-
-### Running the Development Server
-
-To run the client in development mode, execute the following command:
-
-```sh
+### 3. Start Development Server
+```bash
 npm run dev
 ```
+The client will be running at `http://localhost:5173`.
 
-This will start the development server, and you can view the application in your browser at `http://localhost:5173`.
+---
 
-### Available Scripts
+## 🛠 Available Scripts
 
--   `npm run dev`: Starts the development server.
--   `npm run build`: Builds the application for production.
--   `npm run lint`: Lints the code using ESLint.
--   `npm run preview`: Starts a local server to preview the production build.
+- `npm run dev`: Starts the local development server with hot module replacement (HMR).
+- `npm run build`: Bundles and minifies the application into the `dist/` directory.
+- `npm run preview`: Locally serves the production build from `dist/` to inspect final output.
+- `npm run lint`: Runs ESLint across the codebase.
 
-## Project Structure
+---
 
+## 📖 Publishing & Markdown Guide
+
+Articles support rich **GitHub Flavored Markdown (GFM)**:
+
+### 1. Images & Step-by-Step Screenshots
+```markdown
+### Step 1: Open Developer Settings
+Enable USB debugging from your device settings menu.
+
+![Developer Settings Screenshot](https://example.com/screenshot.png)
+*Figure 1.1: Enable USB debugging.*
 ```
-client
-├── public
-│   └── ... # Public assets
-├── src
-│   ├── assets
-│   │   └── ... # Images, icons, etc.
-│   ├── components
-│   │   ├── auth # Auth-related components
-│   │   ├── home # Components for the home page
-│   │   └── ... # Other shared components
-│   ├── context
-│   │   └── AuthContext.jsx # Auth context for state management
-│   ├── pages
-│   │   ├── AdminDashboard.jsx
-│   │   ├── BlogDetails.jsx
-│   │   ├── Home.jsx
-│   │   ├── Login.jsx
-│   │   ├── SignUp.jsx
-│   │   └── ... # Other page components
-│   ├── App.jsx # Main application component with routing
-│   ├── index.css # Global styles
-│   └── main.jsx # Entry point of the application
-├── .gitignore
-├── package.json
-└── ... # Configuration files
+
+### 2. Clickable Links
+```markdown
+[Read the documentation](https://example.com)
 ```
+
+### 3. Tables & Code Blocks
+```markdown
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `id` | String | Unique post identifier |
+
+```javascript
+console.log("Hello from Blogsify!");
+```
+```
+
+---
+
+## 📱 Responsive Design Standards
+
+- **Mobile (<640px)**: Compact masthead, slide-down full navigation drawer with integrated authentication, and auto-scrolling dock.
+- **Tablet (640px - 1024px)**: 2-column article grid, adaptive dashboard sidebars.
+- **Desktop (>1024px)**: Full editorial spreads, category sub-bar, and 12-column front page grids.

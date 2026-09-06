@@ -24,10 +24,7 @@ function Footer() {
   };
 
   return (
-    <footer className="relative pt-20 pb-10 overflow-hidden">
-      {/* Glass Background Panel */}
-      <div className="absolute inset-x-0 bottom-0 top-12 bg-black/20 backdrop-blur-xl border-t border-white/5" />
-
+    <footer className="relative pt-16 pb-10 bg-white dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800/80 transition-colors duration-200">
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
           <motion.div
@@ -38,9 +35,9 @@ function Footer() {
             className="space-y-6"
           >
             <Link to="/" className="flex items-center gap-3">
-              <img src={Logo} alt="Blogsify" className="h-8 opacity-90" />
+              <img src={Logo} alt="Blogsify" className="h-8 opacity-90 dark:brightness-100 invert dark:invert-0" />
             </Link>
-            <p className="text-white/50 text-sm leading-relaxed max-w-xs">
+            <p className="text-zinc-600 dark:text-white/50 text-sm leading-relaxed max-w-xs">
               A modern platform for thoughtful writing. Discover stories, share
               ideas, and connect with a community of creators.
             </p>
@@ -73,7 +70,7 @@ function Footer() {
                   href={social.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2 rounded-full bg-white/5 hover:bg-white/10 hover:text-white text-white/60 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-white/10"
+                  className="p-2 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-white/5 dark:hover:bg-white/10 text-zinc-600 hover:text-zinc-900 dark:text-white/60 dark:hover:text-white transition-all hover:-translate-y-1 hover:shadow-md"
                   aria-label={social.label}
                 >
                   <social.icon size={16} />
@@ -88,15 +85,15 @@ function Footer() {
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-white font-semibold mb-6 flex items-center gap-2">
+            <h4 className="text-zinc-900 dark:text-white font-semibold mb-6 flex items-center gap-2">
               <span className="w-1 h-4 bg-blue-500 rounded-full"></span> Explore
             </h4>
-            <ul className="space-y-3 text-sm text-white/50">
+            <ul className="space-y-3 text-sm text-zinc-600 dark:text-white/50">
               {["Blogs", "Home", "About", "Contact"].map((item) => (
                 <li key={item}>
                   <Link
                     to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                    className="hover:text-white transition-colors hover:translate-x-1 inline-block"
+                    className="hover:text-zinc-950 dark:hover:text-white transition-colors hover:translate-x-1 inline-block"
                   >
                     {item}
                   </Link>
@@ -111,15 +108,15 @@ function Footer() {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-white font-semibold mb-6 flex items-center gap-2">
+            <h4 className="text-zinc-900 dark:text-white font-semibold mb-6 flex items-center gap-2">
               <span className="w-1 h-4 bg-purple-500 rounded-full"></span>{" "}
               Resources
             </h4>
-            <ul className="space-y-3 text-sm text-white/50">
+            <ul className="space-y-3 text-sm text-zinc-600 dark:text-white/50">
               <li>
                 <Link
                   to="/guidelines"
-                  className="hover:text-white transition-colors hover:translate-x-1 inline-block"
+                  className="hover:text-zinc-950 dark:hover:text-white transition-colors hover:translate-x-1 inline-block"
                 >
                   Writing Guidelines
                 </Link>
@@ -127,7 +124,7 @@ function Footer() {
               <li>
                 <Link
                   to="/privacy"
-                  className="hover:text-white transition-colors hover:translate-x-1 inline-block"
+                  className="hover:text-zinc-950 dark:hover:text-white transition-colors hover:translate-x-1 inline-block"
                 >
                   Privacy Policy
                 </Link>
@@ -135,7 +132,7 @@ function Footer() {
               <li>
                 <Link
                   to="/terms"
-                  className="hover:text-white transition-colors hover:translate-x-1 inline-block"
+                  className="hover:text-zinc-950 dark:hover:text-white transition-colors hover:translate-x-1 inline-block"
                 >
                   Terms of Service
                 </Link>
@@ -144,14 +141,14 @@ function Footer() {
                 {user ? (
                   <Link
                     to="/dashboard"
-                    className="hover:text-white transition-colors hover:translate-x-1 inline-block"
+                    className="hover:text-zinc-950 dark:hover:text-white transition-colors hover:translate-x-1 inline-block"
                   >
                     Dashboard
                   </Link>
                 ) : (
                   <Link
                     to="/login"
-                    className="hover:text-white transition-colors hover:translate-x-1 inline-block"
+                    className="hover:text-zinc-950 dark:hover:text-white transition-colors hover:translate-x-1 inline-block"
                   >
                     Login
                   </Link>
@@ -165,10 +162,10 @@ function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             viewport={{ once: true }}
-            className="bg-white/5 p-6 rounded-2xl border border-white/5 backdrop-blur-sm"
+            className="bg-zinc-50 dark:bg-white/5 p-6 rounded-2xl border border-zinc-200 dark:border-white/5 backdrop-blur-sm"
           >
-            <h4 className="text-white font-semibold mb-2">Stay Updated</h4>
-            <p className="text-white/50 text-xs mb-4 leading-relaxed">
+            <h4 className="text-zinc-900 dark:text-white font-semibold mb-2">Stay Updated</h4>
+            <p className="text-zinc-600 dark:text-white/50 text-xs mb-4 leading-relaxed">
               Get the latest stories and updates delivered to your inbox with
               our weekly newsletter.
             </p>
@@ -179,36 +176,36 @@ function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full pl-4 pr-12 py-3 rounded-xl bg-black/20 border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-white/30 focus:bg-black/30 transition-all text-sm"
+                  className="w-full pl-4 pr-16 py-3 rounded-xl bg-white dark:bg-black/20 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-white/20 focus:outline-none focus:border-zinc-500 dark:focus:border-white/30 transition-all text-sm shadow-xs"
                 />
                 <button
                   type="submit"
-                  className="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold uppercase tracking-wider transition-colors"
+                  className="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-zinc-900 text-white dark:bg-white/10 dark:text-white hover:bg-zinc-800 dark:hover:bg-white/20 text-xs font-semibold uppercase tracking-wider transition-colors"
                 >
                   Join
                 </button>
               </div>
-              {status && <p className="text-xs text-blue-300 ml-1">{status}</p>}
+              {status && <p className="text-xs text-blue-600 dark:text-blue-300 ml-1">{status}</p>}
             </form>
           </motion.div>
         </div>
 
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/30">
+        <div className="pt-8 border-t border-zinc-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-zinc-500 dark:text-white/30">
             © {new Date().getFullYear()} Blogsify. All rights reserved.
           </p>
-          <div className="flex items-center gap-6 text-xs text-white/40">
-            <Link to="/sitemap" className="hover:text-white transition-colors">
+          <div className="flex items-center gap-6 text-xs text-zinc-500 dark:text-white/40">
+            <Link to="/sitemap" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
               Sitemap
             </Link>
-            <Link to="/support" className="hover:text-white transition-colors">
+            <Link to="/support" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
               Support
             </Link>
             <span className="flex items-center gap-1">
               Made by{" "}
               <a
                 href="https://codesrahul.vercel.app"
-                className="text-white/60 hover:text-white hover:underline"
+                className="text-zinc-700 dark:text-white/60 hover:text-zinc-950 dark:hover:text-white hover:underline font-medium"
               >
                 CodesRahul
               </a>

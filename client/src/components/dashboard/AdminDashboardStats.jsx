@@ -9,10 +9,10 @@ const StatCard = ({ label, value, color = "purple" }) => {
     pink: "from-pink-600 to-rose-500",
   }[color];
   return (
-    <div className="p-4 bg-gradient-to-br from-white/5 to-white/10 rounded-xl border border-gray-700/40 flex flex-col">
-      <span className="text-sm text-gray-300">{label}</span>
+    <div className="p-4 bg-zinc-50 dark:bg-white/5 rounded-2xl border border-zinc-200 dark:border-zinc-800 flex flex-col shadow-xs">
+      <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">{label}</span>
       <span
-        className={`text-3xl font-bold bg-gradient-to-r ${colorClass} bg-clip-text text-transparent mt-2`}
+        className={`text-2xl sm:text-3xl font-bold bg-gradient-to-r ${colorClass} bg-clip-text text-transparent mt-2`}
       >
         {value}
       </span>

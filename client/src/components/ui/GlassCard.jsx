@@ -15,14 +15,14 @@ const GlassCard = ({ children, className, hoverEffect = false, ...props }) => {
         hoverEffect ? { scale: 1.02, transition: { duration: 0.2 } } : {}
       }
       className={cn(
-        "relative overflow-hidden rounded-[32px] border border-white/20 bg-white/10 p-6 backdrop-blur-2xl shadow-xl",
+        "relative overflow-hidden rounded-[32px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-6 backdrop-blur-2xl text-zinc-900 dark:text-zinc-100 shadow-xl dark:shadow-2xl transition-colors duration-200",
         className
       )}
       {...props}
     >
-      {/* Glossy gradient overlay */}
+      {/* Subtle lighting overlay */}
       <div
-        className="pointer-events-none absolute -inset-[100%] z-0 opacity-20"
+        className="pointer-events-none absolute -inset-[100%] z-0 opacity-10 dark:opacity-20"
         style={{
           background:
             "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4), transparent 50%)",

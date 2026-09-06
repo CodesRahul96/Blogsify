@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
-import GlassCard from "../ui/GlassCard";
-import { FiUser, FiCalendar, FiClock } from "react-icons/fi";
+import { FiCalendar, FiClock, FiEye, FiPlay } from "react-icons/fi";
 import PosterTemp from "../../assets/poster_temp.jpg";
 
-const BlogCard = ({ blog }) => {
+const BlogCard = ({ blog, variant = "vertical" }) => {
   const formatDate = (dateString) => {
+    if (!dateString) return "Recent";
     return new Date(dateString).toLocaleDateString("en-US", {
-      day: "numeric",
       month: "short",
+      day: "numeric",
       year: "numeric",
     });
   };
@@ -19,63 +19,178 @@ const BlogCard = ({ blog }) => {
     return `${minutes} min read`;
   };
 
-  return (
-    <Link to={`/blog/${blog._id}`} className="block h-full">
-      <GlassCard
-        hoverEffect
-        className="!p-0 h-full flex flex-col overflow-hidden group border-white/10 bg-white/5"
+  const categoryColor = {
+    Technology: "text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-500/10 border-sky-200 dark:border-sky-500/20",
+    "Artificial Intelligence": "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20",
+    Cybersecurity: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20",
+    Design: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10 border-purple-200 dark:border-purple-500/20",
+    Startups: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20",
+    Engineering: "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/20",
+    Culture: "text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-500/10 border-teal-200 dark:border-teal-500/20",
+  }[blog.category] || "text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 border-zinc-200 dark:border-zinc-700/50";
+
+  // Horizontal Card Variant (for lists and featured rows)
+  if (variant === "horizontal") {
+    return (
+      <Link
+        to={`/blog/${blog._id}`}
+        className="group flex flex-col sm:flex-row gap-5 p-4 rounded-xl bg-white dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800/60 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all shadow-sm"
       >
-        {/* Image Container */}
-        <div className="relative h-56 overflow-hidden">
-          {blog.imageUrl ? (
-            <img
-              src={blog.imageUrl}
-              alt={blog.title}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              onError={(e) => (e.target.src = `${PosterTemp}`)}
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-              <span className="text-white/20 font-bold text-xl">Blogsify</span>
+        <div className="sm:w-48 h-40 sm:h-auto rounded-lg overflow-hidden shrink-0 relative bg-zinc-100 dark:bg-zinc-950">
+          <img
+            src={blog.imageUrl || PosterTemp}
+            alt={blog.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={(e) => (e.target.src = PosterTemp)}
+          />
+          {blog.videoUrl && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
+              <div className="w-9 h-9 rounded-full bg-white/90 dark:bg-white text-zinc-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <FiPlay size={14} className="ml-0.5 fill-zinc-950 text-zinc-950" />
+              </div>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60" />
-
-          <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium text-white border border-white/10">
-            {blog.category || "General"}
-          </div>
         </div>
-
-        {/* Content */}
-        <div className="p-6 flex flex-col flex-1 relative">
-          <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 leading-tight group-hover:text-blue-400 transition-colors">
-            {blog.title || "Untitled"}
-          </h3>
-
-          <p className="text-white/60 text-sm mb-6 line-clamp-3 flex-1">
-            {blog.content || "No content available"}
-          </p>
-
-          <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs text-white/40">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5">
-                <FiUser className="text-blue-400" />
-                {blog.author?.username || "Writer"}
+        <div className="flex flex-col justify-between flex-1 py-1">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryColor}`}>
+                {blog.category || "Dispatch"}
               </span>
-              <span className="flex items-center gap-1.5">
-                <FiCalendar className="text-purple-400" />
-                {formatDate(blog.createdAt)}
+              {blog.videoUrl && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20 flex items-center gap-1">
+                  <FiPlay size={8} className="fill-rose-500" /> Video
+                </span>
+              )}
+              <span className="text-zinc-500 text-xs flex items-center gap-1">
+                <FiClock size={11} /> {estimateReadTime(blog.content)}
               </span>
             </div>
-            <span className="flex items-center gap-1.5">
-              <FiClock />
-              {estimateReadTime(blog.content)}
+            <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 font-serif leading-snug line-clamp-2 transition-colors">
+              {blog.title}
+            </h3>
+            <p className="mt-2 text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+              {blog.subtitle || blog.content?.replace(/[#*`_]/g, "")}
+            </p>
+          </div>
+          <div className="mt-4 flex items-center justify-between text-xs text-zinc-500">
+            <span className="font-medium text-zinc-800 dark:text-zinc-300">
+              By {blog.author?.username || "Staff Writer"}
             </span>
+            <span>{formatDate(blog.createdAt)}</span>
           </div>
         </div>
-      </GlassCard>
+      </Link>
+    );
+  }
+
+  // Standard Vertical Card
+  return (
+    <Link
+      to={`/blog/${blog._id}`}
+      className="group flex flex-col h-full rounded-2xl bg-white dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/60 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 overflow-hidden shadow-sm"
+    >
+      {/* Cover Image */}
+      <div className="relative h-48 sm:h-52 overflow-hidden bg-zinc-100 dark:bg-zinc-950">
+        <img
+          src={blog.imageUrl || PosterTemp}
+          alt={blog.title}
+          loading="lazy"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          onError={(e) => (e.target.src = PosterTemp)}
+        />
+        {blog.videoUrl && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
+            <div className="w-11 h-11 rounded-full bg-white/90 dark:bg-white text-zinc-950 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+              <FiPlay size={16} className="ml-0.5 fill-zinc-950 text-zinc-950" />
+            </div>
+          </div>
+        )}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+          <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border ${categoryColor}`}>
+            {blog.category || "Dispatch"}
+          </span>
+          {blog.videoUrl && (
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider backdrop-blur-md bg-black/60 text-white border border-white/20 flex items-center gap-1">
+              <FiPlay size={10} className="fill-white" /> Watch
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Editorial Content */}
+      <div className="p-5 sm:p-6 flex flex-col flex-1">
+        <div className="flex items-center gap-3 text-xs text-zinc-500 mb-2.5 font-medium">
+          <span className="flex items-center gap-1">
+            <FiClock size={12} /> {estimateReadTime(blog.content)}
+          </span>
+          <span>•</span>
+          <span className="flex items-center gap-1">
+            <FiCalendar size={12} /> {formatDate(blog.createdAt)}
+          </span>
+          {blog.views > 0 && (
+            <>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <FiEye size={12} /> {blog.views}
+              </span>
+            </>
+          )}
+        </div>
+
+        <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 font-serif leading-tight line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2.5">
+          {blog.title || "Untitled Story"}
+        </h3>
+
+        <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed line-clamp-3 mb-4 flex-1">
+          {blog.subtitle || blog.content?.replace(/[#*`_]/g, "") || "No excerpt available."}
+        </p>
+
+        {/* Tags Row */}
+        {Array.isArray(blog.tags) && blog.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-4">
+            {blog.tags.slice(0, 3).map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = `/blogs?search=${encodeURIComponent(tag)}`;
+                }}
+                className="px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800/80 dark:hover:bg-zinc-700 text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white border border-zinc-200 dark:border-zinc-800 transition-colors"
+              >
+                #{tag}
+              </button>
+            ))}
+            {blog.tags.length > 3 && (
+              <span className="text-[10px] text-zinc-400 self-center">
+                +{blog.tags.length - 3}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Byline Footer */}
+        <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between mt-auto">
+          <div className="flex items-center gap-2.5">
+            <img
+              src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+                blog.author?.username || "Writer"
+              )}`}
+              alt="Author"
+              className="w-6 h-6 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700"
+            />
+            <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors">
+              {blog.author?.username || "Contributing Editor"}
+            </span>
+          </div>
+
+          <span className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 group-hover:translate-x-0.5 transition-transform">
+            Read story →
+          </span>
+        </div>
+      </div>
     </Link>
   );
 };

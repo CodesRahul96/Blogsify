@@ -1,32 +1,15 @@
 import HeroSection from "../components/home/HeroSection";
-import FeaturesSection from "../components/home/FeaturesSection";
 import RecentBlogsSection from "../components/home/RecentBlogsSection";
 import CTASection from "../components/home/CTASection";
 
 function Home() {
-  document.title = "Blogsify";
+  document.title = "Blogsify — The Journal of Modern Ideas";
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden text-white">
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
-
-      {/* Background Image with Opacity */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{
-          backgroundImage:
-            "url(https://raw.githubusercontent.com/CodesRahul96/Blogsify/refs/heads/main/client/src/assets/blogsify-bg.avif)",
-        }}
-      ></div>
-
-      {/* Content */}
-      <div className="relative z-10">
-        <HeroSection />
-        <FeaturesSection />
-        <RecentBlogsSection />
-        <CTASection />
-      </div>
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors">
+      <HeroSection />
+      <RecentBlogsSection />
+      <CTASection />
     </div>
   );
 }

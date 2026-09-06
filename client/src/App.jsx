@@ -6,14 +6,15 @@ import Footer from "./components/layout/Footer";
 import Loader from "./components/layout/Loader";
 import { AuthContext } from "./context/AuthContext";
 
-// Lazy load pages for faster initial bundle
-const Home = lazy(() => import("./pages/Home"));
+import Home from "./pages/Home";
+import Blogs from "./pages/Blogs";
+import BlogDetails from "./pages/BlogDetails";
+
+// Lazy load secondary pages for code splitting
 const Login = lazy(() => import("./pages/Login"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const UserDashboard = lazy(() => import("./pages/UserDashboard"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const BlogDetails = lazy(() => import("./pages/BlogDetails"));
-const Blogs = lazy(() => import("./pages/Blogs"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));

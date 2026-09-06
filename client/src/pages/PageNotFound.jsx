@@ -4,56 +4,46 @@ function PageNotFound() {
   document.title = "404 - Page Not Found | Blogsify";
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 relative overflow-hidden">
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-gray-900 animate-gradient-bg"></div>
-
-      {/* Background Image with Opacity */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{
-          backgroundImage:
-            "url(https://raw.githubusercontent.com/CodesRahul96/Blogsify/refs/heads/main/client/src/assets/blogsify-bg.avif)",
-        }}
-      ></div>
-
-      {/* Glass Effect 404 Card */}
-      <div className="relative z-10 w-full max-w-lg p-8 bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20 text-center">
-        <h1 className="text-6xl md:text-8xl font-extrabold text-white mb-4 font-inter">
+    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 relative overflow-hidden px-6">
+      {/* Editorial 404 Card */}
+      <div className="relative z-10 w-full max-w-lg p-10 bg-white dark:bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-xl dark:shadow-2xl border border-zinc-200 dark:border-zinc-800 text-center">
+        <span className="text-xs font-mono uppercase tracking-widest text-zinc-400 dark:text-zinc-500 font-semibold mb-2 block">
+          Error 404
+        </span>
+        <h1 className="text-7xl md:text-8xl font-serif font-black text-zinc-950 dark:text-white tracking-tight mb-4">
           404
         </h1>
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-200 mb-6 font-inter">
-          Page Not Found
+        <h2 className="text-2xl font-serif font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+          Discourse Not Found
         </h2>
-        <p className="text-gray-300 mb-8 text-lg leading-relaxed font-merriweather">
-          Oops! It seems we&apos;ve wandered off the blog path. The page
-          you&apos;re looking for doesn&apos;t exist or has been moved.
+        <p className="text-zinc-600 dark:text-zinc-400 mb-8 text-base leading-relaxed">
+          The page or publication you are looking for does not exist, has been archived, or has relocated to a new address.
         </p>
 
         {/* Back to Home Button */}
         <Link
           to="/"
-          className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-8 rounded-full font-semibold hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-md font-inter"
+          className="inline-flex items-center justify-center bg-zinc-950 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-950 py-3 px-8 rounded-full font-medium transition-all shadow-sm"
         >
-          Return to Home
+          Return to Journal
         </Link>
 
         {/* Additional Links */}
-        <div className="mt-6">
-          <p className="text-gray-400 font-merriweather">
-            Or try these:
+        <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+          <p className="text-xs font-mono uppercase tracking-wider text-zinc-500">
+            Suggested sections:
             <Link
               to="/blogs"
-              className="text-purple-400 hover:text-purple-300 mx-2 font-medium"
+              className="text-zinc-900 dark:text-white hover:underline mx-2 font-semibold"
             >
-              Blogs
+              Stories
             </Link>
-            |
+            •
             <Link
               to="/login"
-              className="text-purple-400 hover:text-purple-300 mx-2 font-medium"
+              className="text-zinc-900 dark:text-white hover:underline mx-2 font-semibold"
             >
-              Login
+              Sign In
             </Link>
           </p>
         </div>

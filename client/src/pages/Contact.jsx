@@ -30,97 +30,103 @@ function Contact() {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-16 relative overflow-hidden">
-      <div className="relative z-10 mx-auto max-w-6xl px-4 text-white">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
+    <div className="min-h-screen pt-28 pb-20 relative bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Contact Info */}
-          <div className="space-y-8 pt-8">
+          <div className="space-y-8 pt-4">
             <div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                Let&apos;s Talk
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 mb-3">
+                Direct Line
+              </div>
+              <h1 className="text-4xl sm:text-5xl font-bold font-serif text-zinc-950 dark:text-white tracking-tight mb-4">
+                Let&apos;s Connect
               </h1>
-              <p className="text-white/60 text-lg leading-relaxed max-w-md">
-                Have a question, feedback, or just want to say hello? We&apos;d
-                love to hear from you.
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm sm:text-base leading-relaxed max-w-md">
+                Have an inquiry about editorial submissions, ethical corrections, technical issues, or press coverage? Reach our team directly.
               </p>
             </div>
 
-            <div className="space-y-6">
-              <GlassCard className="flex items-center gap-5 p-6 border-white/5 bg-white/5 hover:bg-white/10 transition-colors">
-                <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 text-xl">
+            <div className="space-y-4">
+              <GlassCard className="flex items-center gap-4 p-5 border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl shrink-0">
                   <FiMail />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white">Email Us</h3>
-                  <p className="text-white/50 text-sm">
+                  <h3 className="font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Editorial Inquiries</h3>
+                  <p className="text-sm font-medium text-zinc-950 dark:text-white mt-0.5">
                     codesrahul96@gmail.com
                   </p>
                 </div>
               </GlassCard>
 
-              <GlassCard className="flex items-center gap-5 p-6 border-white/5 bg-white/5 hover:bg-white/10 transition-colors">
-                <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 text-xl">
+              <GlassCard className="flex items-center gap-4 p-5 border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 text-xl shrink-0">
                   <FiPhone />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white">Call Us</h3>
-                  <p className="text-white/50 text-sm">+91 88051-59425</p>
+                  <h3 className="font-semibold text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Desk Hotline</h3>
+                  <p className="text-sm font-medium text-zinc-950 dark:text-white mt-0.5">+91 88051-59425</p>
                 </div>
               </GlassCard>
             </div>
           </div>
 
           {/* Contact Form */}
-          <GlassCard className="p-8 md:p-10 border-white/10 shadow-2xl">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-white/70 ml-1">
-                  Name
+          <GlassCard className="p-7 sm:p-9 border-zinc-200 dark:border-zinc-800 shadow-xl">
+            <h2 className="text-xl font-bold font-serif text-zinc-950 dark:text-white mb-6 pb-3 border-b border-zinc-100 dark:border-zinc-800">
+              Send an Editorial Note
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                  Your Full Name
                 </label>
                 <input
                   name="name"
                   value={form.name}
                   onChange={handleChange}
-                  placeholder="Your Name"
-                  className="w-full p-4 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-blue-500/50 transition-colors"
+                  placeholder="e.g. Eleanor Vance"
+                  className="w-full p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-blue-500 transition-colors shadow-xs"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-white/70 ml-1">
-                  Email
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                  Email Address
                 </label>
                 <input
                   name="email"
+                  type="email"
                   value={form.email}
                   onChange={handleChange}
-                  placeholder="your@email.com"
-                  className="w-full p-4 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-blue-500/50 transition-colors"
+                  placeholder="name@organization.com"
+                  className="w-full p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-blue-500 transition-colors shadow-xs"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-white/70 ml-1">
-                  Message
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                  Message / Dispatch Details
                 </label>
                 <textarea
                   name="message"
                   value={form.message}
                   onChange={handleChange}
-                  rows={6}
-                  placeholder="How can we help?"
-                  className="w-full p-4 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-blue-500/50 transition-colors resize-none"
+                  rows={5}
+                  placeholder="How can our editorial staff assist you?"
+                  className="w-full p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-blue-500 transition-colors resize-none shadow-xs"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-white text-black py-4 rounded-xl font-bold text-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2 group active:scale-[0.98] disabled:opacity-50"
+                className="w-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 py-3 rounded-xl font-bold text-xs sm:text-sm hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 group active:scale-[0.99] disabled:opacity-50 shadow-sm mt-2"
               >
-                <span>{loading ? "Sending..." : "Send Message"}</span>
+                <span>{loading ? "Sending Message..." : "Dispatch Message"}</span>
                 {!loading && (
-                  <FiSend className="group-hover:translate-x-1 transition-transform" />
+                  <FiSend className="group-hover:translate-x-0.5 transition-transform" />
                 )}
               </button>
             </form>
