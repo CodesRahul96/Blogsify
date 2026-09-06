@@ -10,8 +10,19 @@ A modern, full-stack editorial publishing platform designed for engineering brea
 
 ---
 
+## 📸 Visual Previews (Desktop & Mobile)
+
+| Desktop Mode | Mobile Mode |
+| :---: | :---: |
+| ![Desktop Front Page](docs/screenshots/desktop-home.png) | <img src="docs/screenshots/mobile-home.png" width="280" alt="Mobile Front Page" /> |
+| **Desktop Reading Experience** | **Mobile Reading Experience** |
+| ![Desktop Article View](docs/screenshots/desktop-article.png) | <img src="docs/screenshots/mobile-article.png" width="280" alt="Mobile Article View" /> |
+
+---
+
 ## 📑 Table of Contents
 
+- [Visual Previews (Desktop & Mobile)](#-visual-previews-desktop--mobile)
 - [Key Features](#-key-features)
 - [System Architecture](#-system-architecture)
 - [Tech Stack](#-tech-stack)
