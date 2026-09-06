@@ -1,10 +1,15 @@
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import Loader from "./components/layout/Loader";
+import ScrollToTop from "./components/layout/ScrollToTop";
 import { AuthContext } from "./context/AuthContext";
+import { useTheme } from "./context/ThemeContext";
 
 import Home from "./pages/Home";
 import Blogs from "./pages/Blogs";
@@ -42,11 +47,11 @@ function DashboardRouter() {
   return user.isAdmin ? <AdminDashboard /> : <UserDashboard />;
 }
 
-import ScrollToTop from "./components/layout/ScrollToTop";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 function App() {
+  // Sync toast theme with the app's resolved dark/light mode
+  const { resolvedTheme } = useTheme();
+  const toastTheme = resolvedTheme === "dark" ? "dark" : "light";
+
   return (
     <>
       <ScrollToTop />
@@ -73,7 +78,20 @@ function App() {
         </Suspense>
       </main>
       <Footer />
-      <ToastContainer position="bottom-right" theme="dark" />
+
+      {/* Single globally-configured ToastContainer — no per-call options needed */}
+      <ToastContainer
+        position="bottom-right"
+        theme={toastTheme}
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        limit={4}
+      />
     </>
   );
 }

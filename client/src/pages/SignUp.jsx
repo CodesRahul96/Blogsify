@@ -26,9 +26,8 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (passwordStrength !== "Strong") {
-      toast.warning(
-        "Password must be strong (include mix of case, numbers, symbols)",
-        { theme: "dark" }
+      toast.warn(
+        "Password must be strong (include mix of case, numbers, symbols)"
       );
       return;
     }
@@ -38,12 +37,10 @@ function SignUp() {
         `${import.meta.env.VITE_BASE_URL}/api/auth/register`,
         formData
       );
-      toast.success("Account created! Please log in.", { theme: "dark" });
+      toast.success("Account created! Please log in.");
       navigate("/login");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Registration failed", {
-        theme: "dark",
-      });
+      toast.error(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }

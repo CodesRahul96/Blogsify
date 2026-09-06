@@ -160,7 +160,7 @@ function UserDashboard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || !content) {
-      toast.warn("Title and content are required", { theme: "dark" });
+      toast.warn("Title and content are required");
       return;
     }
     setSaving(true);
@@ -172,7 +172,7 @@ function UserDashboard() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts((prev) => prev.map((p) => (p._id === editId ? res.data : p)));
-        toast.success("Post updated successfully!", { theme: "dark" });
+        toast.success("Post updated successfully!");
       } else {
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/api/posts`,
@@ -185,13 +185,12 @@ function UserDashboard() {
           }
         );
         setPosts((prev) => [res.data, ...prev]);
-        toast.success("Post published successfully!", { theme: "dark" });
+        toast.success("Post published successfully!");
       }
       resetForm();
     } catch (err) {
       toast.error(
-        err.response?.data?.message || err.message || "Failed to save post",
-        { theme: "dark" }
+        err.response?.data?.message || err.message || "Failed to save post"
       );
     } finally {
       setSaving(false);
@@ -217,11 +216,10 @@ function UserDashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPosts((prev) => prev.filter((p) => p._id !== id));
-      toast.success("Post deleted successfully", { theme: "dark" });
+      toast.success("Post deleted successfully");
     } catch (err) {
       toast.error(
-        err.response?.data?.message || err.message || "Failed to delete post",
-        { theme: "dark" }
+        err.response?.data?.message || err.message || "Failed to delete post"
       );
     }
   };

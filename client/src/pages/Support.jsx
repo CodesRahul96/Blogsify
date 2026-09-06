@@ -37,14 +37,12 @@ function Support() {
   const submit = (e) => {
     e.preventDefault();
     if (!message) {
-      toast.warn("Please provide details of your issue.", { theme: "dark" });
+      toast.warn("Please provide details of your issue.");
       return;
     }
     setLoading(true);
     setTimeout(() => {
-      toast.success("Support request sent! We will respond shortly.", {
-        theme: "dark",
-      });
+      toast.success("Support request sent! We will respond shortly.");
       setMessage("");
       setLoading(false);
     }, 1500);

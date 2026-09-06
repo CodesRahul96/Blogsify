@@ -13,16 +13,13 @@ function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) {
-      toast.warn("Please complete all fields.", { theme: "dark" });
+      toast.warn("Please complete all fields.");
       return;
     }
     setLoading(true);
     setTimeout(() => {
       toast.success(
-        "Message sent successfully! We andapos;ll get back to you soon.",
-        {
-          theme: "dark",
-        }
+        "Message sent successfully! We andapos;ll get back to you soon."
       );
       setForm({ name: "", email: "", message: "" });
       setLoading(false);

@@ -33,12 +33,10 @@ function Login() {
         { username, password }
       );
       login(res.data.token);
-      toast.success("Welcome back!", { theme: "dark" });
+      toast.success("Welcome back!");
       navigate("/blogs");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid credentials", {
-        theme: "dark",
-      });
+      toast.error(err.response?.data?.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }

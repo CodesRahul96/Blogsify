@@ -88,7 +88,7 @@ function BlogDetails() {
 
   const handleLike = async () => {
     if (!token) {
-      toast.info("Please log in to like this story", { theme: "dark" });
+      toast.info("Please log in to like this story");
       return;
     }
     try {
@@ -102,14 +102,14 @@ function BlogDetails() {
         likes: res.data.likes,
       }));
     } catch {
-      toast.error("Failed to update reaction", { theme: "dark" });
+      toast.error("Failed to update reaction");
     }
   };
 
   const handleComment = async (e) => {
     e.preventDefault();
     if (!token) {
-      toast.info("Please log in to leave a response", { theme: "dark" });
+      toast.info("Please log in to leave a response");
       return;
     }
     try {
@@ -120,9 +120,9 @@ function BlogDetails() {
       );
       setBlog(res.data);
       setComment("");
-      toast.success("Response published", { theme: "dark" });
+      toast.success("Response published");
     } catch {
-      toast.error("Failed to post comment", { theme: "dark" });
+      toast.error("Failed to post comment");
     }
   };
 
@@ -135,16 +135,16 @@ function BlogDetails() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBlog(res.data);
-      toast.success("Comment deleted", { theme: "dark" });
+      toast.success("Comment deleted");
     } catch {
-      toast.error("Failed to delete comment", { theme: "dark" });
+      toast.error("Failed to delete comment");
     }
   };
 
   const copyStoryLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
-    toast.success("Story link copied to clipboard", { theme: "dark" });
+    toast.success("Story link copied to clipboard");
     setTimeout(() => setCopied(false), 2000);
   };
 

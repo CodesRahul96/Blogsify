@@ -68,8 +68,7 @@ function AdminDashboard() {
       setPosts(Array.isArray(res.data.posts) ? res.data.posts : []);
     } catch (err) {
       toast.error(
-        "Failed to load posts: " + (err.response?.data?.message || err.message),
-        { theme: "dark" }
+        "Failed to load posts: " + (err.response?.data?.message || err.message)
       );
       setPosts([]);
     }
@@ -84,8 +83,7 @@ function AdminDashboard() {
       setUsers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       toast.error(
-        "Failed to load users: " + (err.response?.data?.message || err.message),
-        { theme: "dark" }
+        "Failed to load users: " + (err.response?.data?.message || err.message)
       );
       setUsers([]);
     }
@@ -135,7 +133,7 @@ function AdminDashboard() {
           prev.map((post) => (post._id === editId ? res.data : post))
         );
         setEditId(null);
-        toast.success("Post updated successfully", { theme: "dark" });
+        toast.success("Post updated successfully");
       } else {
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/api/posts`,
@@ -143,7 +141,7 @@ function AdminDashboard() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setPosts((prev) => [res.data, ...prev]);
-        toast.success("Post created successfully", { theme: "dark" });
+        toast.success("Post created successfully");
       }
       setTitle("");
       setSubtitle("");
@@ -154,8 +152,7 @@ function AdminDashboard() {
       setContent("");
     } catch (err) {
       toast.error(
-        "Failed to save post: " + (err.response?.data?.message || err.message),
-        { theme: "dark" }
+        "Failed to save post: " + (err.response?.data?.message || err.message)
       );
     }
   };
@@ -167,12 +164,11 @@ function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPosts((prev) => prev.filter((post) => post._id !== id));
-      toast.success("Post deleted successfully", { theme: "dark" });
+      toast.success("Post deleted successfully");
     } catch (err) {
       toast.error(
         "Failed to delete post: " +
-          (err.response?.data?.message || err.message),
-        { theme: "dark" }
+          (err.response?.data?.message || err.message)
       );
     }
   };
@@ -205,21 +201,18 @@ function AdminDashboard() {
     const newPassword = window.prompt("Enter new password for this user:");
     if (!newPassword) return;
     if (newPassword.length < 6)
-      return toast.warn("Password must be at least 6 characters", {
-        theme: "dark",
-      });
+      return toast.warn("Password must be at least 6 characters");
     try {
       await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/auth/reset-password/${userId}`,
         { newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success("Password reset successfully", { theme: "dark" });
+      toast.success("Password reset successfully");
     } catch (err) {
       toast.error(
         "Failed to reset password: " +
-          (err.response?.data?.message || err.message),
-        { theme: "dark" }
+          (err.response?.data?.message || err.message)
       );
     }
   };
@@ -238,12 +231,11 @@ function AdminDashboard() {
       );
       setUsers((prev) => prev.filter((u) => u._id !== userId));
       fetchPosts();
-      toast.success("User deleted successfully", { theme: "dark" });
+      toast.success("User deleted successfully");
     } catch (err) {
       toast.error(
         "Failed to delete user: " +
-          (err.response?.data?.message || err.message),
-        { theme: "dark" }
+          (err.response?.data?.message || err.message)
       );
     }
   };

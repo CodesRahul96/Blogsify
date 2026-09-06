@@ -61,7 +61,7 @@ function Profile() {
   const handleLogout = () => {
     logout();
     navigate("/login");
-    toast.info("Logged out successfully", { theme: "dark" });
+    toast.info("Logged out successfully");
   };
 
   const handleDeleteAccount = async () => {
@@ -75,11 +75,9 @@ function Profile() {
     try {
       await deleteAccount();
       navigate("/signup");
-      toast.success("Account deleted successfully", { theme: "dark" });
+      toast.success("Account deleted successfully");
     } catch (err) {
-      toast.error(err?.message || "Failed to delete account.", {
-        theme: "dark",
-      });
+      toast.error(err?.message || "Failed to delete account.");
     } finally {
       setDelLoading(false);
     }
@@ -89,28 +87,25 @@ function Profile() {
     e.preventDefault();
 
     if (!currentPassword || !newPassword) {
-      toast.warn("Please fill in both fields.", { theme: "dark" });
+      toast.warn("Please fill in both fields.");
       return;
     }
     if (newPassword.length < 8) {
-      toast.warn("New password must be at least 8 characters.", {
-        theme: "dark",
-      });
+      toast.warn("New password must be at least 8 characters.");
       return;
     }
 
     setPwLoading(true);
     try {
       await changePassword(currentPassword, newPassword);
-      toast.success("Password changed successfully!", { theme: "dark" });
+      toast.success("Password changed successfully!");
       setCurrentPassword("");
       setNewPassword("");
     } catch (err) {
       toast.error(
         err?.response?.data?.message ||
           err?.message ||
-          "Failed to change password.",
-        { theme: "dark" }
+          "Failed to change password."
       );
     } finally {
       setPwLoading(false);
@@ -119,19 +114,17 @@ function Profile() {
 
   const handleUpdateUsername = async () => {
     if (!newUsername.trim())
-      return toast.warn("Username cannot be empty.", { theme: "dark" });
+      return toast.warn("Username cannot be empty.");
     if (newUsername.length < 3)
-      return toast.warn("Min 3 characters.", { theme: "dark" });
+      return toast.warn("Min 3 characters.");
 
     setUsernameLoading(true);
     try {
       await updateUsername(newUsername);
       setIsEditingUsername(false);
-      toast.success("Username updated!", { theme: "dark" });
+      toast.success("Username updated!");
     } catch (err) {
-      toast.error(err?.message || "Failed to update username.", {
-        theme: "dark",
-      });
+      toast.error(err?.message || "Failed to update username.");
     } finally {
       setUsernameLoading(false);
     }
