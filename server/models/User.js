@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   isAdmin: { type: Boolean, default: false },
   avatar: { type: String, default: '' },
   twoFactorEnabled: { type: Boolean, default: false },
+  twoFactorSecret: { type: String, default: '' },
   twoFactorCode: { type: String, default: '' },
   twoFactorCodeExpires: { type: Date },
 });

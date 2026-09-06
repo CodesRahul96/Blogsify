@@ -115,29 +115,64 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Toggle 2-step verification API
-  const toggle2FA = async () => {
+  // 2FA Setup API (Generate QR Code and Secret)
+  const setup2FA = async () => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Not authenticated");
-    try {
-      const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
-      const response = await axios.put(
-        `${baseUrl}/api/auth/toggle-2fa`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.token) {
-        login(response.data.token);
+    const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
+    const response = await axios.post(
+      `${baseUrl}/api/auth/2fa/setup`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error;
+    );
+    return response.data;
+  };
+
+  // 2FA Confirm Setup API (Verify code from Authenticator app to activate)
+  const verify2FASetup = async (code) => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Not authenticated");
+    const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
+    const response = await axios.post(
+      `${baseUrl}/api/auth/2fa/verify-setup`,
+      { code },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.data.token) {
+      login(response.data.token);
     }
+    return response.data;
+  };
+
+  // 2FA Disable API
+  const disable2FA = async (password) => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Not authenticated");
+    const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
+    const response = await axios.post(
+      `${baseUrl}/api/auth/2fa/disable`,
+      { password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.data.token) {
+      login(response.data.token);
+    }
+    return response.data;
   };
 
   return (
@@ -146,10 +181,12 @@ export function AuthProvider({ children }) {
         user,
         login,
         logout,
-        changePassword,
         deleteAccount,
+        changePassword,
         updateUsername,
-        toggle2FA,
+        setup2FA,
+        verify2FASetup,
+        disable2FA,
       }}
     >
       {children}
