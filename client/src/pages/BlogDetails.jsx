@@ -6,9 +6,7 @@ import Loader from "../components/layout/Loader";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
-  FiShare2,
   FiClock,
-  FiCalendar,
   FiTrash2,
   FiMessageSquare,
   FiArrowLeft,

@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/layout/Loader";
 import BlogCard from "../components/home/BlogCard";
-import { FiSearch, FiArrowUp, FiFilter } from "react-icons/fi";
+import { FiSearch, FiArrowUp } from "react-icons/fi";
 
 const CATEGORIES = [
   "All",
