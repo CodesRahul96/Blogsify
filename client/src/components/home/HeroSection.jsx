@@ -4,6 +4,12 @@ import axios from "axios";
 import { FiTrendingUp, FiClock, FiCalendar, FiArrowRight } from "react-icons/fi";
 import PosterTemp from "../../assets/poster_temp.jpg";
 
+const getAuthorName = (author, fallback = "Staff Writer") => {
+  if (!author) return fallback;
+  if (typeof author === "string") return author;
+  return author.username || fallback;
+};
+
 const HeroSection = () => {
   const [featuredPost, setFeaturedPost] = useState(null);
   const [trendingPosts, setTrendingPosts] = useState([]);
@@ -117,7 +123,7 @@ const HeroSection = () => {
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
                   <span className="text-zinc-900 dark:text-zinc-200 font-semibold">
-                    By {featuredPost.author?.username || "Lead Reporter"}
+                    By {getAuthorName(featuredPost.author, "Lead Reporter")}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1">
@@ -177,7 +183,7 @@ const HeroSection = () => {
                         {post.title}
                       </h4>
                       <p className="text-xs text-zinc-500 mt-1">
-                        By {post.author?.username || "Staff"}
+                        By {getAuthorName(post.author, "Staff")}
                       </p>
                     </div>
                   </Link>

@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import PasswordChecker from "../components/auth/PasswordChecker";
 import AuthLayout from "../components/layout/AuthLayout";
 import Loader from "../components/layout/Loader";
+import { AuthContext } from "../context/AuthContext";
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 import { toast } from "react-toastify";
 
 function SignUp() {
+  const { user } = useContext(AuthContext) || {};
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -18,6 +20,13 @@ function SignUp() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "Join Blogsify — Create Account";
+    if (user) {
+      navigate("/blogs");
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
