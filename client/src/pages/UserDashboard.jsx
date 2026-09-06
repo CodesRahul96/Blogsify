@@ -285,15 +285,22 @@ function WriteScreen({ editPost, onSave, onCancel, token }) {
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 function UserDashboard() {
-  const { user } = useContext(AuthContext) || {};
+  const { user, updateUsername } = useContext(AuthContext) || {};
   const [searchParams, setSearchParams] = useSearchParams();
   const initialTab = searchParams.get("tab") === "write" ? "write" : "posts";
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(initialTab); // "posts" | "write"
   const [editPost, setEditPost] = useState(null);
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [newUsername, setNewUsername] = useState(user?.username || "");
+  const [usernameLoading, setUsernameLoading] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    setNewUsername(user?.username || "");
+  }, [user?.username]);
 
   useEffect(() => {
     if (searchParams.get("tab") === "write") {
@@ -389,6 +396,22 @@ function UserDashboard() {
     );
   }
 
+  const handleUpdateUsername = async () => {
+    if (!newUsername.trim()) return toast.warn("Username cannot be empty.");
+    if (newUsername.trim().length < 3) return toast.warn("Min 3 characters.");
+    setUsernameLoading(true);
+    try {
+      await updateUsername(newUsername.trim());
+      setIsEditingUsername(false);
+      toast.success("Username updated!");
+      fetchPosts();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || err?.message || "Failed to update username.");
+    } finally {
+      setUsernameLoading(false);
+    }
+  };
+
   // ── Posts / Home screen ──────────────────────────────────────────────────
   return (
     <div className="min-h-screen pb-28 sm:pb-36 pt-24 sm:pt-28 px-4 sm:px-6 md:px-8 bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors">
@@ -398,9 +421,48 @@ function UserDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">Welcome back,</p>
-            <h1 className="text-2xl sm:text-3xl font-bold font-serif text-zinc-950 dark:text-white">
-              @{user.username}
-            </h1>
+            {isEditingUsername ? (
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-xl px-2.5 py-1 shadow-xs">
+                  <span className="text-zinc-400 text-sm mr-0.5">@</span>
+                  <input
+                    value={newUsername}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                    className="bg-transparent text-sm font-bold font-serif text-zinc-900 dark:text-zinc-100 focus:outline-none w-36 sm:w-48"
+                    placeholder="new_username"
+                    autoFocus
+                  />
+                </div>
+                <button
+                  onClick={handleUpdateUsername}
+                  disabled={usernameLoading}
+                  className="p-2 bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-500/30 transition-colors"
+                  title="Save username"
+                >
+                  <FiCheck size={14} />
+                </button>
+                <button
+                  onClick={() => { setIsEditingUsername(false); setNewUsername(user.username); }}
+                  className="p-2 bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-xl hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors"
+                  title="Cancel"
+                >
+                  <FiX size={14} />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-2xl sm:text-3xl font-bold font-serif text-zinc-950 dark:text-white">
+                  @{user.username}
+                </h1>
+                <button
+                  onClick={() => setIsEditingUsername(true)}
+                  className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-zinc-800 transition-colors"
+                  title="Change username"
+                >
+                  <FiEdit2 size={15} />
+                </button>
+              </div>
+            )}
           </div>
           <button
             onClick={() => { setEditPost(null); switchTab("write"); }}

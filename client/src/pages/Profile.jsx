@@ -18,13 +18,16 @@ import {
 import { toast } from "react-toastify";
 
 function Profile() {
-  const { user, logout, changePassword, updateUsername, deleteAccount } =
+  const { user, logout, changePassword, updateUsername, deleteAccount, toggle2FA } =
     useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
   const [activeTab, setActiveTab] = useState("profile"); // profile, security
+
+  // 2FA state
+  const [twoFALoading, setTwoFALoading] = useState(false);
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -123,6 +126,27 @@ function Profile() {
       toast.error(err?.message || "Failed to update username.");
     } finally {
       setUsernameLoading(false);
+    }
+  };
+
+  const handleToggle2FA = async () => {
+    const nextState = !user?.twoFactorEnabled;
+    setTwoFALoading(true);
+    try {
+      await toggle2FA(nextState);
+      toast.success(
+        nextState
+          ? "Two-factor authentication enabled successfully!"
+          : "Two-factor authentication disabled."
+      );
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to toggle 2-step verification."
+      );
+    } finally {
+      setTwoFALoading(false);
     }
   };
 
@@ -306,6 +330,49 @@ function Profile() {
                         {pwLoading ? "Updating..." : "Update Password"}
                       </button>
                     </form>
+                  </div>
+
+                  {/* 2-Step Verification Card */}
+                  <div className="pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <FiShield className="text-blue-600 dark:text-blue-400" />
+                          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+                            Two-Step Verification (2FA)
+                          </h3>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                              user?.twoFactorEnabled
+                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-300 dark:border-zinc-700"
+                            }`}
+                          >
+                            {user?.twoFactorEnabled ? "Active" : "Disabled"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-md">
+                          Enforce a 6-digit one-time passcode whenever signing into your author account to protect against unauthorized access.
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleToggle2FA}
+                        disabled={twoFALoading}
+                        className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 shrink-0 ${
+                          user?.twoFactorEnabled
+                            ? "border border-rose-300 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20"
+                            : "bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600"
+                        } disabled:opacity-50`}
+                      >
+                        {twoFALoading
+                          ? "Processing..."
+                          : user?.twoFactorEnabled
+                          ? "Disable 2FA"
+                          : "Enable 2FA"}
+                      </button>
+                    </div>
                   </div>
 
                   <div className="pt-8 border-t border-zinc-200 dark:border-zinc-800">

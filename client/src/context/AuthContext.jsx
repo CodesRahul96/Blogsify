@@ -115,8 +115,43 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Toggle 2-step verification API
+  const toggle2FA = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Not authenticated");
+    try {
+      const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
+      const response = await axios.put(
+        `${baseUrl}/api/auth/toggle-2fa`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.token) {
+        login(response.data.token);
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, changePassword, deleteAccount, updateUsername }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        changePassword,
+        deleteAccount,
+        updateUsername,
+        toggle2FA,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

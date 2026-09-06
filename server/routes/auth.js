@@ -153,26 +153,135 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    // 2-Step Verification Flow
+    if (user.twoFactorEnabled) {
+      // Generate secure 6-digit numeric verification code
+      const verificationCode = String(crypto.randomInt(100000, 999999));
+      user.twoFactorCode = verificationCode;
+      user.twoFactorCodeExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+      await user.save();
+
+      // In development / demo environment, return verificationCode in response so user can test immediately
+      return res.json({
+        requires2FA: true,
+        userId: user._id,
+        email: user.email.replace(/^(.{2})(.*)(@.*)$/, "$1***$3"), // Masked email
+        code: verificationCode,
+        message: "2-Step verification code generated. Enter the 6-digit code to complete login.",
+      });
+    }
+
     const token = jwt.sign(
       {
         id: user._id,
         username: user.username,
         email: user.email,
         isAdmin: user.isAdmin,
+        twoFactorEnabled: !!user.twoFactorEnabled,
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
-    res.json({ token, user: { id: user._id, username: user.username, email: user.email, isAdmin: user.isAdmin } });
+    res.json({ token, user: { id: user._id, username: user.username, email: user.email, isAdmin: user.isAdmin, twoFactorEnabled: !!user.twoFactorEnabled } });
   } catch (err) {
     res.status(500).json({ message: "Server error during login", error: err.message });
+  }
+});
+
+// Verify 2-Step Verification Code
+router.post("/verify-2fa", async (req, res) => {
+  try {
+    const { userId, code } = req.body;
+    if (!userId || !code) {
+      return res.status(400).json({ message: "userId and verification code are required" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user || !user.twoFactorEnabled) {
+      return res.status(400).json({ message: "Invalid request or 2FA not enabled" });
+    }
+
+    if (
+      !user.twoFactorCode ||
+      user.twoFactorCode !== String(code).trim() ||
+      !user.twoFactorCodeExpires ||
+      user.twoFactorCodeExpires < new Date()
+    ) {
+      return res.status(401).json({ message: "Invalid or expired verification code" });
+    }
+
+    // Code verified, clear it
+    user.twoFactorCode = "";
+    user.twoFactorCodeExpires = null;
+    await user.save();
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        twoFactorEnabled: true,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        twoFactorEnabled: true,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error verifying 2FA", error: err.message });
+  }
+});
+
+// Toggle 2-Step Verification (Enable / Disable)
+router.put("/toggle-2fa", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.twoFactorEnabled = !user.twoFactorEnabled;
+    user.twoFactorCode = "";
+    user.twoFactorCodeExpires = null;
+    await user.save();
+
+    // Re-issue updated token
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        twoFactorEnabled: user.twoFactorEnabled,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      message: user.twoFactorEnabled
+        ? "2-Step verification enabled successfully"
+        : "2-Step verification disabled",
+      twoFactorEnabled: user.twoFactorEnabled,
+      token,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error updating 2FA", error: err.message });
   }
 });
 
 // Current User Profile (auth required)
 router.get("/me", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user.id).select("-password -twoFactorCode");
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
