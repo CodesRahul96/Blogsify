@@ -200,36 +200,36 @@ function BlogDetails() {
         />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-24">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-4 sm:pt-8 md:pt-10">
         {/* Navigation Breadcrumb */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors group"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors group"
           >
             <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" />
             <span>Back to Journal</span>
           </button>
 
-          <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">
+          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-zinc-500">
             {blog.category || "Dispatch"}
           </span>
         </div>
 
         {/* Masthead Header */}
-        <header className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+        <header className="mb-6 sm:mb-8">
+          <div className="flex items-center gap-2 mb-3 sm:mb-4">
+            <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
               {blog.category || "Dispatch"}
             </span>
             {blog.videoUrl && (
-              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20 flex items-center gap-1">
-                <FiVideo size={12} /> Video dispatch
+              <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20 flex items-center gap-1">
+                <FiVideo size={11} /> Video dispatch
               </span>
             )}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif text-zinc-950 dark:text-white leading-[1.15] tracking-tight mb-4">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold font-serif text-zinc-950 dark:text-white leading-[1.2] sm:leading-[1.15] tracking-tight mb-3 sm:mb-4">
             {blog.title}
           </h1>
 
@@ -323,7 +323,7 @@ function BlogDetails() {
 
         {/* Lead Media (Video Player or Cover Image) */}
         {blog.videoUrl ? (
-          <div className="mb-12">
+          <div className="mb-6 sm:mb-12">
             <VideoPlayer
               videoUrl={blog.videoUrl}
               poster={blog.imageUrl || PosterTemp}
@@ -332,7 +332,7 @@ function BlogDetails() {
             />
           </div>
         ) : blog.imageUrl ? (
-          <div className="mb-12 rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/80 aspect-[16/9] shadow-sm">
+          <div className="mb-6 sm:mb-12 rounded-2xl sm:rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800/80 aspect-[16/9] shadow-sm">
             <img
               src={blog.imageUrl}
               alt={blog.title}
