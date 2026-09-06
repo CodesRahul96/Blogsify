@@ -13,6 +13,29 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     const root = document.documentElement;
 
+    const updateStatusBarColor = (isDark) => {
+      const themeColorHex = isDark ? "#09090b" : "#ffffff";
+
+      // 1. Update standard theme-color meta tags
+      const metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+      if (metaThemeColors.length > 0) {
+        metaThemeColors.forEach((meta) => {
+          meta.setAttribute("content", themeColorHex);
+        });
+      } else {
+        const newMeta = document.createElement("meta");
+        newMeta.name = "theme-color";
+        newMeta.content = themeColorHex;
+        document.head.appendChild(newMeta);
+      }
+
+      // 2. Update Apple iOS status bar style
+      const appleMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+      if (appleMeta) {
+        appleMeta.setAttribute("content", isDark ? "black-translucent" : "default");
+      }
+    };
+
     const applyTheme = () => {
       let isDark = false;
       if (theme === "system") {
@@ -30,6 +53,8 @@ export function ThemeProvider({ children }) {
         root.classList.remove("dark");
         root.classList.add("light");
       }
+
+      updateStatusBarColor(isDark);
     };
 
     applyTheme();
@@ -58,4 +83,10 @@ export function ThemeProvider({ children }) {
   );
 }
 
-export const useTheme = () => useContext(ThemeContext);
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
+}
