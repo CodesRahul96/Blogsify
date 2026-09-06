@@ -33,6 +33,7 @@ function Profile() {
 
   // Account Deletion
   const [delLoading, setDelLoading] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Username edit state
   const [isEditingUsername, setIsEditingUsername] = useState(false);
@@ -65,21 +66,16 @@ function Profile() {
   };
 
   const handleDeleteAccount = async () => {
-    if (
-      !window.confirm(
-        "Are you sure you want to delete your account? This action is irreversible."
-      )
-    )
-      return;
     setDelLoading(true);
     try {
       await deleteAccount();
-      navigate("/signup");
+      navigate("/register");
       toast.success("Account deleted successfully");
     } catch (err) {
       toast.error(err?.message || "Failed to delete account.");
     } finally {
       setDelLoading(false);
+      setConfirmDelete(false);
     }
   };
 
@@ -236,7 +232,7 @@ function Profile() {
                       </div>
 
                       <p className="text-zinc-500 dark:text-zinc-400 text-xs">{user?.email}</p>
-                      <div className="flex gap-2 justify-center md:justify-start mt-2">
+                      <div className="flex flex-wrap gap-2 justify-center md:justify-start mt-2">
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                             user?.isAdmin
@@ -248,6 +244,22 @@ function Profile() {
                         </span>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Author Quick Action Bar */}
+                  <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={() => navigate("/dashboard")}
+                      className="flex-1 py-3 px-4 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-sm flex items-center justify-center gap-2"
+                    >
+                      <FiLayout size={14} /> Go to Writer Dashboard
+                    </button>
+                    <button
+                      onClick={() => navigate(`/blogs?search=${encodeURIComponent(user?.username || "")}`)}
+                      className="py-3 px-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white font-semibold text-xs transition-colors shadow-2xs"
+                    >
+                      View Published Public Stories
+                    </button>
                   </div>
                 </div>
               )}
@@ -303,13 +315,31 @@ function Profile() {
                     <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-4">
                       Once you delete your account, your published drafts and profile details cannot be recovered.
                     </p>
-                    <button
-                      onClick={handleDeleteAccount}
-                      disabled={delLoading}
-                      className="bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20 px-4 py-2 rounded-xl font-bold text-xs hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all disabled:opacity-50"
-                    >
-                      {delLoading ? "Deleting Account..." : "Delete My Account"}
-                    </button>
+                    {confirmDelete ? (
+                      <div className="flex items-center gap-2 p-3 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 rounded-xl">
+                        <span className="text-xs text-rose-700 dark:text-rose-300 font-medium">Are you sure?</span>
+                        <button
+                          onClick={handleDeleteAccount}
+                          disabled={delLoading}
+                          className="px-3 py-1.5 rounded-lg bg-rose-600 text-white font-bold text-xs hover:bg-rose-700 transition-colors disabled:opacity-50"
+                        >
+                          {delLoading ? "Deleting..." : "Yes, Delete Account"}
+                        </button>
+                        <button
+                          onClick={() => setConfirmDelete(false)}
+                          className="px-3 py-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold text-xs hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmDelete(true)}
+                        className="bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20 px-4 py-2 rounded-xl font-bold text-xs hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all"
+                      >
+                        Delete My Account
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

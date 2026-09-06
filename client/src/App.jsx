@@ -1,6 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -33,18 +32,31 @@ const WritingGuidelines = lazy(() => import("./pages/WritingGuidelines.jsx"));
 // Dashboard router component that determines which dashboard to show
 function DashboardRouter() {
   const { user } = useContext(AuthContext) || {};
-  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   if (!token) {
-    navigate("/login");
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
-  if (!user) return null;
+  if (!user) return <Loader />;
 
   // Render AdminDashboard if user is admin, otherwise UserDashboard
   return user.isAdmin ? <AdminDashboard /> : <UserDashboard />;
+}
+
+// Protected route specifically for Admin
+function AdminRoute() {
+  const { user } = useContext(AuthContext) || {};
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  if (!user) return <Loader />;
+  if (!user.isAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return <AdminDashboard />;
 }
 
 function App() {
@@ -66,8 +78,10 @@ function App() {
             <Route exact path="/blog/:id" element={<BlogDetails />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<SignUp />} />
+            <Route path="/signup" element={<Navigate to="/register" replace />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/dashboard" element={<DashboardRouter />} />
+            <Route path="/admin" element={<AdminRoute />} />
             <Route path="/support" element={<Support />} />
             <Route path="/sitemap" element={<Sitemap />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />

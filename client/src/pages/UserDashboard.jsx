@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Loader from "../components/layout/Loader";
@@ -286,17 +286,33 @@ function WriteScreen({ editPost, onSave, onCancel, token }) {
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 function UserDashboard() {
   const { user } = useContext(AuthContext) || {};
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab") === "write" ? "write" : "posts";
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("posts"); // "posts" | "write"
+  const [activeTab, setActiveTab] = useState(initialTab); // "posts" | "write"
   const [editPost, setEditPost] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  useEffect(() => {
+    if (searchParams.get("tab") === "write") {
+      setActiveTab("write");
+    }
+  }, [searchParams]);
+
+  const switchTab = (tab) => {
+    setActiveTab(tab);
+    const p = new URLSearchParams(searchParams);
+    if (tab === "write") p.set("tab", "write");
+    else p.delete("tab");
+    setSearchParams(p);
+  };
+
   const DOCK_ITEMS = [
     { icon: FiHome, label: "Home", path: "/" },
-    { icon: FiGrid, label: "My Posts", onClick: () => setActiveTab("posts") },
-    { icon: FiPlusSquare, label: "Write", onClick: () => { setEditPost(null); setActiveTab("write"); } },
+    { icon: FiGrid, label: "My Posts", onClick: () => switchTab("posts") },
+    { icon: FiPlusSquare, label: "Write", onClick: () => { setEditPost(null); switchTab("write"); } },
     { icon: FiUser, label: "Profile", path: "/profile" },
   ];
 
@@ -336,13 +352,13 @@ function UserDashboard() {
       ? prev.map(p => p._id === savedPost._id ? savedPost : p)
       : [savedPost, ...prev]
     );
-    setActiveTab("posts");
+    switchTab("posts");
     setEditPost(null);
   };
 
   const handleEdit = (post) => {
     setEditPost(post);
-    setActiveTab("write");
+    switchTab("write");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -366,7 +382,7 @@ function UserDashboard() {
           editPost={editPost}
           token={token}
           onSave={handleSave}
-          onCancel={() => { setActiveTab("posts"); setEditPost(null); }}
+          onCancel={() => { switchTab("posts"); setEditPost(null); }}
         />
         <Dock items={DOCK_ITEMS} />
       </>
@@ -387,7 +403,7 @@ function UserDashboard() {
             </h1>
           </div>
           <button
-            onClick={() => { setEditPost(null); setActiveTab("write"); }}
+            onClick={() => { setEditPost(null); switchTab("write"); }}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-lg shadow-blue-600/20 transition-all"
           >
             <FiPlusSquare size={16} /> Write a Story

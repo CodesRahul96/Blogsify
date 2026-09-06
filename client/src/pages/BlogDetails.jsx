@@ -19,10 +19,18 @@ import {
   FiLinkedin,
   FiEye,
   FiVideo,
+  FiArrowUp,
+  FiX,
 } from "react-icons/fi";
 import { toast } from "react-toastify";
 import PosterTemp from "../assets/poster_temp.jpg";
 import VideoPlayer from "../components/ui/VideoPlayer";
+
+const getAuthorName = (author) => {
+  if (!author) return "Contributing Writer";
+  if (typeof author === "string") return author;
+  return author.username || "Contributing Writer";
+};
 
 function BlogDetails() {
   const { id } = useParams();
@@ -34,12 +42,15 @@ function BlogDetails() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
+  const [showTopBtn, setShowTopBtn] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
   const { user } = useContext(AuthContext) || {};
   const token = localStorage.getItem("token");
 
-  // Scroll reading progress calculation
+  // Scroll reading progress calculation & back to top button
   useEffect(() => {
     const handleScroll = () => {
+      setShowTopBtn(window.scrollY > 400);
       const totalHeight =
         document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight > 0) {
@@ -75,16 +86,27 @@ function BlogDetails() {
   useEffect(() => {
     const fetchRecent = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/posts?page=1&limit=4&mode=snippet`
-        );
-        setRecent((res.data.posts || []).filter((p) => p._id !== id));
+        let url = `${import.meta.env.VITE_BASE_URL}/api/posts?page=1&limit=5&mode=snippet`;
+        if (blog?.category) {
+          url += `&category=${encodeURIComponent(blog.category)}`;
+        }
+        const res = await axios.get(url);
+        const filtered = (res.data.posts || []).filter((p) => p._id !== id);
+        // If not enough in category, fetch generic
+        if (filtered.length === 0 && blog?.category) {
+          const fallbackRes = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/api/posts?page=1&limit=4&mode=snippet`
+          );
+          setRecent((fallbackRes.data.posts || []).filter((p) => p._id !== id));
+        } else {
+          setRecent(filtered);
+        }
       } catch {
         // ignore
       }
     };
     fetchRecent();
-  }, [id]);
+  }, [id, blog?.category]);
 
   const handleLike = async () => {
     if (!token) {
@@ -128,13 +150,13 @@ function BlogDetails() {
 
   const handleDeleteComment = async (commentId) => {
     if (!token) return;
-    if (!window.confirm("Delete this response?")) return;
     try {
       const res = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/posts/${id}/comment/${commentId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBlog(res.data);
+      setDeletingCommentId(null);
       toast.success("Comment deleted");
     } catch {
       toast.error("Failed to delete comment");
@@ -244,14 +266,14 @@ function BlogDetails() {
             <div className="flex items-center gap-3">
               <img
                 src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
-                  blog.author?.username || "Writer"
+                  getAuthorName(blog.author)
                 )}`}
                 alt="Author avatar"
                 className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700"
               />
               <div>
                 <p className="font-semibold text-sm text-zinc-900 dark:text-white">
-                  {blog.author?.username || "Contributing Editor"}
+                  {getAuthorName(blog.author)}
                 </p>
                 <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                   <span>{formatDate(blog.createdAt)}</span>
@@ -408,7 +430,7 @@ function BlogDetails() {
         <div className="my-12 p-6 sm:p-8 rounded-3xl bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center sm:items-start gap-5">
           <img
             src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
-              blog.author?.username || "Author"
+              getAuthorName(blog.author)
             )}`}
             alt="Author"
             className="w-16 h-16 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 shrink-0"
@@ -418,10 +440,10 @@ function BlogDetails() {
               Written By
             </span>
             <h3 className="text-lg font-bold font-serif text-zinc-950 dark:text-white mt-0.5 mb-2">
-              {blog.author?.username || "Contributing Writer"}
+              {getAuthorName(blog.author)}
             </h3>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Writing on technology, design, and culture for Blogsify. Opinions expressed are thoughtful analyses intended to prompt discussion.
+              Writing on {blog.category ? blog.category.toLowerCase() : "various topics"} and modern perspectives for Blogsify. Opinions expressed are thoughtful analyses intended to prompt discussion.
             </p>
           </div>
         </div>
@@ -501,13 +523,30 @@ function BlogDetails() {
                     </div>
 
                     {(user?.id === c.user?._id || user?.isAdmin) && (
-                      <button
-                        onClick={() => handleDeleteComment(c._id)}
-                        className="text-zinc-400 hover:text-rose-500 dark:text-zinc-500 dark:hover:text-rose-400 transition-colors p-1"
-                        title="Delete response"
-                      >
-                        <FiTrash2 size={13} />
-                      </button>
+                      deletingCommentId === c._id ? (
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleDeleteComment(c._id)}
+                            className="px-2 py-0.5 rounded-lg bg-rose-500 text-white text-[10px] font-bold flex items-center gap-1 hover:bg-rose-600 transition-colors"
+                          >
+                            <FiCheck size={10} /> Delete
+                          </button>
+                          <button
+                            onClick={() => setDeletingCommentId(null)}
+                            className="p-1 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-[10px] hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
+                          >
+                            <FiX size={10} />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setDeletingCommentId(c._id)}
+                          className="text-zinc-400 hover:text-rose-500 dark:text-zinc-500 dark:hover:text-rose-400 transition-colors p-1"
+                          title="Delete response"
+                        >
+                          <FiTrash2 size={13} />
+                        </button>
+                      )
                     )}
                   </div>
                   <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 pl-8 leading-relaxed">
@@ -539,7 +578,7 @@ function BlogDetails() {
                     {r.title}
                   </h4>
                   <p className="text-[11px] text-zinc-500 mt-2">
-                    By {r.author?.username || "Staff"}
+                    By {getAuthorName(r.author)}
                   </p>
                 </Link>
               ))}
@@ -547,6 +586,17 @@ function BlogDetails() {
           </section>
         )}
       </div>
+
+      {/* Back to top button */}
+      {showTopBtn && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-8 right-8 z-40 p-3 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-xl hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all active:scale-95 border border-zinc-700 dark:border-zinc-300"
+          aria-label="Back to top"
+        >
+          <FiArrowUp size={16} />
+        </button>
+      )}
     </div>
   );
 }

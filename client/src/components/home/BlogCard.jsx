@@ -1,8 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiCalendar, FiClock, FiEye, FiPlay } from "react-icons/fi";
 import PosterTemp from "../../assets/poster_temp.jpg";
 
+const getAuthorName = (author) => {
+  if (!author) return "Staff Writer";
+  if (typeof author === "string") return author;
+  return author.username || "Staff Writer";
+};
+
 const BlogCard = ({ blog, variant = "vertical" }) => {
+  const navigate = useNavigate();
+  const authorName = getAuthorName(blog.author);
   const formatDate = (dateString) => {
     if (!dateString) return "Recent";
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -75,7 +83,7 @@ const BlogCard = ({ blog, variant = "vertical" }) => {
           </div>
           <div className="mt-4 flex items-center justify-between text-xs text-zinc-500">
             <span className="font-medium text-zinc-800 dark:text-zinc-300">
-              By {blog.author?.username || "Staff Writer"}
+              By {authorName}
             </span>
             <span>{formatDate(blog.createdAt)}</span>
           </div>
@@ -156,7 +164,7 @@ const BlogCard = ({ blog, variant = "vertical" }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  window.location.href = `/blogs?search=${encodeURIComponent(tag)}`;
+                  navigate(`/blogs?search=${encodeURIComponent(tag)}`);
                 }}
                 className="px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800/80 dark:hover:bg-zinc-700 text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white border border-zinc-200 dark:border-zinc-800 transition-colors"
               >
@@ -176,13 +184,13 @@ const BlogCard = ({ blog, variant = "vertical" }) => {
           <div className="flex items-center gap-2.5">
             <img
               src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
-                blog.author?.username || "Writer"
+                authorName
               )}`}
               alt="Author"
               className="w-6 h-6 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700"
             />
             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-950 dark:group-hover:text-white transition-colors">
-              {blog.author?.username || "Contributing Editor"}
+              {authorName}
             </span>
           </div>
 

@@ -20,10 +20,12 @@ function Blogs() {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlSearch = searchParams.get("search") || "";
   const urlCategory = searchParams.get("category") || "All";
+  const urlSort = searchParams.get("sort") || "latest";
 
   const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState(urlSearch);
   const [activeCategory, setActiveCategory] = useState(urlCategory);
+  const [activeSort, setActiveSort] = useState(urlSort);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -36,16 +38,17 @@ function Blogs() {
   useEffect(() => {
     setSearch(urlSearch);
     setActiveCategory(urlCategory);
+    setActiveSort(urlSort);
     setPage(1);
-    const cacheKey = `${urlCategory}-${urlSearch}-1`;
+    const cacheKey = `${urlCategory}-${urlSearch}-${urlSort}-1`;
     if (blogsCache.current[cacheKey]) {
       setBlogs(blogsCache.current[cacheKey].posts);
       setHasMore(blogsCache.current[cacheKey].hasMore);
     }
-  }, [urlSearch, urlCategory]);
+  }, [urlSearch, urlCategory, urlSort]);
 
   useEffect(() => {
-    const cacheKey = `${activeCategory}-${search}-${page}`;
+    const cacheKey = `${activeCategory}-${search}-${activeSort}-${page}`;
     if (page === 1 && blogsCache.current[cacheKey]) {
       setBlogs(blogsCache.current[cacheKey].posts);
       setHasMore(blogsCache.current[cacheKey].hasMore);
@@ -63,10 +66,14 @@ function Blogs() {
         if (search) {
           url += `&search=${encodeURIComponent(search)}`;
         }
+        if (activeSort && activeSort !== "latest") {
+          url += `&sort=${encodeURIComponent(activeSort)}`;
+        }
 
         const res = await axios.get(url);
         const newBlogs = res.data.posts || [];
-        const moreAvailable = newBlogs.length === 9;
+        const totalPages = res.data.totalPages || 1;
+        const moreAvailable = page < totalPages;
 
         if (isMounted) {
           setBlogs((prev) => {
@@ -89,7 +96,7 @@ function Blogs() {
     return () => {
       isMounted = false;
     };
-  }, [page, activeCategory, search]);
+  }, [page, activeCategory, search, activeSort]);
 
   const handleCategorySelect = (category) => {
     setActiveCategory(category);
@@ -99,6 +106,18 @@ function Blogs() {
       params.delete("category");
     } else {
       params.set("category", category);
+    }
+    setSearchParams(params);
+  };
+
+  const handleSortSelect = (sortVal) => {
+    setActiveSort(sortVal);
+    setPage(1);
+    const params = new URLSearchParams(searchParams);
+    if (sortVal === "latest") {
+      params.delete("sort");
+    } else {
+      params.set("sort", sortVal);
     }
     setSearchParams(params);
   };
@@ -198,6 +217,27 @@ function Blogs() {
               </button>
             ))}
           </div>
+
+          {/* Sort Filter Selector */}
+          <div className="flex items-center justify-end gap-2 pt-2 text-xs text-zinc-500">
+            <span className="font-medium">Sort by:</span>
+            {[
+              { id: "latest", label: "Latest" },
+              { id: "popular", label: "Most Viewed" },
+            ].map((s) => (
+              <button
+                key={s.id}
+                onClick={() => handleSortSelect(s.id)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                  activeSort === s.id
+                    ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-white font-semibold"
+                    : "hover:text-zinc-900 dark:hover:text-white"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {error && (
@@ -249,7 +289,7 @@ function Blogs() {
         {/* Loading Spinner for infinite scroll pagination */}
         {loading && blogs.length > 0 && (
           <div className="flex justify-center py-12">
-            <Loader fullScreen={false} message="Loading more dispatches..." />
+            <Loader fullScreen={false} />
           </div>
         )}
 

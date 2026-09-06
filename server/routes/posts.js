@@ -249,7 +249,13 @@ router.put("/:id", auth, async (req, res) => {
     }
 
     await post.save();
-    res.json(post);
+    const updated = await Post.findById(post._id).populate({
+      path: "comments.user",
+      select: "username",
+    });
+    const po = updated.toObject();
+    po.author = typeof po.author === "string" ? { username: po.author } : po.author;
+    res.json(po);
   } catch (err) {
     res.status(500).json({ message: "Server error updating post", error: err.message });
   }

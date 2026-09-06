@@ -13,9 +13,7 @@ import {
   FiLogOut,
   FiCompass,
   FiChevronDown,
-  FiShield,
   FiBookmark,
-  FiSliders,
 } from "react-icons/fi";
 
 const CATEGORIES = [
@@ -186,7 +184,7 @@ function Navbar() {
             {/* Write Story CTA (Desktop & Tablet) */}
             {user && (
               <Link
-                to="/dashboard"
+                to="/dashboard?tab=write"
                 className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-600/15 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-600/25 text-xs font-semibold tracking-wide transition-colors"
               >
                 <FiEdit3 size={13} />
@@ -276,6 +274,22 @@ function Navbar() {
 
                       {/* Dropdown Navigation Actions */}
                       <div className="p-1.5 space-y-0.5">
+                        {user.isAdmin && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-amber-700 dark:text-amber-400 bg-amber-50/70 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-colors group font-semibold"
+                          >
+                            <span className="flex items-center gap-2.5">
+                              <span className="w-2 h-2 rounded-full bg-amber-500" />
+                              <span>Admin Panel</span>
+                            </span>
+                            <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400">
+                              Manage
+                            </span>
+                          </Link>
+                        )}
+
                         <Link
                           to="/dashboard"
                           onClick={() => setMenuOpen(false)}
@@ -462,7 +476,7 @@ function Navbar() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <Link
-                    to="/dashboard"
+                    to="/dashboard?tab=write"
                     onClick={() => setIsOpen(false)}
                     className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold text-xs border border-blue-200 dark:border-blue-500/20 active:scale-98 transition-transform"
                   >
