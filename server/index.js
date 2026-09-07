@@ -112,10 +112,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Export the app for Vercel serverless
+// Export the app for Vercel and Netlify serverless functions
 module.exports = app;
 
-if (process.env.NODE_ENV !== "production") {
+const isServerless = Boolean(process.env.VERCEL || process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+if (process.env.NODE_ENV !== "production" && !isServerless) {
   const PORT = process.env.PORT || 5000;
 
   connectDB()
