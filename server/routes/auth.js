@@ -2,7 +2,7 @@ const express = require("express");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { generateSecret, generateURI, verifySync } = require("otplib");
+const { generateSecret, generateURI, verifyTOTP } = require("../utils/totp");
 const QRCode = require("qrcode");
 const User = require("../models/User");
 const Post = require("../models/Post");
@@ -200,12 +200,7 @@ router.post("/verify-2fa", async (req, res) => {
     // 1. First check if it matches a valid TOTP 6-digit code with ±30s clock tolerance
     let isSuccess = false;
     if (/^\d{6}$/.test(cleanCode)) {
-      const checkResult = verifySync({
-        token: cleanCode,
-        secret: user.twoFactorSecret,
-        epochTolerance: 30, // Tolerates client time drift within ±30 seconds
-      });
-      isSuccess = Boolean(checkResult?.valid);
+      isSuccess = verifyTOTP(cleanCode, user.twoFactorSecret, 1);
     }
 
     // 2. If TOTP failed, check if user provided a one-time Emergency Recovery Code
@@ -295,12 +290,7 @@ router.post("/2fa/verify-setup", auth, async (req, res) => {
     }
 
     const cleanCode = String(code).trim().replace(/\s/g, "");
-    const checkResult = verifySync({
-      token: cleanCode,
-      secret: candidateSecret,
-      epochTolerance: 30,
-    });
-    const isValid = Boolean(checkResult?.valid);
+    const isValid = verifyTOTP(cleanCode, candidateSecret, 1);
 
     if (!isValid) {
       return res.status(400).json({ message: "Invalid code from authenticator app. Please try again." });
