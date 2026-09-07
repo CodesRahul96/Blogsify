@@ -80,6 +80,7 @@ function App() {
             <Route path="/register" element={<SignUp />} />
             <Route path="/signup" element={<Navigate to="/register" replace />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/write" element={<Navigate to="/dashboard?tab=write" replace />} />
             <Route path="/dashboard" element={<DashboardRouter />} />
             <Route path="/admin" element={<AdminRoute />} />
             <Route path="/support" element={<Support />} />
