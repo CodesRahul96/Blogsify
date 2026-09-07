@@ -136,41 +136,37 @@ module.exports = app;
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
 
-  connectDB().then(() => {
-    // Check if nodemon is being used (via process.argv or env)
-    if (process.argv.includes("--nodemon") || process.env.NODEMON) {
-      app.listen(PORT, () => {
-        console.log(`Server running with nodemon on port ${PORT}`);
-      });
-    } else {
-      const server = app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-      });
-
-      // Handle graceful shutdown
-      const shutdown = async (signal) => {
-        console.log(`${signal} received. Shutting down gracefully...`);
-        server.close(async () => {
-          try {
-            await mongoose.connection.close();
-            console.log("MongoDB connection closed");
-          } catch (e) {
-            // ignore
-          }
-          process.exit(0);
+  connectDB()
+    .then(() => {
+      // Check if nodemon is being used (via process.argv or env)
+      if (process.argv.includes("--nodemon") || process.env.NODEMON) {
+        app.listen(PORT, () => {
+          console.log(`Server running with nodemon on port ${PORT}`);
         });
-      };
+      } else {
+        const server = app.listen(PORT, () => {
+          console.log(`Server running on port ${PORT}`);
+        });
 
-      process.on("SIGTERM", () => shutdown("SIGTERM"));
-      process.on("SIGINT", () => shutdown("SIGINT"));
-    }
-  });
-} else {
-  // For Vercel/Production, we might want to connect lazily or just call it.
-  // But usually Vercel serverless functions re-use connections.
-  // For now, let's keep the global call for production/export if needed,
-  // but commonly we'd export a handler that connects.
-  // Given the structure, we'll leave connectDB() execution for the module scope if it's production?
-  // Actually, for Vercel, simply calling connectDB() is often fine as long as requests wait for it.
-  connectDB();
+        // Handle graceful shutdown
+        const shutdown = async (signal) => {
+          console.log(`${signal} received. Shutting down gracefully...`);
+          server.close(async () => {
+            try {
+              await mongoose.connection.close();
+              console.log("MongoDB connection closed");
+            } catch (e) {
+              // ignore
+            }
+            process.exit(0);
+          });
+        };
+
+        process.on("SIGTERM", () => shutdown("SIGTERM"));
+        process.on("SIGINT", () => shutdown("SIGINT"));
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to connect to DB in development:", err.message);
+    });
 }
