@@ -11,38 +11,16 @@ dotenv.config();
 
 const app = express();
 
-// Dynamic CORS configuration allowing localhost and all Vercel deployments
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://blogsify.vercel.app",
-];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, server-to-server)
-    if (!origin) return callback(null, true);
-    
-    // Check exact whitelist or allow any vercel.app preview deployment
-    if (
-      allowedOrigins.includes(origin) ||
-      origin.endsWith(".vercel.app") ||
-      (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL)
-    ) {
-      return callback(null, true);
-    }
-    
-    return callback(new Error(`Origin ${origin} not allowed by CORS`));
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-};
-
-// Middleware
-app.use(cors(corsOptions));
-// Explicitly handle preflight OPTIONS for all routes
-app.options("*", cors(corsOptions));
+// Universal CORS setup for frontend clients and Vercel domains
+app.use(
+  cors({
+    origin: (origin, callback) => callback(null, true),
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  })
+);
+app.options("*", cors());
 
 app.use(express.json({ limit: "10mb" })); // Parse JSON bodies with safe limit
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -51,6 +29,33 @@ app.use(
     crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
+
+// Root route (for service health check, does not block if DB is pending)
+app.get("/", (req, res) => {
+  res.json({
+    message: "Blogsify Backend is running",
+    status: "ok",
+    database: mongoose.connection.readyState === 1 ? "connected" : "connecting",
+  });
+});
+
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const statusMap = {
+    0: "disconnected",
+    1: "connected",
+    2: "connecting",
+    3: "disconnecting",
+  };
+
+  res.json({
+    status: dbState === 1 ? "ok" : "degraded",
+    database: statusMap[dbState] || "unknown",
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // MongoDB Atlas Connection (cached for Vercel serverless invocations)
 let cachedDb = null;
@@ -72,7 +77,7 @@ const connectDB = async () => {
   return db;
 };
 
-// Ensure database is connected on every serverless request before proceeding
+// Ensure database is connected on every data API request
 app.use(async (req, res, next) => {
   try {
     if (mongoose.connection.readyState !== 1) {
@@ -82,38 +87,15 @@ app.use(async (req, res, next) => {
   } catch (err) {
     console.error("Database connection failure:", err.message);
     res.status(503).json({
-      message: "Database service unavailable. Please try again shortly.",
+      message: "Database service unavailable. Please check MONGODB_URI in Vercel settings.",
       error: err.message,
     });
   }
 });
 
-// Health check endpoint
-app.get("/api/health", (req, res) => {
-  const dbState = mongoose.connection.readyState;
-  const statusMap = {
-    0: "disconnected",
-    1: "connected",
-    2: "connecting",
-    3: "disconnecting",
-  };
-
-  res.json({
-    status: dbState === 1 ? "ok" : "degraded",
-    database: statusMap[dbState] || "unknown",
-    uptime: Math.floor(process.uptime()),
-    timestamp: new Date().toISOString(),
-  });
-});
-
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
-
-// Root route (optional, for testing)
-app.get("/", (req, res) => {
-  res.json({ message: "Blogsify Backend is running" });
-});
 
 // 404 Handler for undefined API routes
 app.use("/api/*", (req, res) => {
