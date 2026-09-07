@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -25,8 +25,9 @@ import {
   FiMinimize2,
   FiRotateCcw,
   FiFileText,
-  FiTag,
   FiVideo,
+  FiSliders,
+  FiX,
 } from "react-icons/fi";
 
 const isValidUrl = (s) => !s || /^https?:\/\//i.test(s);
@@ -71,10 +72,10 @@ export default function WriteScreen({ editPost, onSave, onCancel, token }) {
 
   // View modes: "write" | "split" | "preview"
   const [viewMode, setViewMode] = useState("split");
-  const [showMetadata, setShowMetadata] = useState(false);
   const [fontFamily, setFontFamily] = useState("sans"); // "sans" | "serif" | "mono"
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showCheatsheet, setShowCheatsheet] = useState(false);
+  const [showDetails, setShowDetails] = useState(true); // default open so user sees cover image/video/category/tags immediately
   const [lastSavedTime, setLastSavedTime] = useState(null);
 
   const textareaRef = useRef(null);
@@ -315,21 +316,23 @@ export default function WriteScreen({ editPost, onSave, onCancel, token }) {
             </button>
           </div>
 
-          {/* Right actions: Theme, Settings Toggle, Publish Button */}
+          {/* Right actions: Theme, Details Toggle, Publish Button */}
           <div className="flex items-center gap-2">
             <ThemeToggle />
 
             <button
               type="button"
-              onClick={() => setShowMetadata(!showMetadata)}
+              onClick={() => setShowDetails(!showDetails)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
-                showMetadata
+                showDetails
                   ? "bg-blue-50 dark:bg-blue-500/15 border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400"
                   : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
               }`}
+              title="Toggle Cover Image, Video, Category & Tags section"
             >
-              <FiTag size={13} />
-              <span className="hidden sm:inline">Settings</span>
+              <FiSliders size={13} />
+              <span className="hidden sm:inline">Details</span>
+              <FiChevronDown size={12} className={`transition-transform duration-200 ${showDetails ? "rotate-180" : ""}`} />
             </button>
 
             <button
@@ -535,96 +538,6 @@ export default function WriteScreen({ editPost, onSave, onCancel, token }) {
         </div>
       </div>
 
-      {/* ── Collapsible Story Settings & Metadata Drawer ── */}
-      {showMetadata && (
-        <div className="bg-white dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-8 py-5 transition-colors">
-          <div className="max-w-4xl mx-auto space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
-                <FiTag className="text-blue-600 dark:text-blue-400" /> Story Publication Settings
-              </h3>
-              <button
-                type="button"
-                onClick={() => setShowMetadata(false)}
-                className="text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
-              >
-                Close ✕
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Cover Image URL */}
-              <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Featured Cover Image URL
-                </label>
-                <div className="relative">
-                  <FiImage className="absolute left-3.5 top-3 text-zinc-400" size={14} />
-                  <input
-                    type="url"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full pl-9 pr-3.5 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-blue-500 transition-colors"
-                  />
-                </div>
-                {imageUrl && (
-                  <div className="mt-2 relative rounded-xl overflow-hidden h-24 border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950">
-                    <img
-                      src={imageUrl}
-                      alt="Cover Preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => (e.target.style.display = "none")}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Video URL & Category */}
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                    Optional Video Dispatch (YouTube, Vimeo, MP4)
-                  </label>
-                  <div className="relative">
-                    <FiVideo className="absolute left-3.5 top-3 text-zinc-400" size={14} />
-                    <input
-                      type="url"
-                      value={videoUrl}
-                      onChange={(e) => setVideoUrl(e.target.value)}
-                      placeholder="https://www.youtube.com/watch?v=..."
-                      className="w-full pl-9 pr-3.5 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-blue-500 transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                    Publication Category
-                  </label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl text-xs bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-blue-500 transition-colors"
-                  >
-                    {CATEGORIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Label / Tags Picker */}
-            <div className="pt-2">
-              <LabelPicker selectedLabels={tags} onChange={setTags} />
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* ── Markdown Cheatsheet Modal ── */}
       {showCheatsheet && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
@@ -722,8 +635,127 @@ export default function WriteScreen({ editPost, onSave, onCancel, token }) {
             <div
               className={`${
                 viewMode === "split" ? "md:col-span-6" : "md:col-span-10 md:col-start-2"
-              } space-y-4`}
+              } space-y-6`}
             >
+              {/* ── DIRECT STORY MEDIA & METADATA SECTION ── */}
+              {showDetails && (
+                <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/80 shadow-xs space-y-4 transition-colors">
+                  <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
+                      <FiSliders className="text-blue-600 dark:text-blue-400" /> Story Media, Category & Tags
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowDetails(false)}
+                      className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                    >
+                      Hide Details
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Cover Image URL Input */}
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                        Cover Image URL
+                      </label>
+                      <div className="relative">
+                        <FiImage className="absolute left-3.5 top-3 text-zinc-400" size={14} />
+                        <input
+                          type="url"
+                          value={imageUrl}
+                          onChange={(e) => setImageUrl(e.target.value)}
+                          placeholder="https://images.unsplash.com/photo-..."
+                          className={`w-full pl-9 pr-3.5 py-2.5 rounded-xl text-xs bg-zinc-50 dark:bg-zinc-950 border transition-colors ${
+                            imageUrl && !isValidUrl(imageUrl)
+                              ? "border-rose-400 dark:border-rose-500"
+                              : "border-zinc-200 dark:border-zinc-800"
+                          } text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-blue-500`}
+                        />
+                      </div>
+                      {imageUrl && isValidUrl(imageUrl) && (
+                        <div className="mt-2 relative rounded-xl overflow-hidden h-24 border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950">
+                          <img
+                            src={imageUrl}
+                            alt="Cover Preview"
+                            className="w-full h-full object-cover"
+                            onError={(e) => (e.target.style.display = "none")}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setImageUrl("")}
+                            className="absolute top-1.5 right-1.5 p-1 rounded-lg bg-black/60 text-white hover:bg-black"
+                            title="Remove cover image"
+                          >
+                            <FiX size={12} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Video URL Input */}
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                        Video URL <span className="font-normal text-zinc-400">(YouTube, Vimeo, MP4)</span>
+                      </label>
+                      <div className="relative">
+                        <FiVideo className="absolute left-3.5 top-3 text-zinc-400" size={14} />
+                        <input
+                          type="url"
+                          value={videoUrl}
+                          onChange={(e) => setVideoUrl(e.target.value)}
+                          placeholder="https://youtube.com/watch?v=..."
+                          className={`w-full pl-9 pr-3.5 py-2.5 rounded-xl text-xs bg-zinc-50 dark:bg-zinc-950 border transition-colors ${
+                            videoUrl && !isValidUrl(videoUrl)
+                              ? "border-rose-400 dark:border-rose-500"
+                              : "border-zinc-200 dark:border-zinc-800"
+                          } text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:border-blue-500`}
+                        />
+                      </div>
+                      {videoUrl && isValidUrl(videoUrl) && (
+                        <p className="mt-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                          <FiCheck size={11} /> Video link active
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                    {/* Category Select */}
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                        Story Category
+                      </label>
+                      <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl text-xs bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-blue-500 transition-colors"
+                      >
+                        {CATEGORIES.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Quick Stats Banner */}
+                    <div className="flex flex-col justify-end">
+                      <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs">
+                        <span className="text-zinc-500 dark:text-zinc-400">Word Count: <strong className="text-zinc-900 dark:text-white font-mono">{wc}</strong></span>
+                        <span className="text-zinc-500 dark:text-zinc-400">Read Time: <strong className="text-zinc-900 dark:text-white font-mono">{rt}</strong></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tags Picker */}
+                  <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                    <LabelPicker selectedLabels={tags} onChange={setTags} />
+                  </div>
+                </div>
+              )}
+
+              {/* ── Headline, Subtitle, and Content Editor ── */}
               <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/80 shadow-xs space-y-4 transition-colors">
                 {/* Headline input */}
                 <textarea
