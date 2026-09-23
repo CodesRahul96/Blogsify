@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import Loader from "./components/layout/Loader";
+import { DashboardSkeleton, PageSuspenseSkeleton } from "./components/ui/Skeleton";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import { AuthContext } from "./context/AuthContext";
 import { useTheme } from "./context/ThemeContext";
@@ -38,7 +39,7 @@ function DashboardRouter() {
     return <Navigate to="/login" replace />;
   }
 
-  if (!user) return <Loader />;
+  if (!user) return <DashboardSkeleton />;
 
   // Render AdminDashboard if user is admin, otherwise UserDashboard
   return user.isAdmin ? <AdminDashboard /> : <UserDashboard />;
@@ -52,7 +53,7 @@ function AdminRoute() {
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-  if (!user) return <Loader />;
+  if (!user) return <DashboardSkeleton isAdmin={true} />;
   if (!user.isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -69,7 +70,7 @@ function App() {
       <ScrollToTop />
       <Navbar />
       <main className="animate-fade-in">
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<PageSuspenseSkeleton />}>
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path="/about" element={<About />} />

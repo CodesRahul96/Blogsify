@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/layout/Loader";
+import { ProfileSkeleton } from "../components/ui/Skeleton";
 import GlassCard from "../components/ui/GlassCard";
 import {
   FiUser,
@@ -71,12 +72,7 @@ function Profile() {
   }, [token, navigate, user]);
 
   if (!token) return null;
-  if (token && loading)
-    return (
-      <div className="min-h-screen pt-32">
-        <Loader />
-      </div>
-    );
+  if (token && loading) return <ProfileSkeleton />;
 
   const handleLogout = () => {
     logout();

@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import Loader from "../components/layout/Loader";
+import { BlogDetailsSkeleton } from "../components/ui/Skeleton";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -185,11 +185,7 @@ function BlogDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen pt-28 flex justify-center items-center bg-zinc-50 dark:bg-[#09090b]">
-        <Loader />
-      </div>
-    );
+    return <BlogDetailsSkeleton />;
   }
 
   if (error || !blog) {

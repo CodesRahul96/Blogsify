@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/layout/Loader";
 import BlogCard from "../components/home/BlogCard";
+import { BlogCardSkeleton } from "../components/ui/Skeleton";
 import { FiSearch, FiArrowUp } from "react-icons/fi";
 
 const CATEGORIES = [
@@ -247,7 +248,12 @@ function Blogs() {
         )}
 
         {/* Articles Grid */}
-        {blogs.length === 0 && !loading ? (
+        {/* Articles Grid / Skeletons */}
+        {loading && blogs.length === 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <BlogCardSkeleton count={6} />
+          </div>
+        ) : blogs.length === 0 && !loading ? (
           <div className="text-center py-24 rounded-3xl bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800/80 max-w-xl mx-auto shadow-sm">
             <h3 className="font-serif text-lg font-bold text-zinc-950 dark:text-white mb-2">
               No matching stories found
@@ -266,31 +272,33 @@ function Blogs() {
             </button>
           </div>
         ) : (
-          <div
-            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-300 ${
-              loading && page === 1 ? "opacity-40 grayscale-[15%]" : "opacity-100"
-            }`}
-          >
-            {blogs.map((post, index) => {
-              const isLastElement = index === blogs.length - 1;
-              return (
-                <div
-                  key={post._id}
-                  ref={isLastElement ? lastBlogElementRef : null}
-                  className="h-full"
-                >
-                  <BlogCard blog={post} />
-                </div>
-              );
-            })}
-          </div>
-        )}
+          <>
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-300 ${
+                loading && page === 1 ? "opacity-50" : "opacity-100"
+              }`}
+            >
+              {blogs.map((post, index) => {
+                const isLastElement = index === blogs.length - 1;
+                return (
+                  <div
+                    key={post._id}
+                    ref={isLastElement ? lastBlogElementRef : null}
+                    className="h-full"
+                  >
+                    <BlogCard blog={post} />
+                  </div>
+                );
+              })}
+            </div>
 
-        {/* Loading Spinner for infinite scroll pagination */}
-        {loading && blogs.length > 0 && (
-          <div className="flex justify-center py-12">
-            <Loader fullScreen={false} />
-          </div>
+            {/* Skeleton Cards for infinite scroll pagination */}
+            {loading && page > 1 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                <BlogCardSkeleton count={3} />
+              </div>
+            )}
+          </>
         )}
 
         {/* End of Feed Message */}

@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import BlogCard from "./BlogCard";
+import { BlogCardSkeleton } from "../ui/Skeleton";
 import { FiArrowRight } from "react-icons/fi";
 
 const CATEGORIES = [
@@ -107,7 +108,11 @@ const RecentBlogsSection = () => {
 
         {/* Content Container with Smooth Transitions */}
         <div className="relative min-h-[360px]">
-          {blogs.length === 0 && !loading && !error ? (
+          {loading && blogs.length === 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <BlogCardSkeleton count={6} />
+            </div>
+          ) : blogs.length === 0 && !loading && !error ? (
             <div className="text-center py-20 rounded-2xl bg-zinc-100 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80">
               <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
                 No dispatches found in this topic yet.
@@ -116,7 +121,7 @@ const RecentBlogsSection = () => {
           ) : (
             <div
               className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-300 ${
-                loading ? "opacity-40 grayscale-[20%]" : "opacity-100"
+                loading ? "opacity-50" : "opacity-100"
               }`}
             >
               {blogs.map((blog) => (

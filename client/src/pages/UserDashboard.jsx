@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Loader from "../components/layout/Loader";
+import { DashboardSkeleton } from "../components/ui/Skeleton";
 import { AuthContext } from "../context/AuthContext";
 import WriteScreen from "../components/dashboard/WriteScreen";
 import LabelPicker from "../components/ui/LabelPicker";
@@ -128,7 +129,7 @@ function UserDashboard() {
     comments: posts.reduce((s, p) => s + (p.comments?.length || 0), 0),
   }), [posts]);
 
-  if (loading || (token && !user)) return <div className="min-h-screen pt-32"><Loader /></div>;
+  if (loading || (token && !user)) return <DashboardSkeleton />;
   if (!user) return null;
 
   const handleSave = (savedPost, isEdit) => {

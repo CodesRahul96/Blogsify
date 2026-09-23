@@ -2,6 +2,7 @@ import { useContext, useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/layout/Loader";
+import { DashboardSkeleton } from "../components/ui/Skeleton";
 import { AuthContext } from "../context/AuthContext";
 import Poster from "../assets/poster.jpg";
 import AdminDashboardStats from "../components/dashboard/AdminDashboardStats";
@@ -264,12 +265,7 @@ function AdminDashboard() {
     );
   }
 
-  if (loading)
-    return (
-      <div className="min-h-screen pt-32">
-        <Loader />
-      </div>
-    );
+  if (loading) return <DashboardSkeleton isAdmin={true} />;
 
   return (
     <div className="min-h-screen pb-32 pt-28 px-4 sm:px-6 md:px-12 relative bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">

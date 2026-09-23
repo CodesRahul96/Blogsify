@@ -60,8 +60,6 @@ function SignUp() {
     }
   };
 
-  if (loading) return <Loader />;
-
   return (
     <AuthLayout>
       <div>

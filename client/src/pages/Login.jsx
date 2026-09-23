@@ -86,8 +86,6 @@ function Login() {
     }
   };
 
-  if (loading) return <Loader />;
-
   return (
     <AuthLayout>
       <div>
