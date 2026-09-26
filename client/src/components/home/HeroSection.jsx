@@ -88,16 +88,18 @@ const HeroSection = () => {
         <div className="flex items-center justify-between pb-4 mb-6 border-b border-zinc-200 dark:border-zinc-800/70 text-xs font-medium text-zinc-500 dark:text-zinc-400">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-rose-500" />
-            <span className="uppercase font-bold tracking-widest text-zinc-800 dark:text-zinc-200 text-[11px]">
-              Cover Story & Trending
+            {/* Issue 5: Use clean sentence case instead of long all-caps text */}
+            <span className="font-semibold text-zinc-800 dark:text-zinc-200 text-xs">
+              Cover story & trending
             </span>
           </div>
+          {/* Issue 12: Unified archive action styling matching standard secondary button */}
           <Link
             to="/blogs"
-            className="flex items-center gap-1 hover:text-zinc-950 dark:hover:text-white transition-colors text-blue-600 dark:text-blue-400 font-semibold"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:text-zinc-950 dark:hover:text-white transition-all shadow-xs"
           >
-            <span>Browse Archive</span>
-            <FiArrowRight size={13} />
+            <span>Browse archive</span>
+            <FiArrowRight size={12} />
           </Link>
         </div>
 
@@ -114,7 +116,7 @@ const HeroSection = () => {
                   onError={(e) => (e.target.src = PosterTemp)}
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-black/70 text-white backdrop-blur-md border border-white/20">
+                  <span className="px-3 py-1 rounded-md text-xs font-semibold uppercase tracking-wider bg-black/70 text-white backdrop-blur-md border border-white/20">
                     {featuredPost.category || "Lead Editorial"}
                   </span>
                 </div>
@@ -135,9 +137,10 @@ const HeroSection = () => {
                   </span>
                 </div>
 
-                <h2 className="text-2xl sm:text-4xl font-bold font-serif text-zinc-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
+                {/* Issue 8: Primary H1 heading for the home page */}
+                <h1 className="text-2xl sm:text-4xl font-bold font-serif text-zinc-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                   {featuredPost.title}
-                </h2>
+                </h1>
 
                 <p className="text-zinc-600 dark:text-zinc-400 text-sm sm:text-base leading-relaxed line-clamp-3">
                   {featuredPost.subtitle ||
@@ -158,30 +161,31 @@ const HeroSection = () => {
             <div>
               <div className="flex items-center gap-2 mb-6">
                 <FiTrendingUp className="text-amber-500 dark:text-amber-400" size={16} />
-                <h3 className="font-serif text-lg font-bold text-zinc-950 dark:text-white tracking-wide">
+                <h2 className="font-serif text-lg font-bold text-zinc-950 dark:text-white tracking-wide">
                   Top Stories & Most Read
-                </h3>
+                </h2>
               </div>
 
+              {/* Issue 15: Increased vertical padding and touch target between items */}
               <div className="divide-y divide-zinc-200 dark:divide-zinc-800/80">
                 {trendingPosts.map((post, index) => (
                   <Link
                     key={post._id}
                     to={`/blog/${post._id}`}
-                    className="group flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+                    className="group flex items-start gap-4 py-5 first:pt-1 last:pb-1 rounded-xl px-2 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/40 transition-colors"
                   >
                     <span className="font-serif text-2xl sm:text-3xl font-bold text-zinc-300 dark:text-zinc-700 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors shrink-0 w-8">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 text-[10px] uppercase font-semibold text-zinc-500 mb-1">
+                      <div className="flex items-center gap-2 text-xs uppercase font-semibold text-zinc-500 mb-1.5">
                         <span>{post.category || "General"}</span>
                         <span>•</span>
                         <span>{post.readTime || "3 min read"}</span>
                       </div>
-                      <h4 className="text-sm font-semibold font-serif text-zinc-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
+                      <h3 className="text-sm font-semibold font-serif text-zinc-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
                         {post.title}
-                      </h4>
+                      </h3>
                       <p className="text-xs text-zinc-500 mt-1">
                         By {getAuthorName(post.author, "Staff")}
                       </p>
@@ -191,22 +195,23 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Newsletter Mini Dispatch */}
-            <div className="mt-8 p-5 rounded-2xl bg-zinc-100 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">
+            {/* Issue 13: Standardized Newsletter Box matching site design tokens */}
+            <div className="mt-8 p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-xs">
+              <span className="px-3 py-1 rounded-full text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 inline-block mb-3">
                 Morning Briefing
               </span>
-              <h4 className="font-serif text-base font-bold text-zinc-950 dark:text-white mt-1 mb-2">
+              <h3 className="font-serif text-base font-bold text-zinc-950 dark:text-white mb-2">
                 Delivered every weekday at 7 AM.
-              </h4>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 mb-3">
+              </h3>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed">
                 No noise, no spam. Curated perspectives directly to your inbox.
               </p>
               <Link
                 to="/blogs"
-                className="block text-center w-full py-2 rounded-lg bg-zinc-900 dark:bg-zinc-800 hover:bg-zinc-800 dark:hover:bg-zinc-700 text-xs font-semibold text-white transition-colors shadow-sm"
+                className="inline-flex items-center justify-center gap-1.5 w-full py-2.5 rounded-full bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-semibold transition-all shadow-xs"
               >
-                Join 12,000+ Readers
+                <span>Join 12,000+ Readers</span>
+                <FiArrowRight size={13} />
               </Link>
             </div>
           </div>

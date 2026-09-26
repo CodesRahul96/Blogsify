@@ -150,30 +150,24 @@ const BlogCard = ({ blog, variant = "vertical" }) => {
           {blog.title || "Untitled Story"}
         </h3>
 
-        <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed line-clamp-3 mb-4 flex-1">
+        <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed line-clamp-2 mb-4 flex-1">
           {blog.subtitle || blog.content?.replace(/[#*`_]/g, "") || "No excerpt available."}
         </p>
 
-        {/* Tags Row */}
+        {/* Tags Row - simplified and cleaner for high density scannability (Issue 11) */}
         {Array.isArray(blog.tags) && blog.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
-            {blog.tags.slice(0, 3).map((tag) => (
-              <button
+          <div className="flex flex-wrap gap-1 mb-3 opacity-80 group-hover:opacity-100 transition-opacity">
+            {blog.tags.slice(0, 2).map((tag) => (
+              <span
                 key={tag}
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  navigate(`/blogs?search=${encodeURIComponent(tag)}`);
-                }}
-                className="px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800/80 dark:hover:bg-zinc-700 text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white border border-zinc-200 dark:border-zinc-800 transition-colors"
+                className="px-2 py-0.5 rounded-full text-xs font-medium bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400"
               >
                 #{tag}
-              </button>
+              </span>
             ))}
-            {blog.tags.length > 3 && (
-              <span className="text-[10px] text-zinc-400 self-center">
-                +{blog.tags.length - 3}
+            {blog.tags.length > 2 && (
+              <span className="text-xs text-zinc-400 self-center">
+                +{blog.tags.length - 2}
               </span>
             )}
           </div>

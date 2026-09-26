@@ -85,9 +85,10 @@ function Footer() {
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-zinc-900 dark:text-white font-semibold mb-6 flex items-center gap-2">
+            {/* Issue 9: Fixed heading level from h4 to h3 to follow h2 correctly */}
+            <h3 className="text-zinc-900 dark:text-white font-semibold mb-6 flex items-center gap-2">
               <span className="w-1 h-4 bg-blue-500 rounded-full"></span> Explore
-            </h4>
+            </h3>
             <ul className="space-y-3 text-sm text-zinc-600 dark:text-white/50">
               {["Blogs", "Home", "About", "Contact"].map((item) => (
                 <li key={item}>
@@ -108,10 +109,11 @@ function Footer() {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-zinc-900 dark:text-white font-semibold mb-6 flex items-center gap-2">
+            {/* Issue 9: Fixed heading level from h4 to h3 to follow h2 correctly */}
+            <h3 className="text-zinc-900 dark:text-white font-semibold mb-6 flex items-center gap-2">
               <span className="w-1 h-4 bg-purple-500 rounded-full"></span>{" "}
               Resources
-            </h4>
+            </h3>
             <ul className="space-y-3 text-sm text-zinc-600 dark:text-white/50">
               <li>
                 <Link
@@ -164,23 +166,25 @@ function Footer() {
             viewport={{ once: true }}
             className="bg-zinc-50 dark:bg-white/5 p-6 rounded-2xl border border-zinc-200 dark:border-white/5 backdrop-blur-sm"
           >
-            <h4 className="text-zinc-900 dark:text-white font-semibold mb-2">Stay Updated</h4>
+            {/* Issue 9: Fixed heading level from h4 to h3 */}
+            <h3 className="text-zinc-900 dark:text-white font-semibold mb-2">Stay Updated</h3>
             <p className="text-zinc-600 dark:text-white/50 text-xs mb-4 leading-relaxed">
               Get the latest stories and updates delivered to your inbox with
               our weekly newsletter.
             </p>
+            {/* Issue 13: Standardized newsletter input and button style */}
             <form onSubmit={handleSubscribe} className="space-y-3">
-              <div className="relative">
+              <div className="relative flex items-center">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full pl-4 pr-16 py-3 rounded-xl bg-white dark:bg-black/20 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-white/20 focus:outline-none focus:border-zinc-500 dark:focus:border-white/30 transition-all text-sm shadow-xs"
+                  className="w-full pl-4 pr-20 py-2.5 rounded-full bg-white dark:bg-black/20 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-white/20 focus:outline-none focus:border-zinc-500 dark:focus:border-white/30 transition-all text-xs shadow-2xs"
                 />
                 <button
                   type="submit"
-                  className="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-zinc-900 text-white dark:bg-white/10 dark:text-white hover:bg-zinc-800 dark:hover:bg-white/20 text-xs font-semibold uppercase tracking-wider transition-colors"
+                  className="absolute right-1 top-1 bottom-1 px-4 rounded-full bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-xs font-semibold transition-colors shadow-xs"
                 >
                   Join
                 </button>

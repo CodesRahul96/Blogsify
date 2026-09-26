@@ -140,27 +140,27 @@ function Navbar() {
                 alt="Blogsify"
                 className="h-6 sm:h-8 lg:h-9 object-contain filter contrast-125 dark:brightness-100 invert dark:invert-0 transition-transform group-hover:scale-[1.02]"
               />
-              <span className="hidden md:inline-block pl-3 border-l border-zinc-300 dark:border-zinc-700/60 text-[11px] font-serif uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+              <span className="hidden md:inline-block pl-3 border-l border-zinc-300 dark:border-zinc-700/60 text-xs font-serif uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
                 The Journal of Modern Ideas
               </span>
             </Link>
           </div>
 
-          {/* Center Search Input (Desktop) */}
+          {/* Compact Right-Aligned Search Input (Desktop - Issue 14) */}
           <form
             onSubmit={handleSearchSubmit}
-            className="hidden md:flex items-center relative w-64 lg:w-96 mx-4"
+            className="hidden md:flex items-center relative w-48 lg:w-64 ml-auto mr-3"
           >
             <FiSearch
-              className="absolute left-3.5 text-zinc-400 dark:text-zinc-500"
-              size={15}
+              className="absolute left-3 text-zinc-400 dark:text-zinc-500"
+              size={14}
             />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search stories, topics, authors..."
-              className="w-full bg-zinc-100 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 rounded-full pl-9 pr-4 py-1.5 text-xs text-zinc-900 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 transition-all shadow-2xs"
+              placeholder="Search stories, topics..."
+              className="w-full bg-zinc-100 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 rounded-full pl-8 pr-3.5 py-1.5 text-xs text-zinc-900 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-600 transition-all shadow-2xs"
             />
           </form>
 
@@ -402,38 +402,40 @@ function Navbar() {
         </AnimatePresence>
       </div>
 
-      {/* Desktop Category Sub-bar */}
-      <div className="hidden lg:block border-t border-zinc-200 dark:border-zinc-800/60 bg-zinc-50/70 dark:bg-zinc-950/40">
-        <div className="max-w-7xl mx-auto px-6">
-          <nav className="flex items-center space-x-1 overflow-x-auto py-2 scrollbar-none text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {CATEGORIES.map((cat) => {
-              const queryParam =
-                cat.value === "All"
-                  ? ""
-                  : `?category=${encodeURIComponent(cat.value)}`;
-              const currentCat =
-                new URLSearchParams(location.search).get("category") || "All";
-              const isSelected =
-                location.pathname === "/blogs" &&
-                currentCat.toLowerCase() === cat.value.toLowerCase();
+      {/* Desktop Category Sub-bar (Hidden on home page where the editorial filter shelf already provides local category filtering - Issue 10) */}
+      {location.pathname !== "/" && (
+        <div className="hidden lg:block border-t border-zinc-200 dark:border-zinc-800/60 bg-zinc-50/70 dark:bg-zinc-950/40">
+          <div className="max-w-7xl mx-auto px-6">
+            <nav className="flex items-center space-x-1 overflow-x-auto py-2 scrollbar-none text-xs font-medium text-zinc-600 dark:text-zinc-400" aria-label="Category navigation">
+              {CATEGORIES.map((cat) => {
+                const queryParam =
+                  cat.value === "All"
+                    ? ""
+                    : `?category=${encodeURIComponent(cat.value)}`;
+                const currentCat =
+                  new URLSearchParams(location.search).get("category") || "All";
+                const isSelected =
+                  location.pathname === "/blogs" &&
+                  currentCat.toLowerCase() === cat.value.toLowerCase();
 
-              return (
-                <Link
-                  key={cat.value}
-                  to={`/blogs${queryParam}`}
-                  className={`whitespace-nowrap px-3.5 py-1 rounded-md transition-colors ${
-                    isSelected
-                      ? "text-zinc-900 dark:text-white bg-zinc-200 dark:bg-zinc-800 font-semibold"
-                      : "hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
-                  }`}
-                >
-                  {cat.label}
-                </Link>
-              );
-            })}
-          </nav>
+                return (
+                  <Link
+                    key={cat.value}
+                    to={`/blogs${queryParam}`}
+                    className={`whitespace-nowrap px-3.5 py-1 rounded-md transition-colors ${
+                      isSelected
+                        ? "text-zinc-900 dark:text-white bg-zinc-200 dark:bg-zinc-800 font-semibold"
+                        : "hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
+                    }`}
+                  >
+                    {cat.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Mobile Drawer Navigation Menu */}
       <AnimatePresence>

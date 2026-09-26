@@ -92,6 +92,37 @@ html.dark body {
 }
 
 /* ==========================================================================
+   Design System Foundations (Issues 1, 2, 3)
+   - Issue 1: Standardized text color palette (Primary, Secondary, Muted, Accent)
+   - Issue 2: Standardized corner radii (sm: 4px, md: 8px, lg: 16px, full: 9999px)
+   - Issue 3: Standardized button styles (Primary, Secondary, Ghost, Outline)
+   ========================================================================== */
+
+@layer components {
+  /* Standard Button Tokens (Reduced from 7 to 4 core patterns) */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-xs font-semibold tracking-wide transition-all shadow-xs active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:text-zinc-950 dark:hover:text-white transition-all shadow-2xs active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-xs font-semibold text-zinc-900 dark:text-zinc-100 transition-all active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors;
+  }
+
+  /* Badge Standard */
+  .badge-editorial {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold tracking-wide border;
+  }
+}
+
+/* ==========================================================================
    Circular Reveal View Transitions API (Fixes 1, 3, 6, 8)
    ========================================================================== */
 

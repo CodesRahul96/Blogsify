@@ -133,11 +133,11 @@ const RecentBlogsSection = () => {
           )}
         </div>
 
-        {/* Bottom CTA to Full Archive */}
+        {/* Bottom CTA to Full Archive (Issue 12: Unified design language) */}
         <div className="text-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800/60">
           <Link
             to="/blogs"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-300 dark:border-zinc-700/80 text-xs font-bold text-zinc-900 dark:text-white transition-all shadow-sm group"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-xs font-semibold transition-all shadow-xs group"
           >
             <span>Explore Complete Archive</span>
             <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
