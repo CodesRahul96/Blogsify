@@ -79,7 +79,7 @@ function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-[#09090b]/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800/80 transition-colors duration-200">
       {/* Top Editorial Ribbon (Desktop) */}
-      <div className="hidden lg:block border-b border-zinc-200 dark:border-zinc-800/50 py-1.5 px-6 text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-950/60">
+      <div className="hidden lg:block border-b border-zinc-200 dark:border-zinc-800/50 py-2.5 px-6 text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-950/60">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-6">
             <span className="font-medium tracking-wide text-zinc-700 dark:text-zinc-300">
@@ -185,7 +185,7 @@ function Navbar() {
             {user && (
               <Link
                 to="/dashboard?tab=write"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-600/15 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-600/25 text-xs font-semibold tracking-wide transition-colors"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 h-9 rounded-full bg-blue-50 dark:bg-blue-600/15 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-600/25 text-xs font-semibold tracking-wide transition-colors"
               >
                 <FiEdit3 size={13} />
                 <span>Write</span>
@@ -351,13 +351,13 @@ function Navbar() {
               <div className="flex items-center gap-1.5 sm:gap-2.5">
                 <Link
                   to="/login"
-                  className="px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors"
+                  className="px-2.5 sm:px-3 h-9 inline-flex items-center text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="px-3 sm:px-4 py-1.5 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-xs border border-zinc-900 dark:border-white"
+                  className="px-3.5 sm:px-4 h-9 inline-flex items-center rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-xs border border-zinc-900 dark:border-white"
                 >
                   Get Started
                 </Link>
@@ -415,17 +415,19 @@ function Navbar() {
                 const currentCat =
                   new URLSearchParams(location.search).get("category") || "All";
                 const isSelected =
-                  location.pathname === "/blogs" &&
-                  currentCat.toLowerCase() === cat.value.toLowerCase();
+                  location.pathname === "/blogs"
+                    ? currentCat.toLowerCase() === cat.value.toLowerCase()
+                    : cat.value === "All";
 
                 return (
                   <Link
                     key={cat.value}
                     to={`/blogs${queryParam}`}
-                    className={`whitespace-nowrap px-3.5 py-1 rounded-md transition-colors ${
+                    aria-current={isSelected ? "page" : undefined}
+                    className={`whitespace-nowrap px-3.5 py-1.5 rounded-md text-xs transition-all ${
                       isSelected
-                        ? "text-zinc-900 dark:text-white bg-zinc-200 dark:bg-zinc-800 font-semibold"
-                        : "hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
+                        ? "text-zinc-950 dark:text-white bg-zinc-200/90 dark:bg-zinc-800 font-semibold shadow-xs border-b-2 border-blue-600 dark:border-blue-400"
+                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900/60"
                     }`}
                   >
                     {cat.label}
@@ -531,8 +533,9 @@ function Navbar() {
                   const currentCat =
                     new URLSearchParams(location.search).get("category") || "All";
                   const isSelected =
-                    location.pathname === "/blogs" &&
-                    currentCat.toLowerCase() === cat.value.toLowerCase();
+                    location.pathname === "/blogs"
+                      ? currentCat.toLowerCase() === cat.value.toLowerCase()
+                      : cat.value === "All";
 
                   return (
                     <Link
@@ -543,9 +546,10 @@ function Navbar() {
                           : `/blogs?category=${encodeURIComponent(cat.value)}`
                       }
                       onClick={() => setIsOpen(false)}
+                      aria-current={isSelected ? "page" : undefined}
                       className={`px-3 py-2.5 rounded-xl border text-xs font-medium transition-all ${
                         isSelected
-                          ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-zinc-950 dark:border-white font-semibold"
+                          ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-zinc-950 dark:border-white font-semibold shadow-xs"
                           : "bg-zinc-50 dark:bg-zinc-900/60 border-zinc-200 dark:border-zinc-800/80 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                       }`}
                     >

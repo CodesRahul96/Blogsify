@@ -180,11 +180,11 @@ function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full pl-4 pr-20 py-2.5 rounded-full bg-white dark:bg-black/20 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-white/20 focus:outline-none focus:border-zinc-500 dark:focus:border-white/30 transition-all text-xs shadow-2xs"
+                  className="w-full h-11 pl-4 pr-20 py-2.5 rounded-full bg-white dark:bg-black/20 border border-zinc-300 dark:border-white/10 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-white/20 focus:outline-none focus:border-zinc-500 dark:focus:border-white/30 transition-all text-xs shadow-2xs"
                 />
                 <button
                   type="submit"
-                  className="absolute right-1 top-1 bottom-1 px-4 rounded-full bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-xs font-semibold transition-colors shadow-xs"
+                  className="absolute right-1 top-1 bottom-1 px-4 rounded-full bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-xs font-semibold transition-colors shadow-xs flex items-center justify-center"
                 >
                   Join
                 </button>

@@ -13,7 +13,7 @@ function AuthLayout({ children }) {
       <div className="pointer-events-none absolute -top-24 left-1/2 sm:left-1/4 -translate-x-1/2 w-72 sm:w-[480px] h-72 sm:h-[480px] bg-blue-500/10 dark:bg-blue-600/15 rounded-full blur-3xl sm:blur-[110px]" />
       <div className="pointer-events-none absolute -bottom-24 right-1/2 sm:right-1/4 translate-x-1/2 w-72 sm:w-[480px] h-72 sm:h-[480px] bg-purple-500/10 dark:bg-purple-600/15 rounded-full blur-3xl sm:blur-[110px]" />
 
-      <div className="relative z-10 w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
         {/* Left Editorial Mission Column (Desktop & Tablet Wide) */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -28,7 +28,7 @@ function AuthLayout({ children }) {
                 alt="Blogsify"
                 className="h-8 object-contain filter contrast-125 dark:brightness-100 invert dark:invert-0"
               />
-              <span className="pl-3 border-l border-zinc-300 dark:border-zinc-700 text-[11px] font-serif uppercase tracking-widest text-zinc-500">
+              <span className="pl-3 border-l border-zinc-300 dark:border-zinc-700 text-xs font-serif uppercase tracking-widest text-zinc-500">
                 The Journal of Modern Ideas
               </span>
             </Link>
@@ -66,10 +66,10 @@ function AuthLayout({ children }) {
                   <item.icon size={16} />
                 </div>
                 <div>
-                  <h3 className="text-xs font-semibold text-zinc-900 dark:text-white">
+                  <h2 className="text-xs font-semibold text-zinc-900 dark:text-white">
                     {item.title}
-                  </h3>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug">
+                  </h2>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -102,7 +102,7 @@ function AuthLayout({ children }) {
                 alt="Blogsify"
                 className="h-8 object-contain filter contrast-125 dark:brightness-100 invert dark:invert-0"
               />
-              <span className="text-[10px] font-serif uppercase tracking-widest text-zinc-500">
+              <span className="text-xs font-serif uppercase tracking-widest text-zinc-500">
                 The Journal of Modern Ideas
               </span>
             </Link>

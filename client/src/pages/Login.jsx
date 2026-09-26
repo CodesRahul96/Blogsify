@@ -125,7 +125,7 @@ function Login() {
                     disabled={loading}
                   />
                 </div>
-                <p className="text-[11px] text-zinc-400 text-center mt-2">
+                <p className="text-xs text-zinc-400 text-center mt-2">
                   Enter 6-digit TOTP code or an 8-character backup recovery key
                 </p>
               </div>
@@ -133,7 +133,7 @@ function Login() {
               <div className="pt-2 space-y-2">
                 <button
                   type="submit"
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2"
                   disabled={loading}
                 >
                   <FiCheck size={16} /> {loading ? "Verifying..." : "Confirm & Sign In"}
@@ -145,7 +145,7 @@ function Login() {
                     setIs2FAStep(false);
                     setVerificationCode("");
                   }}
-                  className="w-full py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors flex items-center justify-center gap-2"
+                  className="w-full h-11 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors flex items-center justify-center gap-2"
                 >
                   <FiArrowLeft size={14} /> Back to Sign In
                 </button>
@@ -184,7 +184,7 @@ function Login() {
                       id="username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors font-medium shadow-xs"
+                      className="w-full h-11 pl-10 pr-4 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors font-medium shadow-xs"
                       placeholder="name@organization.com or username"
                       required
                       disabled={loading}
@@ -210,7 +210,7 @@ function Login() {
                       id="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-10 pr-11 py-3 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors font-medium shadow-xs"
+                      className="w-full h-11 pl-10 pr-11 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors font-medium shadow-xs"
                       placeholder="••••••••••••"
                       required
                       disabled={loading}
@@ -230,7 +230,7 @@ function Login() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 py-3 rounded-xl font-bold text-xs sm:text-sm hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-md active:scale-[0.99] disabled:opacity-50"
+                  className="w-full h-11 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 rounded-xl font-bold text-xs sm:text-sm hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all shadow-md active:scale-[0.99] disabled:opacity-50 flex items-center justify-center"
                   disabled={loading}
                 >
                   {loading ? "Verifying..." : "Sign In to Blogsify"}
