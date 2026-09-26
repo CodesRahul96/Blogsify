@@ -95,22 +95,22 @@ function Navbar() {
             </div>
           </div>
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-6 text-xs font-medium text-zinc-600 dark:text-zinc-400">
             <Link
               to="/guidelines"
-              className="hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
+              className="hover:text-zinc-950 dark:hover:text-white transition-colors"
             >
               Writing Standards
             </Link>
             <Link
               to="/about"
-              className="hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
+              className="hover:text-zinc-950 dark:hover:text-white transition-colors"
             >
               About The Journal
             </Link>
             <Link
               to="/support"
-              className="hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
+              className="hover:text-zinc-950 dark:hover:text-white transition-colors"
             >
               Support & Ethics
             </Link>
@@ -140,7 +140,7 @@ function Navbar() {
                 alt="Blogsify"
                 className="h-6 sm:h-8 lg:h-9 object-contain filter contrast-125 dark:brightness-100 invert dark:invert-0 transition-transform group-hover:scale-[1.02]"
               />
-              <span className="hidden md:inline-block pl-3 border-l border-zinc-300 dark:border-zinc-700/60 text-xs font-serif uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+              <span className="hidden md:inline-block pl-3 border-l border-zinc-300 dark:border-zinc-700/60 text-xs font-serif text-zinc-600 dark:text-zinc-400">
                 The Journal of Modern Ideas
               </span>
             </Link>

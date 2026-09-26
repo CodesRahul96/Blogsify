@@ -400,18 +400,18 @@ function BlogDetails() {
           </ReactMarkdown>
         </article>
 
-        {/* Article Tags & Topics */}
+        {/* Article Tags & Topics (Issues 3 & 6: Clean sentence case label & unified pill design) */}
         {Array.isArray(blog.tags) && blog.tags.length > 0 && (
           <div className="py-6 border-b border-zinc-200 dark:border-zinc-800/80">
-            <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-              Filed Under Topics
+            <p className="text-xs font-semibold text-zinc-500 mb-3">
+              Filed under topics
             </p>
             <div className="flex flex-wrap gap-2">
               {blog.tags.map((tag) => (
                 <Link
                   key={tag}
                   to={`/blogs?search=${encodeURIComponent(tag)}`}
-                  className="px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="px-3 py-1 rounded-full bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-xs font-medium transition-colors"
                 >
                   #{tag}
                 </Link>
@@ -420,8 +420,8 @@ function BlogDetails() {
           </div>
         )}
 
-        {/* Author Bio Signature Box */}
-        <div className="my-12 p-6 sm:p-8 rounded-3xl bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center sm:items-start gap-5">
+        {/* Author Bio Signature Box (Issue 4: Proper h2 heading level under h1 title) */}
+        <section aria-labelledby="author-heading" className="my-12 p-6 sm:p-8 rounded-3xl bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center sm:items-start gap-5">
           <img
             src={`https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
               getAuthorName(blog.author)
@@ -430,25 +430,25 @@ function BlogDetails() {
             className="w-16 h-16 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 shrink-0"
           />
           <div className="flex-1 text-center sm:text-left">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-              Written By
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+              Written by
             </span>
-            <h3 className="text-lg font-bold font-serif text-zinc-950 dark:text-white mt-0.5 mb-2">
+            <h2 id="author-heading" className="text-lg font-bold font-serif text-zinc-950 dark:text-white mt-0.5 mb-2">
               {getAuthorName(blog.author)}
-            </h3>
+            </h2>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
               Writing on {blog.category ? blog.category.toLowerCase() : "various topics"} and modern perspectives for Blogsify. Opinions expressed are thoughtful analyses intended to prompt discussion.
             </p>
           </div>
-        </div>
+        </section>
 
         {/* Comments / Responses Desk */}
         <section id="comments" className="mt-16 pt-10 border-t border-zinc-200 dark:border-zinc-800/80">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="font-serif text-2xl font-bold text-zinc-950 dark:text-white flex items-center gap-2.5">
+            <h2 className="font-serif text-2xl font-bold text-zinc-950 dark:text-white flex items-center gap-2.5">
               <FiMessageSquare size={22} className="text-blue-600 dark:text-blue-400" />
               <span>Responses ({blog.comments?.length || 0})</span>
-            </h3>
+            </h2>
           </div>
 
           {user ? (
@@ -465,7 +465,7 @@ function BlogDetails() {
                 <div className="flex justify-end pt-3 border-t border-zinc-200 dark:border-zinc-800/60 mt-2">
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-full bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-bold transition-colors shadow-sm"
+                    className="px-5 py-2 rounded-full bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-semibold transition-colors shadow-xs"
                   >
                     Publish Response
                   </button>
@@ -510,8 +510,8 @@ function BlogDetails() {
                       <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                         {c.user?.username || "Reader"}
                       </span>
-                      <span className="text-zinc-400 dark:text-zinc-600 text-[11px]">•</span>
-                      <span className="text-zinc-500 text-[11px]">
+                      <span className="text-zinc-400 dark:text-zinc-600 text-xs">•</span>
+                      <span className="text-zinc-500 text-xs">
                         {formatDate(c.createdAt)}
                       </span>
                     </div>
@@ -521,13 +521,13 @@ function BlogDetails() {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => handleDeleteComment(c._id)}
-                            className="px-2 py-0.5 rounded-lg bg-rose-500 text-white text-[10px] font-bold flex items-center gap-1 hover:bg-rose-600 transition-colors"
+                            className="px-2 py-0.5 rounded-lg bg-rose-500 text-white text-xs font-bold flex items-center gap-1 hover:bg-rose-600 transition-colors"
                           >
                             <FiCheck size={10} /> Delete
                           </button>
                           <button
                             onClick={() => setDeletingCommentId(null)}
-                            className="p-1 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-[10px] hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
+                            className="p-1 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
                           >
                             <FiX size={10} />
                           </button>
@@ -552,30 +552,37 @@ function BlogDetails() {
           </div>
         </section>
 
-        {/* More Stories From Blogsify Recommendation Section */}
+        {/* More Stories Recommendation Section (Issues 5 & 9: 2-column wider card layout and cleaned redundant titles) */}
         {recent.length > 0 && (
           <section className="mt-20 pt-10 border-t border-zinc-200 dark:border-zinc-800/80">
-            <h3 className="font-serif text-xl font-bold text-zinc-950 dark:text-white mb-6">
+            <h2 className="font-serif text-xl font-bold text-zinc-950 dark:text-white mb-6">
               More From The Journal
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {recent.slice(0, 3).map((r) => (
-                <Link
-                  key={r._id}
-                  to={`/blog/${r._id}`}
-                  className="group block p-4 rounded-2xl bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900/40 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-all shadow-sm"
-                >
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-1 block">
-                    {r.category || "Dispatch"}
-                  </span>
-                  <h4 className="font-serif font-bold text-sm text-zinc-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 line-clamp-2 transition-colors">
-                    {r.title}
-                  </h4>
-                  <p className="text-[11px] text-zinc-500 mt-2">
-                    By {getAuthorName(r.author)}
-                  </p>
-                </Link>
-              ))}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {recent.slice(0, 4).map((r) => {
+                // Issue 9: Strip redundant category prefix from title if present
+                const categoryClean = r.category || "Dispatch";
+                const cleanTitle = r.title?.replace(new RegExp(`^${categoryClean}[:\\s-]+`, "i"), "");
+
+                return (
+                  <Link
+                    key={r._id}
+                    to={`/blog/${r._id}`}
+                    className="group block p-5 rounded-2xl bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900/40 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 transition-all shadow-xs"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2 block">
+                      {categoryClean}
+                    </span>
+                    <h3 className="font-serif font-bold text-base text-zinc-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 line-clamp-2 transition-colors">
+                      {cleanTitle}
+                    </h3>
+                    <p className="text-xs text-zinc-500 mt-3 flex items-center justify-between">
+                      <span>By {getAuthorName(r.author)}</span>
+                      <span>{formatDate(r.createdAt)}</span>
+                    </p>
+                  </Link>
+                );
+              })}
             </div>
           </section>
         )}

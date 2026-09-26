@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaTwitter, FaGithub, FaInstagram, FaFacebook } from "react-icons/fa";
+import { FiTwitter, FiGithub, FiInstagram, FiFacebook } from "react-icons/fi";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import Logo from "../../assets/lettering.png";
