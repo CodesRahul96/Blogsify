@@ -45,22 +45,22 @@ function Footer() {
             <div className="flex items-center gap-4">
               {[
                 {
-                  icon: FaGithub,
+                  icon: FiGithub,
                   link: "https://github.com/codesrahul96",
                   label: "GitHub",
                 },
                 {
-                  icon: FaTwitter,
+                  icon: FiTwitter,
                   link: "https://twitter.com/codesrahul96",
                   label: "Twitter",
                 },
                 {
-                  icon: FaFacebook,
+                  icon: FiFacebook,
                   link: "https://facebook.com/codesrahul",
                   label: "Facebook",
                 },
                 {
-                  icon: FaInstagram,
+                  icon: FiInstagram,
                   link: "https://instagram.com/codesrahul",
                   label: "Instagram",
                 },
