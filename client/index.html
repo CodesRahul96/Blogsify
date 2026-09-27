@@ -5,6 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/Blogsify.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     
+    <!-- Automatic domain redirect for old Vercel URLs (can easily update destination below) -->
+    <script>
+      (function() {
+        var TARGET_DOMAIN = "https://blogsify.indevs.in";
+        if (window.location.hostname === "blogsify.vercel.app" || window.location.hostname.endsWith(".vercel.app")) {
+          window.location.replace(TARGET_DOMAIN + window.location.pathname + window.location.search + window.location.hash);
+        }
+      })();
+    </script>
+    
     <!-- Dynamic Mobile Status Bar & Browser Chrome Colors -->
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />

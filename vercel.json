@@ -6,11 +6,5 @@
       "destination": "https://blogsify.indevs.in/:path*",
       "permanent": false
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
   ]
 }
