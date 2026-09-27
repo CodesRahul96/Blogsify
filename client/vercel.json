@@ -2,8 +2,13 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
-      "source": "/:path*",
-      "destination": "https://blogsify.indevs.in/:path*",
+      "source": "/",
+      "destination": "https://blogsify.indevs.in/",
+      "permanent": false
+    },
+    {
+      "source": "/(.*)",
+      "destination": "https://blogsify.indevs.in/$1",
       "permanent": false
     }
   ],
