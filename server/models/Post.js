@@ -24,6 +24,7 @@ const postSchema = new mongoose.Schema({
 });
 
 // Performance and query indexes
+postSchema.index({ createdAt: -1 });
 postSchema.index({ category: 1, createdAt: -1 });
 postSchema.index({ tags: 1 });
 postSchema.index({ author: 1 });

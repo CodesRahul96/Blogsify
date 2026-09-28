@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import BlogCard from "./BlogCard";
 import { BlogCardSkeleton } from "../ui/Skeleton";
 import { FiArrowRight } from "react-icons/fi";
+
+import { getCachedPosts, fetchPostsWithCache } from "../../utils/postsCache";
 
 const CATEGORIES = [
   "All",
@@ -18,47 +19,60 @@ const CATEGORIES = [
 ];
 
 const RecentBlogsSection = () => {
-  const [blogs, setBlogs] = useState([]);
+  // Synchronously initialize from cache for instant 0ms render
+  const initialCache = getCachedPosts("recent_blogs_All");
+  const initialPosts = initialCache?.posts || [];
+
+  const [blogs, setBlogs] = useState(initialPosts);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(initialPosts.length === 0);
   const [error, setError] = useState("");
-  const categoryCache = useRef({});
 
   useEffect(() => {
-    // If cached, display immediately for instant, flicker-free switching
-    if (categoryCache.current[selectedCategory]) {
-      setBlogs(categoryCache.current[selectedCategory]);
+    const cacheKey = `recent_blogs_${selectedCategory}`;
+    const cached = getCachedPosts(cacheKey);
+
+    // If cached, immediately display without any loading state or flicker
+    if (cached?.posts?.length) {
+      setBlogs(cached.posts);
+      setLoading(false);
     } else {
       setLoading(true);
     }
 
     let isMounted = true;
-    const fetchRecentBlogs = async () => {
-      try {
-        const categoryQuery =
-          selectedCategory !== "All"
-            ? `&category=${encodeURIComponent(selectedCategory)}`
-            : "";
-        const res = await axios.get(
-          `${
-            import.meta.env.VITE_BASE_URL
-          }/api/posts?page=1&limit=6&mode=snippet${categoryQuery}`
-        );
-        const fetched = res.data.posts || [];
-        categoryCache.current[selectedCategory] = fetched;
-        if (isMounted) {
-          setBlogs(fetched);
-          setError("");
-        }
-      } catch {
-        if (isMounted && !categoryCache.current[selectedCategory]) {
-          setError("Failed to load stories.");
-        }
-      } finally {
-        if (isMounted) setLoading(false);
+    const categoryQuery =
+      selectedCategory !== "All"
+        ? `&category=${encodeURIComponent(selectedCategory)}`
+        : "";
+    const url = `${
+      import.meta.env.VITE_BASE_URL
+    }/api/posts?page=1&limit=6&mode=snippet${categoryQuery}`;
+
+    fetchPostsWithCache(url, cacheKey, (freshData) => {
+      if (!isMounted) return;
+      const fetched = freshData?.posts || [];
+      if (fetched.length > 0) {
+        setBlogs(fetched);
+        setError("");
       }
-    };
-    fetchRecentBlogs();
+      setLoading(false);
+    })
+      .then((data) => {
+        if (!isMounted) return;
+        const fetched = data?.posts || [];
+        setBlogs(fetched);
+        setError("");
+        setLoading(false);
+      })
+      .catch(() => {
+        if (isMounted) {
+          if (!cached?.posts?.length) {
+            setError("Failed to load stories.");
+          }
+          setLoading(false);
+        }
+      });
 
     return () => {
       isMounted = false;

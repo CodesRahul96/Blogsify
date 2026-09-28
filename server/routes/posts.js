@@ -87,34 +87,54 @@ router.get("/", async (req, res) => {
       sortOption = { views: -1, createdAt: -1 };
     }
 
-    const posts = await Post.find(query)
+    // Build lean query with projection
+    let findQuery = Post.find(query)
       .sort(sortOption)
       .skip(skip)
       .limit(limit)
-      .populate({ path: "comments.user", select: "username" });
+      .lean();
 
-    const totalPosts = await Post.countDocuments(query);
+    if (snippet) {
+      // In snippet mode (used for cards, feeds, hero), select only needed fields
+      findQuery = findQuery.select(
+        "title subtitle content category author imageUrl videoUrl tags views readTime createdAt likes comments"
+      );
+    }
+
+    const [posts, totalPosts] = await Promise.all([
+      findQuery,
+      Post.countDocuments(query),
+    ]);
 
     // Normalize and optionally truncate
     const normalized = posts.map((p) => {
-      const po = p.toObject();
+      const po = { ...p };
       po.author =
         typeof po.author === "string" ? { username: po.author } : po.author;
       po.category = po.category || "General";
       po.views = po.views || 0;
 
-      // Calculate read time
-      const words = (po.content || "").trim().split(/\s+/).length;
-      const minutes = Math.max(1, Math.round(words / 200));
-      po.readTime = `${minutes} min read`;
+      // Calculate read time if not already stored
+      if (!po.readTime) {
+        const words = (po.content || "").trim().split(/\s+/).length;
+        const minutes = Math.max(1, Math.round(words / 200));
+        po.readTime = `${minutes} min read`;
+      }
 
       if (snippet) {
-        // Truncate content
-        po.content = (po.content || "").substring(0, 200) + "...";
+        po.commentsCount = Array.isArray(po.comments) ? po.comments.length : 0;
+        delete po.comments;
+        // Truncate content for lightweight wire transfer
+        po.content = (po.content || "").substring(0, 220);
       }
 
       return po;
     });
+
+    // Cache public queries at edge for 60s with 120s stale-while-revalidate
+    if (!author && !search) {
+      res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    }
 
     res.json({
       posts: normalized,

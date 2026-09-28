@@ -300,4 +300,75 @@ export function PageSuspenseSkeleton() {
   );
 }
 
+// Hero Section Skeleton - matches HeroSection.jsx editorial front page layout perfectly
+export function HeroSectionSkeleton() {
+  return (
+    <section className="pt-8 pb-12 border-b border-zinc-200 dark:border-zinc-800/60">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Ribbon Header Skeleton */}
+        <div className="flex items-center justify-between pb-4 mb-6 border-b border-zinc-200 dark:border-zinc-800/70">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
+            <Skeleton className="h-4 w-36 rounded" />
+          </div>
+          <Skeleton className="h-7 w-28 rounded-full" />
+        </div>
+
+        {/* 2-Column Hero Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+          {/* Main Lead Story (7 cols) */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 shadow-sm">
+              <Skeleton className="w-full h-full rounded-none" />
+              <div className="absolute top-4 left-4">
+                <Skeleton className="h-6 w-24 rounded-md" />
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-3.5 w-24" />
+                <span className="text-zinc-300 dark:text-zinc-700 text-xs">•</span>
+                <Skeleton className="h-3.5 w-20" />
+                <span className="text-zinc-300 dark:text-zinc-700 text-xs">•</span>
+                <Skeleton className="h-3.5 w-16" />
+              </div>
+
+              <div className="space-y-2">
+                <Skeleton className="h-8 sm:h-10 w-full rounded-lg" />
+                <Skeleton className="h-8 sm:h-10 w-4/5 rounded-lg" />
+              </div>
+
+              <div className="space-y-1.5 pt-1">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-11/12" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Trending Stories (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col justify-between divide-y divide-zinc-200 dark:divide-zinc-800/70 border-t lg:border-t-0 lg:border-l border-zinc-200 dark:border-zinc-800/70 lg:pl-8 pt-6 lg:pt-0">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="py-4 first:pt-0 last:pb-0 flex items-start gap-4">
+                <Skeleton className="w-7 h-7 rounded-md shrink-0 mt-0.5" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-20 rounded" />
+                  <Skeleton className="h-4.5 w-full rounded" />
+                  <Skeleton className="h-4.5 w-4/5 rounded" />
+                  <div className="flex items-center gap-2 pt-1">
+                    <Skeleton className="h-3 w-16" />
+                    <span className="text-zinc-300 dark:text-zinc-700 text-xs">•</span>
+                    <Skeleton className="h-3 w-12" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default Skeleton;

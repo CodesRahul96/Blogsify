@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { FiTrendingUp, FiClock, FiCalendar, FiArrowRight } from "react-icons/fi";
 import PosterTemp from "../../assets/poster_temp.jpg";
+import { HeroSectionSkeleton } from "../ui/Skeleton";
+import { getCachedPosts, fetchPostsWithCache } from "../../utils/postsCache";
 
 const getAuthorName = (author, fallback = "Staff Writer") => {
   if (!author) return fallback;
@@ -10,29 +11,46 @@ const getAuthorName = (author, fallback = "Staff Writer") => {
   return author.username || fallback;
 };
 
+const CACHE_KEY = "hero_lead_5";
+
 const HeroSection = () => {
-  const [featuredPost, setFeaturedPost] = useState(null);
-  const [trendingPosts, setTrendingPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Synchronously initialize from cache for instant 0ms rendering
+  const cachedData = getCachedPosts(CACHE_KEY);
+  const cachedPosts = cachedData?.posts || [];
+
+  const [featuredPost, setFeaturedPost] = useState(cachedPosts[0] || null);
+  const [trendingPosts, setTrendingPosts] = useState(cachedPosts.slice(1, 5));
+  const [loading, setLoading] = useState(cachedPosts.length === 0);
 
   useEffect(() => {
-    const fetchEditorialLead = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/posts?limit=5&mode=snippet`
-        );
-        const posts = res.data.posts || [];
+    let isMounted = true;
+    const url = `${import.meta.env.VITE_BASE_URL}/api/posts?limit=5&mode=snippet`;
+
+    fetchPostsWithCache(url, CACHE_KEY, (freshData) => {
+      if (!isMounted) return;
+      const posts = freshData?.posts || [];
+      if (posts.length > 0) {
+        setFeaturedPost(posts[0]);
+        setTrendingPosts(posts.slice(1, 5));
+        setLoading(false);
+      }
+    })
+      .then((data) => {
+        if (!isMounted) return;
+        const posts = data?.posts || [];
         if (posts.length > 0) {
           setFeaturedPost(posts[0]);
           setTrendingPosts(posts.slice(1, 5));
         }
-      } catch {
-        // Handled gracefully with fallback
-      } finally {
         setLoading(false);
-      }
+      })
+      .catch(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
     };
-    fetchEditorialLead();
   }, []);
 
   const formatDate = (dateString) => {
@@ -44,14 +62,8 @@ const HeroSection = () => {
     });
   };
 
-  if (loading) {
-    return (
-      <section className="pt-8 pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="h-96 rounded-2xl bg-zinc-900/60 animate-pulse border border-zinc-800/80" />
-        </div>
-      </section>
-    );
+  if (loading && !featuredPost) {
+    return <HeroSectionSkeleton />;
   }
 
   // Fallback if no posts exist yet
