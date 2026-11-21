@@ -74,11 +74,35 @@ export function ThemeProvider({ children }) {
     applyThemeToDOM(theme);
     localStorage.setItem("blogsify-theme", theme);
 
-    if (theme === "system") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const handler = () => applyThemeToDOM("system");
+    // Always listen to system theme changes in real-time
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e) => {
+      // If current mode is system, immediately update DOM and state
+      const currentStored = localStorage.getItem("blogsify-theme") || "system";
+      if (currentStored === "system") {
+        const isDark = e.matches;
+        const nextResolved = isDark ? "dark" : "light";
+        setResolvedTheme(nextResolved);
+        if (root) {
+          if (isDark) {
+            root.classList.add("dark");
+            root.classList.remove("light");
+          } else {
+            root.classList.remove("dark");
+            root.classList.add("light");
+          }
+          updateStatusBarColor(isDark);
+        }
+      }
+    };
+
+    // Modern and backward-compatible event listeners
+    if (typeof mediaQuery.addEventListener === "function") {
       mediaQuery.addEventListener("change", handler);
       return () => mediaQuery.removeEventListener("change", handler);
+    } else if (typeof mediaQuery.addListener === "function") {
+      mediaQuery.addListener(handler);
+      return () => mediaQuery.removeListener(handler);
     }
   }, [theme]);
 
@@ -174,7 +198,14 @@ export function ThemeProvider({ children }) {
       coords = eventOrOptions.coords || null;
     }
 
-    const nextTheme = theme === "dark" ? "light" : "dark";
+    let nextTheme = "light";
+    if (theme === "system") {
+      nextTheme = resolvedTheme === "dark" ? "light" : "dark";
+    } else if (theme === "light") {
+      nextTheme = "dark";
+    } else {
+      nextTheme = "system";
+    }
 
     // If reduced motion is requested, switch immediately without animation
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

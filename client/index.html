@@ -33,6 +33,27 @@
     <link rel="dns-prefetch" href="https://blogsify-server.vercel.app">
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <title>Blogsify — The Journal of Modern Ideas & Culture</title>
+    <!-- Instant theme sync script before render to avoid light/dark flicker -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem("blogsify-theme") || "system";
+          var isDark = false;
+          if (saved === "dark") {
+            isDark = true;
+          } else if (saved === "system") {
+            isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          }
+          if (isDark) {
+            document.documentElement.classList.add("dark");
+            document.documentElement.classList.remove("light");
+          } else {
+            document.documentElement.classList.remove("dark");
+            document.documentElement.classList.add("light");
+          }
+        } catch(e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
