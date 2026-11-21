@@ -48,12 +48,12 @@ const BlogCard = ({ blog, variant = "vertical" }) => {
           <img
             src={blog.imageUrl || PosterTemp}
             alt={blog.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-95"
             onError={(e) => (e.target.src = PosterTemp)}
           />
           {blog.videoUrl && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
-              <div className="w-9 h-9 rounded-full bg-white/90 dark:bg-white text-zinc-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <div className="w-9 h-9 rounded-full bg-white text-zinc-950 flex items-center justify-center shadow-md">
                 <FiPlay size={14} className="ml-0.5 fill-zinc-950 text-zinc-950" />
               </div>
             </div>
@@ -96,7 +96,7 @@ const BlogCard = ({ blog, variant = "vertical" }) => {
   return (
     <Link
       to={`/blog/${blog._id}`}
-      className="group flex flex-col h-full rounded-2xl bg-white dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/60 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 overflow-hidden shadow-sm"
+      className="group flex flex-col h-full rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-200 overflow-hidden shadow-xs"
     >
       {/* Cover Image */}
       <div className="relative h-48 sm:h-52 overflow-hidden bg-zinc-100 dark:bg-zinc-950">
@@ -104,22 +104,22 @@ const BlogCard = ({ blog, variant = "vertical" }) => {
           src={blog.imageUrl || PosterTemp}
           alt={blog.title}
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-95"
           onError={(e) => (e.target.src = PosterTemp)}
         />
         {blog.videoUrl && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
-            <div className="w-11 h-11 rounded-full bg-white/90 dark:bg-white text-zinc-950 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-              <FiPlay size={16} className="ml-0.5 fill-zinc-950 text-zinc-950" />
+            <div className="w-10 h-10 rounded-full bg-white text-zinc-950 flex items-center justify-center shadow-md">
+              <FiPlay size={15} className="ml-0.5 fill-zinc-950 text-zinc-950" />
             </div>
           </div>
         )}
         <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border ${categoryColor}`}>
+          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider border ${categoryColor}`}>
             {blog.category || "Dispatch"}
           </span>
           {blog.videoUrl && (
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider backdrop-blur-md bg-black/60 text-white border border-white/20 flex items-center gap-1">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-zinc-900/90 text-white border border-zinc-700/60 flex items-center gap-1">
               <FiPlay size={10} className="fill-white" /> Watch
             </span>
           )}

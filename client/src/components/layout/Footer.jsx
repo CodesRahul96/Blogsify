@@ -70,7 +70,7 @@ function Footer() {
                   href={social.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-white/5 dark:hover:bg-white/10 text-zinc-600 hover:text-zinc-900 dark:text-white/60 dark:hover:text-white transition-all hover:-translate-y-1 hover:shadow-md"
+                  className="p-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white border border-transparent hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
                   aria-label={social.label}
                 >
                   <social.icon size={16} />

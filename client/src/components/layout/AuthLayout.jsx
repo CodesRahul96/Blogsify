@@ -6,13 +6,6 @@ import { FiCheckCircle, FiShield, FiFeather, FiTrendingUp } from "react-icons/fi
 function AuthLayout({ children }) {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 flex items-center justify-center relative overflow-hidden pt-20 sm:pt-28 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-      {/* Background Decorative Patterns */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
-
-      {/* Atmospheric Ambient Glows */}
-      <div className="pointer-events-none absolute -top-24 left-1/2 sm:left-1/4 -translate-x-1/2 w-72 sm:w-[480px] h-72 sm:h-[480px] bg-blue-500/10 dark:bg-blue-600/15 rounded-full blur-3xl sm:blur-[110px]" />
-      <div className="pointer-events-none absolute -bottom-24 right-1/2 sm:right-1/4 translate-x-1/2 w-72 sm:w-[480px] h-72 sm:h-[480px] bg-purple-500/10 dark:bg-purple-600/15 rounded-full blur-3xl sm:blur-[110px]" />
-
       <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
         {/* Left Editorial Mission Column (Desktop & Tablet Wide) */}
         <motion.div
@@ -110,10 +103,10 @@ function AuthLayout({ children }) {
 
           {/* Elevated Responsive Form Container */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            className="w-full max-w-md p-6 sm:p-9 rounded-3xl bg-white/95 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 shadow-xl dark:shadow-2xl backdrop-blur-md transition-colors duration-200"
+            transition={{ duration: 0.3 }}
+            className="w-full max-w-md p-6 sm:p-8 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors duration-200"
           >
             {children}
           </motion.div>

@@ -27,9 +27,8 @@ const DesktopDockIcon = ({ mouseX, icon: Icon, label, path, onClick }) => {
     <motion.button
       ref={ref}
       style={{ width }}
-      className="aspect-square flex flex-col items-center justify-center gap-1 cursor-pointer rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/80 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-md transition-colors shrink-0"
+      className="aspect-square flex flex-col items-center justify-center gap-1 cursor-pointer rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700/80 hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm transition-colors shrink-0"
       onClick={handleClick}
-      whileTap={{ scale: 0.88 }}
       title={label}
     >
       <span className="text-xl text-zinc-700 dark:text-zinc-100">
@@ -79,12 +78,12 @@ const Dock = ({ items = [] }) => {
         </div>
       </div>
 
-      {/* ── Desktop: floating magnifying dock ── */}
+      {/* ── Desktop: floating dock ── */}
       <div className="hidden sm:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
         <motion.div
           onMouseMove={(e) => mouseX.set(e.pageX)}
           onMouseLeave={() => mouseX.set(Infinity)}
-          className="flex h-20 items-end gap-3 rounded-[32px] bg-white/90 dark:bg-zinc-900/90 border border-zinc-300 dark:border-zinc-800 px-4 pb-3 pt-3 backdrop-blur-2xl shadow-xl transition-colors"
+          className="flex h-20 items-end gap-3 rounded-2xl bg-white/95 dark:bg-zinc-900/95 border border-zinc-300 dark:border-zinc-800 px-4 pb-3 pt-3 shadow-lg transition-colors"
         >
           {items.map((item, idx) => (
             <DesktopDockIcon key={idx} mouseX={mouseX} {...item} />

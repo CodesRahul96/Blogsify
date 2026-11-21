@@ -126,14 +126,19 @@ router.get("/", async (req, res) => {
         delete po.comments;
         // Truncate content for lightweight wire transfer
         po.content = (po.content || "").substring(0, 220);
+
+        // Sanitize oversized inline base64 images in snippet mode to keep payloads ultra-fast (<5KB)
+        if (typeof po.imageUrl === "string" && po.imageUrl.startsWith("data:") && po.imageUrl.length > 500) {
+          po.imageUrl = ""; // Fallback to client-side default/placeholder
+        }
       }
 
       return po;
     });
 
-    // Cache public queries at edge for 60s with 120s stale-while-revalidate
+    // Cache public queries at edge for 120s with 300s stale-while-revalidate
     if (!author && !search) {
-      res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+      res.setHeader("Cache-Control", "public, max-age=120, s-maxage=120, stale-while-revalidate=300");
     }
 
     res.json({

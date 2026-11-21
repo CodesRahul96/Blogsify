@@ -18,10 +18,12 @@ const CATEGORIES = [
   "Culture",
 ];
 
-const RecentBlogsSection = () => {
-  // Synchronously initialize from cache for instant 0ms render
+const RecentBlogsSection = ({ sharedInitialPosts }) => {
+  // Synchronously initialize from shared prop or cache for instant 0ms render
   const initialCache = getCachedPosts("recent_blogs_All");
-  const initialPosts = initialCache?.posts || [];
+  const initialPosts = (sharedInitialPosts && sharedInitialPosts.length > 0)
+    ? sharedInitialPosts
+    : (initialCache?.posts || []);
 
   const [blogs, setBlogs] = useState(initialPosts);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -29,6 +31,13 @@ const RecentBlogsSection = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // If selectedCategory is "All" and sharedInitialPosts was provided, populate immediately
+    if (selectedCategory === "All" && sharedInitialPosts && sharedInitialPosts.length > 0) {
+      setBlogs(sharedInitialPosts);
+      setLoading(false);
+      return;
+    }
+
     const cacheKey = `recent_blogs_${selectedCategory}`;
     const cached = getCachedPosts(cacheKey);
 
@@ -102,9 +111,9 @@ const RecentBlogsSection = () => {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   selectedCategory === cat
-                    ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 shadow-sm"
+                    ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 shadow-xs"
                     : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800/80"
                 }`}
               >
@@ -151,7 +160,7 @@ const RecentBlogsSection = () => {
         <div className="text-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800/60">
           <Link
             to="/blogs"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-xs font-semibold transition-all shadow-xs group"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-xs font-semibold transition-all shadow-xs group"
           >
             <span>Explore Complete Archive</span>
             <FiArrowRight className="group-hover:translate-x-1 transition-transform" />

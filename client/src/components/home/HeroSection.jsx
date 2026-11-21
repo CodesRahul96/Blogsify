@@ -13,16 +13,25 @@ const getAuthorName = (author, fallback = "Staff Writer") => {
 
 const CACHE_KEY = "hero_lead_5";
 
-const HeroSection = () => {
-  // Synchronously initialize from cache for instant 0ms rendering
+const HeroSection = ({ sharedInitialPosts }) => {
+  // Synchronously initialize from shared prop or cache for instant 0ms rendering
   const cachedData = getCachedPosts(CACHE_KEY);
-  const cachedPosts = cachedData?.posts || [];
+  const cachedPosts = (sharedInitialPosts && sharedInitialPosts.length > 0)
+    ? sharedInitialPosts
+    : (cachedData?.posts || []);
 
   const [featuredPost, setFeaturedPost] = useState(cachedPosts[0] || null);
   const [trendingPosts, setTrendingPosts] = useState(cachedPosts.slice(1, 5));
   const [loading, setLoading] = useState(cachedPosts.length === 0);
 
   useEffect(() => {
+    if (sharedInitialPosts && sharedInitialPosts.length > 0) {
+      setFeaturedPost(sharedInitialPosts[0]);
+      setTrendingPosts(sharedInitialPosts.slice(1, 5));
+      setLoading(false);
+      return;
+    }
+
     let isMounted = true;
     const url = `${import.meta.env.VITE_BASE_URL}/api/posts?limit=5&mode=snippet`;
 
@@ -120,15 +129,15 @@ const HeroSection = () => {
           {/* Main Lead Feature (7 cols) */}
           <div className="lg:col-span-7 group">
             <Link to={`/blog/${featuredPost._id}`} className="block">
-              <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden mb-5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 shadow-sm">
+              <div className="relative aspect-[16/10] sm:aspect-[16/9] rounded-xl overflow-hidden mb-5 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 shadow-sm">
                 <img
                   src={featuredPost.imageUrl || PosterTemp}
                   alt={featuredPost.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-95"
                   onError={(e) => (e.target.src = PosterTemp)}
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 rounded-md text-xs font-semibold uppercase tracking-wider bg-black/70 text-white backdrop-blur-md border border-white/20">
+                  <span className="px-2.5 py-1 rounded-md text-xs font-semibold uppercase tracking-wider bg-zinc-950/90 text-white border border-zinc-700/60 shadow-sm">
                     {featuredPost.category || "Lead Editorial"}
                   </span>
                 </div>
@@ -208,8 +217,8 @@ const HeroSection = () => {
             </div>
 
             {/* Issue 13: Standardized Newsletter Box matching site design tokens */}
-            <div className="mt-8 p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-xs">
-              <span className="px-3 py-1 rounded-full text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 inline-block mb-3">
+            <div className="mt-8 p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xs">
+              <span className="px-2.5 py-1 rounded-md text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 inline-block mb-3">
                 Morning Briefing
               </span>
               <h3 className="font-serif text-base font-bold text-zinc-950 dark:text-white mb-2">
@@ -220,7 +229,7 @@ const HeroSection = () => {
               </p>
               <Link
                 to="/blogs"
-                className="inline-flex items-center justify-center gap-1.5 w-full py-2.5 rounded-full bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-semibold transition-all shadow-xs"
+                className="inline-flex items-center justify-center gap-1.5 w-full py-2.5 rounded-lg bg-zinc-950 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-950 text-xs font-semibold transition-all shadow-xs"
               >
                 <span>Join 12,000+ Readers</span>
                 <FiArrowRight size={13} />
