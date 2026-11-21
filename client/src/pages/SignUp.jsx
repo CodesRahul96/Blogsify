@@ -4,13 +4,14 @@ import axios from "axios";
 import PasswordChecker from "../components/auth/PasswordChecker";
 import AuthLayout from "../components/layout/AuthLayout";
 import Loader from "../components/layout/Loader";
+import GoogleAuthButton from "../components/auth/GoogleAuthButton";
 import { AuthContext } from "../context/AuthContext";
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 import { toast } from "react-toastify";
 
 function SignUp() {
-  const { user } = useContext(AuthContext) || {};
+  const { user, login } = useContext(AuthContext) || {};
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -73,6 +74,24 @@ function SignUp() {
           <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm">
             Publish stories, bookmark essays, and join high-signal discussions
           </p>
+        </div>
+
+        <div className="mb-6">
+          <GoogleAuthButton
+            text="signup_with"
+            onLoginSuccess={(token) => {
+              if (login) login(token);
+              else localStorage.setItem("token", token);
+              toast.success("Account created and verified with Google!");
+              navigate("/blogs");
+            }}
+          />
+          <div className="relative my-5 flex items-center justify-center">
+            <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+            <span className="absolute bg-white dark:bg-zinc-900 px-3 text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+              Or register with email
+            </span>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

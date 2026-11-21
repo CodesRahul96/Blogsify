@@ -2,12 +2,15 @@ const express = require("express");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { OAuth2Client } = require("google-auth-library");
 const { generateSecret, generateURI, verifyTOTP } = require("../utils/totp");
 const QRCode = require("qrcode");
 const User = require("../models/User");
 const Post = require("../models/Post");
 const { auth, isAdmin } = require("../middleware/auth");
 const router = express.Router();
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Helper to escape regex characters
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -179,6 +182,101 @@ router.post("/login", async (req, res) => {
     res.json({ token, user: { id: user._id, username: user.username, email: user.email, isAdmin: user.isAdmin, twoFactorEnabled: !!user.twoFactorEnabled } });
   } catch (err) {
     res.status(500).json({ message: "Server error during login", error: err.message });
+  }
+});
+
+// Google OAuth Login / Registration Endpoint
+router.post("/google", async (req, res) => {
+  try {
+    const { credential } = req.body;
+    if (!credential || typeof credential !== "string") {
+      return res.status(400).json({ message: "Google ID credential token is required" });
+    }
+
+    // Verify token using google-auth-library
+    // Use configured clientId or verify the payload
+    let ticket;
+    try {
+      ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+    } catch (verifyErr) {
+      console.error("Google token verification failed:", verifyErr.message);
+      return res.status(401).json({ message: "Invalid or expired Google authentication token" });
+    }
+
+    const payload = ticket.getPayload();
+    if (!payload || !payload.email) {
+      return res.status(400).json({ message: "Unable to retrieve user email from Google" });
+    }
+
+    const email = payload.email.toLowerCase().trim();
+    const googleId = payload.sub;
+    const name = payload.name || payload.given_name || "Writer";
+    const avatar = payload.picture || "";
+
+    // 1. Check if user already exists with this email or googleId
+    let user = await User.findOne({
+      $or: [{ email }, { googleId }],
+    });
+
+    if (user) {
+      // If user exists without googleId linked, update it
+      let needsSave = false;
+      if (!user.googleId) {
+        user.googleId = googleId;
+        needsSave = true;
+      }
+      if (!user.avatar && avatar) {
+        user.avatar = avatar;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await user.save();
+      }
+    } else {
+      // 2. New user: generate a clean, unique username and create account
+      const baseName = name.replace(/\s+/g, "").toLowerCase() || email.split("@")[0];
+      const chosenUsername = await generateUniqueUsername(baseName);
+
+      user = new User({
+        username: chosenUsername,
+        email,
+        googleId,
+        authProvider: "google",
+        avatar,
+      });
+      await user.save();
+    }
+
+    // 3. Issue standard 7-day Blogsify JWT
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        twoFactorEnabled: !!user.twoFactorEnabled,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        avatar: user.avatar,
+        twoFactorEnabled: !!user.twoFactorEnabled,
+      },
+    });
+  } catch (err) {
+    console.error("Google auth endpoint error:", err);
+    res.status(500).json({ message: "Server error during Google authentication", error: err.message });
   }
 });
 

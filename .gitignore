@@ -19,6 +19,8 @@ server/.env
 server/src/.env
 server/.env.local
 server/.env.*.local
+*.json.secret
+client_secret*.json
 
 # Build output
 client/dist/

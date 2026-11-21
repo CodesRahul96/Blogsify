@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Loader from "../components/layout/Loader";
 import { AuthContext } from "../context/AuthContext";
 import AuthLayout from "../components/layout/AuthLayout";
+import GoogleAuthButton from "../components/auth/GoogleAuthButton";
 import { FiUser, FiLock, FiEye, FiEyeOff, FiShield, FiArrowLeft, FiCheck } from "react-icons/fi";
 
 import { toast } from "react-toastify";
@@ -164,6 +165,23 @@ function Login() {
               <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm">
                 Sign in to access your desk, bookmarks, and draft dispatches
               </p>
+            </div>
+
+            <div className="mb-6">
+              <GoogleAuthButton
+                text="signin_with"
+                onLoginSuccess={(token) => {
+                  login(token);
+                  toast.success("Signed in with Google!");
+                  navigate("/blogs");
+                }}
+              />
+              <div className="relative my-5 flex items-center justify-center">
+                <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+                <span className="absolute bg-white dark:bg-zinc-900 px-3 text-[11px] font-medium uppercase tracking-wider text-zinc-400">
+                  Or continue with email
+                </span>
+              </div>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
